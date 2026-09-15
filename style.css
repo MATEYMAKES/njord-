@@ -103,7 +103,6 @@
      mobile values too, not just a bigger minimum inherited from above. */
   .hero-descriptor{ font-size: clamp(1.1rem, 4.5vw, 1.3rem); }
   .work-row__title{ font-size: clamp(2rem, 9vw, 3.4rem); }
-  .service-row__title{ font-size: clamp(1.3rem, 6vw, 1.6rem); }
   .contact-head h2{ font-size: clamp(2.6rem, 12vw, 5rem); }
   .contact-email{ font-size: clamp(1.7rem, 8vw, 2.6rem); }
   .project-modal__title{ font-size: clamp(3.4rem, 17vw, 7rem); }
@@ -707,102 +706,6 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
 }
 
 /* ---------------------------------------------------------------
-   Services — ledger
-   --------------------------------------------------------------- */
-.service-row{
-  position: relative;
-  display: grid;
-  grid-template-columns: 3rem 1fr;
-  align-items: center;
-  gap: 1.5rem;
-  padding-block: 1.4rem;
-  border-top: 1px solid var(--line);
-}
-.services-list .service-row:last-child{ border-bottom: 1px solid var(--line); }
-.service-row__num{
-  font-family: var(--f-mono);
-  font-size: var(--fs-small);
-  color: var(--ink-faint);
-}
-.service-row__content{
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  column-gap: 1.5em;
-  row-gap: .3em;
-  min-width: 0;
-}
-/* the trigger is the title text itself, not the row — the row's own
-   height changes when the reveal below expands, and if the hover
-   target were the whole row that growth could push the cursor outside
-   it, un-hovering it, collapsing it, re-hovering it... (a real bug,
-   seen and fixed: the row would flicker/"spazz" open and shut). The
-   title's own box never moves or resizes, so it can't feed back on
-   itself like that. */
-.service-row__title{
-  display: inline-block;
-  font-size: clamp(1.15rem, 2.4vw, 1.6rem);
-  font-weight: 450;
-  flex: none;
-  cursor: pointer;
-  transition: color .25s;
-}
-.service-row__title:hover{ color: var(--signal-text); }
-
-/* no separate card — the description lives right on the row's own
-   line, next to the title, and reveals itself by widening from zero:
-   text appears left-to-right as if sliding in along the line that's
-   already there, rather than popping up somewhere else.
-
-   Two things had to be pinned down, or the title itself would move:
-   1. `align-self: center` (not the container's own `baseline`) takes
-      this element OUT of the title's shared baseline-alignment group.
-      Without that, even an invisibly narrow (max-width:0) box still
-      contributes its own baseline to that shared calculation — and at
-      width 0 with normal text wrapping, every word lands on its own
-      line, making it very tall despite being invisible, which dragged
-      the shared baseline (and the title sitting on it) down. That's
-      what was actually causing "the text starts lower, then jumps up
-      on hover" and the resulting hover/collapse feedback loop.
-   2. `max-height: 0` at rest, clipped by `overflow:hidden`, removes
-      that phantom wrapped-line height outright rather than relying on
-      (1) alone — belt and suspenders, so the row itself doesn't sit
-      taller than it needs to before anything is ever revealed. */
-.service-row__reveal{
-  display: inline-block;
-  align-self: center;
-  max-width: 0;
-  max-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  margin: 0;
-  transition: max-width .55s var(--ease-out), max-height .55s var(--ease-out), opacity .4s var(--ease-out);
-}
-.service-row__reveal span{
-  display: inline-block;
-  font-family: var(--f-mono);
-  font-size: var(--fs-small);
-  line-height: 1.5;
-  color: var(--ink-soft);
-}
-.service-row__title:hover ~ .service-row__reveal,
-.service-row__title:focus-visible ~ .service-row__reveal,
-.service-row.is-expanded .service-row__reveal{
-  max-width: 620px;
-  max-height: 200px;
-  opacity: 1;
-}
-
-@media (max-width: 640px){
-  .service-row{ grid-template-columns: 2.2rem 1fr; }
-  /* on touch, the row itself becomes the entry point into that service's
-     own page (see main.js) instead of a hover/tap reveal-toggle — the
-     reveal below still plays, but it's now driven by scroll position,
-     not by this tap */
-  .service-row{ cursor: pointer; }
-}
-
-/* ---------------------------------------------------------------
    Studio
    --------------------------------------------------------------- */
 .studio-copy p{
@@ -936,8 +839,7 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
 }
 /* the wordmark itself is the close control now — no separate "back"
    button/label — it simply grows on hover/focus to read as clickable */
-.project-modal__brand,
-.service-modal__brand{
+.project-modal__brand{
   font-family: var(--f-display);
   font-weight: 600;
   font-size: 1.1rem;
@@ -946,9 +848,7 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
   transition: transform .3s var(--ease-out);
 }
 .project-modal__brand:hover,
-.project-modal__brand:focus-visible,
-.service-modal__brand:hover,
-.service-modal__brand:focus-visible{
+.project-modal__brand:focus-visible{
   transform: scale(1.18);
 }
 .project-modal__body{
@@ -1052,21 +952,6 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
 .project-modal--meridian .project-modal__cta:hover{ background: var(--meridian-accent); color: var(--meridian-bg); }
 .project-modal--meridian .project-modal__sitelink{ border-color: var(--meridian-accent); }
 .project-modal--meridian .project-modal__sitelink:hover{ background: var(--meridian-accent); color: var(--meridian-bg); }
-
-/* Service pages (mobile-only entry point, see main.js) reuse the exact
-   same portal-modal chrome/mechanics as the project pages above, but
-   stay in NJORD's own neutral paper/ink palette rather than a client
-   color — these are the studio's own capabilities, not client work, so
-   no client accent and no ASCII watermark background. */
-.service-modal__eyebrow::before{
-  content: "";
-  display: inline-block;
-  width: 4px; height: 4px;
-  background: var(--signal);
-  margin-right: .6em;
-  transform: translateY(-2px);
-}
-.service-modal__desc{ font-size: 1.15rem; }
 
 @media (max-width: 860px){
   .project-modal__highlights{ grid-template-columns: 1fr; }

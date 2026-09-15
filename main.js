@@ -181,76 +181,6 @@ if(hero){
 }
 
 /* ---------------------------------------------------------------
-   Services — each row's fuller description reveals inline next to
-   the title. Fine pointers get it via CSS :hover/:focus-visible on
-   the title alone (see style.css — deliberately NOT the whole row,
-   since the row's own height changes when the reveal expands, and
-   that used to feed back into hovering/un-hovering itself).
-
-   Touch devices no longer tap-to-toggle the reveal: it now tracks
-   scroll position directly, and a tap on the row instead opens that
-   service's own page — the reveal and "more info" affordances used to
-   be the same tap target, which meant touch visitors could never
-   actually get past the one-line teaser to a fuller page.
-
-   The reveal is driven by actual scroll position, not by an
-   IntersectionObserver's threshold-crossing events — an observer with
-   `threshold:0.45` fires every time a row's visibility ratio crosses
-   that line, which on a small nudge of scroll near the boundary can
-   fire repeatedly and out of scroll-order, reading as "random" rather
-   than tied to where you are on the page. Instead, on every scroll
-   frame we measure every row's actual on-screen distance from the
-   viewport's vertical center and keep only the MAX_EXPANDED closest
-   ones expanded — deterministic, always matches your current scroll
-   position, and naturally slides as you scroll past. */
-if(!isFinePointer){
-  const serviceRows = Array.from(document.querySelectorAll('.service-row'));
-  const MAX_EXPANDED = 2;
-  let serviceRevealQueued = false;
-  function updateServiceReveal(){
-    serviceRevealQueued = false;
-    const viewportCenter = window.innerHeight / 2;
-    const onScreen = serviceRows
-      .map((row) => {
-        const r = row.getBoundingClientRect();
-        return { row, visible: r.bottom > 0 && r.top < window.innerHeight, dist: Math.abs((r.top + r.bottom) / 2 - viewportCenter) };
-      })
-      .filter((x) => x.visible)
-      .sort((a, b) => a.dist - b.dist);
-    const active = new Set(onScreen.slice(0, MAX_EXPANDED).map((x) => x.row));
-    serviceRows.forEach((row) => row.classList.toggle('is-expanded', active.has(row)));
-  }
-  const queueServiceReveal = () => {
-    if(serviceRevealQueued) return;
-    serviceRevealQueued = true;
-    requestAnimationFrame(updateServiceReveal);
-  };
-  window.addEventListener('scroll', queueServiceReveal, { passive: true });
-  window.addEventListener('resize', queueServiceReveal);
-  updateServiceReveal();
-
-  serviceRows.forEach((row) => {
-    const num = row.dataset.service;
-    if(!num) return;
-    // the row itself wasn't otherwise focusable/actionable (only its title
-    // was, for the old hover-reveal) — mirrors .work-row's own
-    // tabindex/role/aria-haspopup pattern below so this new tap target is
-    // reachable the same way for touch screen readers and keyboard users
-    row.setAttribute('tabindex', '0');
-    row.setAttribute('role', 'button');
-    row.setAttribute('aria-haspopup', 'dialog');
-    row.addEventListener('click', (e) => openService(num, row, e.clientX, e.clientY));
-    row.addEventListener('keydown', (e) => {
-      if(e.key === 'Enter' || e.key === ' '){
-        e.preventDefault();
-        const r = row.getBoundingClientRect();
-        openService(num, row, r.left + r.width / 2, r.top + r.height / 2);
-      }
-    });
-  });
-}
-
-/* ---------------------------------------------------------------
    Work — index glyphs + per-project ASCII texture washes + portals
    --------------------------------------------------------------- */
 /* Title stays a proper noun in both languages; everything else is
@@ -525,111 +455,10 @@ if(siteLink){
   });
 }
 
-/* ---------------------------------------------------------------
-   Service pages — mobile/touch only (see the services block above).
-   A much smaller sibling of the project portal above: same radial
-   open/close mechanic (animatePageReveal/trapTabKey, both already
-   parameterized on a modal element for exactly this reuse) and the
-   same wordmark-closes-itself pattern, but no organism burst, no
-   FormationPortrait background, no client accent color — these are
-   NJORD's own capabilities, not client projects, so the page stays
-   in the site's own neutral paper/ink palette.
-   --------------------------------------------------------------- */
-const serviceModal = document.getElementById('service-modal');
-let lastServiceTrigger = null;
-let currentServiceNum = null;
-
-function serviceCopy(num){
-  return { title: t(`services.${num}.title`), desc: t(`services.${num}.desc`) };
-}
-
-function openService(num, triggerEl, clickX, clickY){
-  if(!serviceModal) return;
-  lastServiceTrigger = triggerEl;
-  const r = triggerEl.getBoundingClientRect();
-  const cx = typeof clickX === 'number' ? clickX : r.left + r.width / 2;
-  const cy = typeof clickY === 'number' ? clickY : r.top + r.height / 2;
-  showServiceModal(num, cx, cy);
-}
-
-function showServiceModal(num, cx, cy){
-  currentServiceNum = num;
-  const copy = serviceCopy(num);
-  serviceModal.querySelector('.service-modal__eyebrow').textContent = `${t('services.modalEyebrow').toUpperCase()} — ${num}`;
-  serviceModal.querySelector('.service-modal__title').textContent = copy.title;
-  serviceModal.querySelector('.service-modal__desc').textContent = copy.desc;
-
-  serviceModal.hidden = false;
-  document.body.classList.add('modal-open');
-  if('inert' in main) main.inert = true;
-  main.setAttribute('aria-hidden', 'true');
-
-  if(typeof cx === 'number' && !reduced){
-    animatePageReveal(serviceModal, cx, cy, 'open');
-  } else {
-    serviceModal.style.clipPath = '';
-    serviceModal.style.opacity = '';
-    serviceModal.classList.add('is-open');
-  }
-
-  const closeBtn = serviceModal.querySelector('.service-modal__brand');
-  if(closeBtn) closeBtn.focus();
-  serviceModal.addEventListener('keydown', onServiceModalKeydown);
-}
-
-function closeService(clickX, clickY){
-  document.body.classList.remove('modal-open');
-  if('inert' in main) main.inert = false;
-  main.removeAttribute('aria-hidden');
-  serviceModal.removeEventListener('keydown', onServiceModalKeydown);
-  currentServiceNum = null;
-
-  let cx = clickX, cy = clickY;
-  if(typeof cx !== 'number'){
-    const brandBtn = serviceModal.querySelector('.service-modal__brand');
-    if(brandBtn){
-      const br = brandBtn.getBoundingClientRect();
-      cx = br.left + br.width / 2;
-      cy = br.top + br.height / 2;
-    }
-  }
-
-  if(typeof cx === 'number' && !reduced){
-    animatePageReveal(serviceModal, cx, cy, 'close');
-    setTimeout(() => {
-      serviceModal.classList.remove('is-open');
-      serviceModal.hidden = true;
-      serviceModal.style.clipPath = '';
-      serviceModal.style.opacity = '';
-      serviceModal.style.transition = '';
-    }, PORTAL_MS + 20);
-  } else {
-    serviceModal.classList.remove('is-open');
-    setTimeout(() => { serviceModal.hidden = true; }, 520);
-  }
-
-  if(lastServiceTrigger) lastServiceTrigger.focus();
-}
-
-function onServiceModalKeydown(e){
-  if(e.key === 'Escape'){ closeService(); return; }
-  trapTabKey(e, serviceModal);
-}
-
-if(serviceModal){
-  const serviceBrand = serviceModal.querySelector('.service-modal__brand');
-  if(serviceBrand){
-    serviceBrand.addEventListener('click', (e) => {
-      if(e.detail === 0){ closeService(); return; }
-      closeService(e.clientX, e.clientY);
-    });
-  }
-}
-
-/* If a project or service page is open when the language toggles, its
-   JS-rendered copy (everything markup-level data-i18n can't reach) is
-   re-rendered in place rather than requiring a re-open. Registered
-   once, here, after every piece it touches already exists. */
+/* If a project page is open when the language toggles, its JS-rendered
+   copy (everything markup-level data-i18n can't reach) is re-rendered
+   in place rather than requiring a re-open. Registered once, here,
+   after every piece it touches already exists. */
 onLangChange(() => {
   updateLangToggleUI(getLang());
   if(soundToggle){
@@ -645,12 +474,6 @@ onLangChange(() => {
     modal.querySelectorAll('[data-highlight]').forEach((el) => {
       el.textContent = copy.highlights[Number(el.dataset.highlight)] || '';
     });
-  }
-  if(currentServiceNum && serviceModal && !serviceModal.hidden){
-    const copy = serviceCopy(currentServiceNum);
-    serviceModal.querySelector('.service-modal__eyebrow').textContent = `${t('services.modalEyebrow').toUpperCase()} — ${currentServiceNum}`;
-    serviceModal.querySelector('.service-modal__title').textContent = copy.title;
-    serviceModal.querySelector('.service-modal__desc').textContent = copy.desc;
   }
 });
 
