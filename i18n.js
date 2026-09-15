@@ -72,8 +72,8 @@ const translations = {
   'services.eyebrow': { en: 'Capabilities', sq: 'Aftësitë' },
   'services.h2': { en: 'What we do.', sq: 'Çfarë bëjmë.' },
   'services.note': {
-    en: 'Five disciplines, one process. We rarely deliver just one in isolation.',
-    sq: 'Pesë disiplina, një proces. Rrallëherë ofrojmë vetëm njërën të izoluar.',
+    en: 'Five disciplines, one process — branding, design, development, hosting and ongoing support, handled end to end rather than handed off between different teams. Scroll to see how it comes together.',
+    sq: 'Pesë disiplina, një proces — brending, dizajn, zhvillim, hosting dhe përkrahje e vazhdueshme, të menaxhuara nga fillimi deri në fund, jo të ndara mes ekipesh të ndryshme. Zbrit për të parë si bashkohen.',
   },
   'services.01.title': { en: 'Branding & Identity', sq: 'Brending & Identitet' },
   'services.01.desc': {

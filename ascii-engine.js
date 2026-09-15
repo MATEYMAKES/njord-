@@ -529,7 +529,11 @@ export class AsciiOrganism{
       const warp = 0.15 * Math.sin(raw * Math.PI * 3.1);
       this.roadmapU[i] = Math.max(0, Math.min(1, raw + warp));
       this.roadmapDensity[i] = 0.4 + Math.random() * 0.6;
-      this.roadmapOffset[i] = (Math.random() - 0.5) * 0.07;
+      // averaging two random values (a triangular, not uniform,
+      // distribution) concentrates particles near the centerline and
+      // tapers off toward the edges — reads as a solid, filled stroke
+      // rather than an evenly-scattered cloud of points
+      this.roadmapOffset[i] = (Math.random() + Math.random() - 1) * 0.045;
     }
   }
 
@@ -718,7 +722,13 @@ export class AsciiOrganism{
         const seg = this.seg;
         const localT = seg && typeof seg.localT === 'number' ? seg.localT : 0;
         const u = this.roadmapU[i];
-        const revealed = u <= localT;
+        // a lookahead margin so the LAST node isn't only revealed at the
+        // exact final pixel of the section (localT===1) — without this,
+        // node 5 barely rendered for a frame before the exit transition
+        // into 'constellation' started scattering/fading it right away.
+        // This gives it (and, more gently, every node) genuine settled
+        // on-screen time before that happens.
+        const revealed = u <= localT + 0.08;
         // not-yet-revealed particles wait right at the growing tip
         // (localT), not at the path's fixed start — once revealed they
         // smoothly extend the path forward from wherever it currently is
@@ -768,12 +778,16 @@ export class AsciiOrganism{
           return { x: fx, y: fy, i: 0.05, c: 0.5 };
         }
         const density = this.roadmapDensity[i];
-        const flicker = 0.6 + 0.4 * Math.sin(t * 1.8 + this.jitterSeed[i] * 3.0);
+        // a light, subtle flicker for texture — the first pass's wider
+        // swing (0.4 amplitude) made independently-flickering particles
+        // read as a shimmering cloud rather than one steady, filled form
+        const flicker = 0.85 + 0.15 * Math.sin(t * 1.8 + this.jitterSeed[i] * 3.0);
         const nearestNodeFrac = Math.round(u * (this.roadmapNodeCount - 1)) / (this.roadmapNodeCount - 1);
         const nodeCloseness = Math.max(0, 1 - Math.abs(u - nearestNodeFrac) * 14);
-        // bolder overall than the first pass — a thin, faint route read as
-        // insubstantial next to the rest of the organism's other formations
-        const baseIntensity = (0.28 + density * 0.42) * flicker;
+        // a higher floor than the first pass so the connective stretches
+        // between nodes stay solidly filled in rather than fading toward
+        // invisible — the whole point of "thick, filled in, not a cloud"
+        const baseIntensity = (0.4 + density * 0.4) * flicker;
         const intensity = Math.max(baseIntensity, nodeCloseness * 0.95);
         // after the route is fully traversed and we're actually leaving
         // the section (seg.a is roadmap, seg.b is the NEXT formation),
