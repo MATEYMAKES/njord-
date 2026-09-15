@@ -388,8 +388,6 @@ main{
   position: absolute;
   inset: 0;
   background: linear-gradient(to bottom, color-mix(in srgb, var(--paper) 78%, transparent), transparent);
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
   z-index: -1;
 }
 .site-header > *{ pointer-events: auto; }
