@@ -182,6 +182,15 @@ function smoothstep(edge0, edge1, x){
   return t * t * (3 - 2 * t);
 }
 function lerp(a, b, t){ return a + (b - a) * t; }
+// Catmull-Rom spline through 4 control points — used by the roadmap
+// formation's path so it reads as genuinely curved rather than a
+// piecewise-straight line between jittered points.
+function catmullRom(p0, p1, p2, p3, t){
+  const t2 = t * t, t3 = t2 * t;
+  const x = 0.5 * ((2 * p1.x) + (-p0.x + p2.x) * t + (2 * p0.x - 5 * p1.x + 4 * p2.x - p3.x) * t2 + (-p0.x + 3 * p1.x - 3 * p2.x + p3.x) * t3);
+  const y = 0.5 * ((2 * p1.y) + (-p0.y + p2.y) * t + (2 * p0.y - 5 * p1.y + 4 * p2.y - p3.y) * t2 + (-p0.y + 3 * p1.y - 3 * p2.y + p3.y) * t3);
+  return { x, y };
+}
 
 /* stylized, deliberately non-cartographic continent silhouettes —
    just enough for the rotating sphere to unmistakably read as Earth */
@@ -481,10 +490,13 @@ export class AsciiOrganism{
     }
     this.roadmapNodes = nodes;
 
-    // path: each node plus 3 jittered intermediate seeds per segment, so
-    // the route bends rather than running straight between nodes
+    // path: each node plus 5 jittered intermediate seeds per segment —
+    // more seed points and a wider jitter than the first pass, since
+    // _roadmapPointAt below now runs a Catmull-Rom spline through them
+    // (genuine curvature) rather than straight lerps between them, and
+    // a sparser/smaller-jitter seed set was reading as too straight
     const seeds = [];
-    const SEEDS_PER_SEGMENT = 3;
+    const SEEDS_PER_SEGMENT = 5;
     for(let k = 0; k < NODE_COUNT - 1; k++){
       const A = nodes[k], B = nodes[k + 1];
       seeds.push({ x: A.x, y: A.y, node: k });
@@ -493,7 +505,7 @@ export class AsciiOrganism{
       const nx = -dy / len, ny = dx / len;
       for(let s = 1; s <= SEEDS_PER_SEGMENT; s++){
         const u = s / (SEEDS_PER_SEGMENT + 1);
-        const jitter = (Math.random() - 0.5) * 0.09;
+        const jitter = (Math.random() - 0.5) * 0.2;
         seeds.push({ x: A.x + dx * u + nx * jitter, y: A.y + dy * u + ny * jitter, node: -1 });
       }
     }
@@ -505,6 +517,11 @@ export class AsciiOrganism{
     const n = this.count;
     this.roadmapU = new Float32Array(n);
     this.roadmapDensity = new Float32Array(n);
+    // a fixed perpendicular offset per particle spreads the route into a
+    // visible band of characters instead of every particle stacking on
+    // the exact same mathematical line — this is what actually reads as
+    // "thickness" for a route made of scattered ASCII points
+    this.roadmapOffset = new Float32Array(n);
     for(let i = 0; i < n; i++){
       const raw = Math.random();
       // low-frequency warp so density varies along the path (some
@@ -512,17 +529,34 @@ export class AsciiOrganism{
       const warp = 0.15 * Math.sin(raw * Math.PI * 3.1);
       this.roadmapU[i] = Math.max(0, Math.min(1, raw + warp));
       this.roadmapDensity[i] = 0.4 + Math.random() * 0.6;
+      this.roadmapOffset[i] = (Math.random() - 0.5) * 0.07;
     }
   }
 
   _roadmapPointAt(u){
     const seeds = this.roadmapSeeds;
-    const segCount = seeds.length - 1;
+    const last = seeds.length - 1;
+    const segCount = last;
     const pos = Math.max(0, Math.min(1, u)) * segCount;
     const idx = Math.min(segCount - 1, Math.floor(pos));
     const frac = pos - idx;
-    const A = seeds[idx], B = seeds[idx + 1];
-    return { x: A.x + (B.x - A.x) * frac, y: A.y + (B.y - A.y) * frac };
+    const p0 = seeds[Math.max(0, idx - 1)];
+    const p1 = seeds[idx];
+    const p2 = seeds[Math.min(last, idx + 1)];
+    const p3 = seeds[Math.min(last, idx + 2)];
+    return catmullRom(p0, p1, p2, p3, frac);
+  }
+
+  // tangent direction at path position u, via a small finite difference —
+  // used to offset particles PERPENDICULAR to the route (see roadmapOffset
+  // above) rather than only along it
+  _roadmapTangentAt(u){
+    const d = 0.01;
+    const a = this._roadmapPointAt(Math.max(0, u - d));
+    const b = this._roadmapPointAt(Math.min(1, u + d));
+    const dx = b.x - a.x, dy = b.y - a.y;
+    const len = Math.hypot(dx, dy) || 1;
+    return { x: dx / len, y: dy / len };
   }
 
   /* One continuous timeline instead of competing zones. The zones are
@@ -688,7 +722,16 @@ export class AsciiOrganism{
         // not-yet-revealed particles wait right at the growing tip
         // (localT), not at the path's fixed start — once revealed they
         // smoothly extend the path forward from wherever it currently is
-        const samplePt = this._roadmapPointAt(revealed ? u : localT);
+        const sampleU = revealed ? u : localT;
+        const rawPt = this._roadmapPointAt(sampleU);
+        // spread this particle PERPENDICULAR to the route by its own
+        // fixed roadmapOffset, so the path reads as a band of characters
+        // (visibly thick) instead of every particle stacking on one
+        // mathematically-thin line
+        const tangent = this._roadmapTangentAt(sampleU);
+        const perpX = -tangent.y, perpY = tangent.x;
+        const off = this.roadmapOffset[i];
+        const samplePt = { x: rawPt.x + perpX * off, y: rawPt.y + perpY * off };
 
         // Every other formation is compact — it fits within roughly one
         // viewport around a single anchor point, so a small -1..1 local
@@ -725,11 +768,13 @@ export class AsciiOrganism{
           return { x: fx, y: fy, i: 0.05, c: 0.5 };
         }
         const density = this.roadmapDensity[i];
-        const flicker = 0.5 + 0.5 * Math.sin(t * 1.8 + this.jitterSeed[i] * 3.0);
+        const flicker = 0.6 + 0.4 * Math.sin(t * 1.8 + this.jitterSeed[i] * 3.0);
         const nearestNodeFrac = Math.round(u * (this.roadmapNodeCount - 1)) / (this.roadmapNodeCount - 1);
         const nodeCloseness = Math.max(0, 1 - Math.abs(u - nearestNodeFrac) * 14);
-        const baseIntensity = (0.16 + density * 0.3) * flicker;
-        const intensity = Math.max(baseIntensity, nodeCloseness * 0.85);
+        // bolder overall than the first pass — a thin, faint route read as
+        // insubstantial next to the rest of the organism's other formations
+        const baseIntensity = (0.28 + density * 0.42) * flicker;
+        const intensity = Math.max(baseIntensity, nodeCloseness * 0.95);
         // after the route is fully traversed and we're actually leaving
         // the section (seg.a is roadmap, seg.b is the NEXT formation),
         // scatter and fade the path — "loses structure and disperses"

@@ -722,7 +722,7 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
 .roadmap-node{
   position: absolute;
   transform: translate(-50%, -50%);
-  max-width: 30ch;
+  max-width: 38ch;
   opacity: 0;
   transition: opacity .3s var(--ease-out);
   pointer-events: none;
@@ -731,23 +731,24 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
 .roadmap-node__num{
   display: block;
   font-family: var(--f-mono);
-  font-size: var(--fs-micro);
-  letter-spacing: .14em;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 700;
+  letter-spacing: .1em;
   color: var(--signal);
-  margin-bottom: .5em;
+  margin-bottom: .3em;
 }
 .roadmap-node__heading{
   font-family: var(--f-mono);
-  font-size: clamp(1rem, 2.2vw, 1.3rem);
+  font-size: clamp(1.6rem, 3.6vw, 2.4rem);
   font-weight: 600;
   color: var(--ink);
-  margin: 0 0 .4em;
+  margin: 0 0 .45em;
 }
 .roadmap-node__support{
   font-family: var(--f-mono);
-  font-size: var(--fs-small);
+  font-size: clamp(1.05rem, 1.8vw, 1.25rem);
   color: var(--ink-soft);
-  line-height: 1.5;
+  line-height: 1.55;
   margin: 0;
 }
 .roadmap-node__cursor{
@@ -770,7 +771,7 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
 }
 @media (max-width: 720px){
   .roadmap-nodes{ min-height: 340vh; }
-  .roadmap-node{ max-width: 24ch; }
+  .roadmap-node{ max-width: 28ch; }
 }
 @media (prefers-reduced-motion: reduce){
   .roadmap-node{ opacity: 1; transition: none; }
