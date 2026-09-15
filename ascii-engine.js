@@ -532,8 +532,9 @@ export class AsciiOrganism{
       // averaging two random values (a triangular, not uniform,
       // distribution) concentrates particles near the centerline and
       // tapers off toward the edges — reads as a solid, filled stroke
-      // rather than an evenly-scattered cloud of points
-      this.roadmapOffset[i] = (Math.random() + Math.random() - 1) * 0.045;
+      // rather than an evenly-scattered cloud of points. Widened again —
+      // still felt thin/airy at the previous, tighter band.
+      this.roadmapOffset[i] = (Math.random() + Math.random() - 1) * 0.075;
     }
   }
 
@@ -778,17 +779,16 @@ export class AsciiOrganism{
           return { x: fx, y: fy, i: 0.05, c: 0.5 };
         }
         const density = this.roadmapDensity[i];
-        // a light, subtle flicker for texture — the first pass's wider
-        // swing (0.4 amplitude) made independently-flickering particles
-        // read as a shimmering cloud rather than one steady, filled form
-        const flicker = 0.85 + 0.15 * Math.sin(t * 1.8 + this.jitterSeed[i] * 3.0);
+        // barely any flicker left — even the toned-down first pass still
+        // read as thin/airy; a genuinely solid form needs to hold steady
+        const flicker = 0.94 + 0.06 * Math.sin(t * 1.8 + this.jitterSeed[i] * 3.0);
         const nearestNodeFrac = Math.round(u * (this.roadmapNodeCount - 1)) / (this.roadmapNodeCount - 1);
         const nodeCloseness = Math.max(0, 1 - Math.abs(u - nearestNodeFrac) * 14);
-        // a higher floor than the first pass so the connective stretches
-        // between nodes stay solidly filled in rather than fading toward
-        // invisible — the whole point of "thick, filled in, not a cloud"
-        const baseIntensity = (0.4 + density * 0.4) * flicker;
-        const intensity = Math.max(baseIntensity, nodeCloseness * 0.95);
+        // pushed further still — floor raised again, and a <1 power curve
+        // pulls the whole mid-range up toward the dense end of the
+        // character set (' .:-=+*#%@') rather than sitting mid-scale
+        const baseIntensity = (0.58 + density * 0.35) * flicker;
+        const intensity = Math.pow(Math.min(1, Math.max(baseIntensity, nodeCloseness * 0.95)), 0.65);
         // after the route is fully traversed and we're actually leaving
         // the section (seg.a is roadmap, seg.b is the NEXT formation),
         // scatter and fade the path — "loses structure and disperses"
