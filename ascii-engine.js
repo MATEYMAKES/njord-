@@ -401,7 +401,10 @@ export class AsciiOrganism{
     this._lastAnchorX = 0.5; this._lastAnchorY = 0.5;
   }
 
-  setZones(zones){ this.zones = zones; } // [{ name, el }]
+  setZones(zones){
+    this.zones = zones; // [{ name, el, ranged? }]
+    this._rangedZoneNames = new Set(zones.filter((z) => z.ranged).map((z) => z.name));
+  }
   /* Injects a function returning a live audio-sample array (Float32Array,
      -1..1) so the WAVE formation can be driven by the generated audio
      system's real output instead of a synthetic sine — kept as a plain
@@ -536,11 +539,24 @@ export class AsciiOrganism{
     const vh = window.innerHeight || 1;
     if(this.zones.length === 0) return { a: 'globe', b: 'globe', t: 0, anchorX: 0.72, anchorY: 0.5 };
 
-    const points = this.zones.map((z) => {
+    const rangedNames = this._rangedZoneNames || new Set();
+    const points = [];
+    this.zones.forEach((z) => {
       const r = z.el.getBoundingClientRect();
       const anchorX = Math.max(0.16, Math.min(0.8, (r.left + r.width * 0.74) / this.w));
       const anchorY = Math.max(0.1, Math.min(0.9, (r.top + r.height / 2) / vh));
-      return { name: z.name, docY: scrollY + r.top + r.height / 2, anchorX, anchorY };
+      if(z.ranged){
+        // spans its own full scroll height instead of one pivot point —
+        // contributes two points sharing its name, so the segment
+        // BETWEEN them resolves as a same-ends span for the whole
+        // section (see the sameEnds fast path in _frame), while normal
+        // pairwise blending still drives the approach/exit transitions
+        // on either side exactly like every other zone.
+        points.push({ name: z.name, docY: scrollY + r.top, anchorX, anchorY });
+        points.push({ name: z.name, docY: scrollY + r.top + r.height, anchorX, anchorY });
+      } else {
+        points.push({ name: z.name, docY: scrollY + r.top + r.height / 2, anchorX, anchorY });
+      }
     });
     const playheadY = scrollY + vh / 2;
 
@@ -556,7 +572,15 @@ export class AsciiOrganism{
       if(playheadY >= A.docY && playheadY <= B.docY){
         const raw = (playheadY - A.docY) / Math.max(1, B.docY - A.docY);
         const t = smoothstep(0, 1, raw);
-        return { a: A.name, b: B.name, t, anchorX: lerp(A.anchorX, B.anchorX, t), anchorY: lerp(A.anchorY, B.anchorY, t) };
+        const seg = { a: A.name, b: B.name, t, anchorX: lerp(A.anchorX, B.anchorX, t), anchorY: lerp(A.anchorY, B.anchorY, t) };
+        if(A.name === B.name && rangedNames.has(A.name)){
+          seg.localT = Math.max(0, Math.min(1, raw)); // linear, not smoothstepped — exact scroll correspondence for typing
+        } else if(rangedNames.has(B.name)){
+          seg.localT = 0; // approaching the ranged zone — it should read as "just starting"
+        } else if(rangedNames.has(A.name)){
+          seg.localT = 1; // leaving the ranged zone — it should read as "fully finished"
+        }
+        return seg;
       }
     }
     return { a: last.name, b: last.name, t: 0, anchorX: last.anchorX, anchorY: last.anchorY };
@@ -647,6 +671,37 @@ export class AsciiOrganism{
           x: this.nodePosX[k] + Math.sin(t * 0.4 + this.jitterSeed[i]) * 0.22,
           y: this.nodePosY[k] + Math.cos(t * 0.35 + this.jitterSeed[i]) * 0.22,
           i: 0.12 + 0.08 * Math.sin(t + this.jitterSeed[i]), c: 0.4,
+        };
+      }
+      case 'roadmap': {
+        const seg = this.seg;
+        const localT = seg && typeof seg.localT === 'number' ? seg.localT : 0;
+        const u = this.roadmapU[i];
+        const revealed = u <= localT;
+        if(!revealed){
+          // held just off the path's own start, faint — reads as "hasn't
+          // arrived yet" rather than popping in once its threshold is crossed
+          const p0 = this.roadmapSeeds[0];
+          return { x: (p0.x - 0.5) * 2, y: (p0.y - 0.5) * 2, i: 0.05, c: 0.5 };
+        }
+        const pt = this._roadmapPointAt(u);
+        const density = this.roadmapDensity[i];
+        const flicker = 0.5 + 0.5 * Math.sin(t * 1.8 + this.jitterSeed[i] * 3.0);
+        const nearestNodeFrac = Math.round(u * (this.roadmapNodeCount - 1)) / (this.roadmapNodeCount - 1);
+        const nodeCloseness = Math.max(0, 1 - Math.abs(u - nearestNodeFrac) * 14);
+        const baseIntensity = (0.16 + density * 0.3) * flicker;
+        const intensity = Math.max(baseIntensity, nodeCloseness * 0.85);
+        // after the route is fully traversed and we're actually leaving
+        // the section (seg.a is roadmap, seg.b is the NEXT formation),
+        // scatter and fade the path — "loses structure and disperses"
+        // rather than a plain positional blend into whatever's next
+        const dissolve = (seg && seg.a === 'roadmap' && seg.b !== 'roadmap') ? seg.t : 0;
+        const scatterAmt = dissolve * 0.5;
+        const scatterX = Math.sin(this.jitterSeed[i] * 7.7 + t * 0.3) * scatterAmt;
+        const scatterY = Math.cos(this.jitterSeed[i] * 5.3 + t * 0.25) * scatterAmt;
+        return {
+          x: (pt.x - 0.5) * 2 + scatterX, y: (pt.y - 0.5) * 2 + scatterY,
+          i: intensity * (1 - dissolve * 0.6), c: 0.6 * (1 - dissolve * 0.4),
         };
       }
       case 'constellation': {
@@ -743,8 +798,8 @@ export class AsciiOrganism{
     // own acid-signal-green, not a bug like the yellow-flash one above: this
     // is the one formation actually meant to carry the site's own identity
     // color, since it represents NJORD describing itself rather than a client
-    const ACCENTS = { diamond: [61, 127, 240], wave: [122, 27, 51], network: [31, 76, 120], globe: [203, 255, 61], constellation: [203, 255, 61] };
-    const FORM_C = { globe: 0, diamond: 1, wave: 1, network: 0.4, constellation: 0.55 };
+    const ACCENTS = { diamond: [61, 127, 240], wave: [122, 27, 51], network: [31, 76, 120], globe: [203, 255, 61], constellation: [203, 255, 61], roadmap: [203, 255, 61] };
+    const FORM_C = { globe: 0, diamond: 1, wave: 1, network: 0.4, constellation: 0.55, roadmap: 0.5 };
     const cwA = (FORM_C[seg.a] ?? 0) * (1 - seg.t);
     const cwB = (FORM_C[seg.b] ?? 0) * seg.t;
     const cwSum = cwA + cwB;
