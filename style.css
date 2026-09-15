@@ -706,6 +706,70 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
 }
 
 /* ---------------------------------------------------------------
+   Services — procedural ASCII roadmap (V2). The connecting path is
+   drawn by the organism itself (ascii-engine.js, 'roadmap' formation)
+   on the full-bleed canvas already behind this section — everything
+   here only lays out and types the real DOM text for each node.
+   --------------------------------------------------------------- */
+.roadmap-nodes{
+  position: relative;
+  /* tall enough that scrolling through 5 nodes' worth of path-growth +
+     typing reads as deliberate rather than instant — retune this
+     multiplier directly if the pacing feels rushed or too slow */
+  min-height: 420vh;
+  margin-top: clamp(2rem, 6vw, 4rem);
+}
+.roadmap-node{
+  position: absolute;
+  transform: translate(-50%, -50%);
+  max-width: 30ch;
+  opacity: 0;
+  transition: opacity .3s var(--ease-out);
+  pointer-events: none;
+}
+.roadmap-node.is-visible{ opacity: 1; }
+.roadmap-node__heading{
+  font-family: var(--f-mono);
+  font-size: clamp(1rem, 2.2vw, 1.3rem);
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 .4em;
+}
+.roadmap-node__support{
+  font-family: var(--f-mono);
+  font-size: var(--fs-small);
+  color: var(--ink-soft);
+  line-height: 1.5;
+  margin: 0;
+}
+.roadmap-node__cursor{
+  display: inline-block;
+  color: var(--signal);
+  animation: roadmap-cursor-blink 1s step-end infinite;
+}
+@keyframes roadmap-cursor-blink{
+  0%, 100%{ opacity: 1; }
+  50%{ opacity: 0; }
+}
+/* visually hidden but announced — the always-complete text for screen
+   readers, independent of the sighted character-by-character reveal */
+.roadmap-node__sr{
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+@media (max-width: 720px){
+  .roadmap-nodes{ min-height: 340vh; }
+  .roadmap-node{ max-width: 24ch; }
+}
+@media (prefers-reduced-motion: reduce){
+  .roadmap-node{ opacity: 1; transition: none; }
+  .roadmap-node__cursor{ animation: none; opacity: 0; }
+}
+
+/* ---------------------------------------------------------------
    Studio
    --------------------------------------------------------------- */
 .studio-copy p{
