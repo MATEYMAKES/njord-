@@ -76,6 +76,7 @@ if(organismCanvas){
     { name: 'diamond', el: document.querySelector('.work-row[data-project="aurelia"]') },
     { name: 'wave', el: document.querySelector('.work-row[data-project="pulse"]') },
     { name: 'network', el: document.querySelector('.work-row[data-project="meridian"]') },
+    { name: 'roadmap', el: document.getElementById('services'), ranged: true },
     { name: 'constellation', el: document.getElementById('studio') },
     { name: 'globe', el: document.getElementById('contact') },
   ].filter((z) => z.el));
@@ -178,6 +179,105 @@ if(hero){
   };
   window.addEventListener('scroll', onHeroScroll, { passive: true });
   onHeroScroll();
+}
+
+/* ---------------------------------------------------------------
+   Services — procedural ASCII roadmap (V2). The organism's own
+   'roadmap' formation (ascii-engine.js) draws the growing/dissolving
+   path on the shared canvas; this block only owns the real-DOM text
+   overlay per node — heading types first, then the support line,
+   driven directly by scroll position (never a timer), so it un-types
+   symmetrically on scroll-up exactly like the path itself reverses.
+   --------------------------------------------------------------- */
+const SERVICE_KEYS = ['01', '02', '03', '04', '05'];
+function serviceRoadmapCopy(num){
+  return { heading: t(`services.${num}.title`), support: t(`services.${num}.desc`) };
+}
+
+const roadmapNodesEl = document.getElementById('roadmap-nodes');
+if(roadmapNodesEl && organism){
+  const nodeEls = Array.from(roadmapNodesEl.querySelectorAll('.roadmap-node'));
+
+  function positionRoadmapNodes(){
+    if(!organism.roadmapNodes) return;
+    nodeEls.forEach((el, i) => {
+      const node = organism.roadmapNodes[i];
+      if(!node) return;
+      el.style.left = `${node.x * 100}%`;
+      el.style.top = `${node.y * 100}%`;
+    });
+  }
+  positionRoadmapNodes();
+  window.addEventListener('resize', positionRoadmapNodes);
+
+  function fillRoadmapDataset(){
+    nodeEls.forEach((el, i) => {
+      const copy = serviceRoadmapCopy(SERVICE_KEYS[i]);
+      el.dataset.heading = copy.heading;
+      el.dataset.support = copy.support;
+      const sr = el.querySelector('.roadmap-node__sr');
+      if(sr) sr.textContent = `${copy.heading} — ${copy.support}`;
+    });
+  }
+  fillRoadmapDataset();
+
+  if(reduced){
+    // matches how every other formation degrades under reduced-motion
+    // (see AsciiOrganism.start()): no scroll-driven animation, just the
+    // fully-resolved end state, immediately
+    const showFull = () => {
+      nodeEls.forEach((el) => {
+        const headEl = el.querySelector('.roadmap-node__heading');
+        const supEl = el.querySelector('.roadmap-node__support');
+        if(headEl) headEl.textContent = el.dataset.heading || '';
+        if(supEl) supEl.textContent = el.dataset.support || '';
+        el.classList.add('is-visible');
+      });
+    };
+    showFull();
+    onLangChange(() => { fillRoadmapDataset(); showFull(); });
+  } else {
+    const NODE_COUNT = nodeEls.length;
+    let roadmapTicking = false;
+    function updateRoadmapTyping(){
+      roadmapTicking = false;
+      const seg = organism.seg;
+      let localT = null;
+      if(seg && seg.a === 'roadmap' && seg.b === 'roadmap' && typeof seg.localT === 'number') localT = seg.localT;
+      else if(seg && seg.b === 'roadmap') localT = 0;
+      else if(seg && seg.a === 'roadmap') localT = 1;
+      if(localT === null) return; // organism hasn't reached Services yet — leave everything untyped
+
+      nodeEls.forEach((el, i) => {
+        const nodeU = i / (NODE_COUNT - 1);
+        const typeStart = i === 0 ? 0 : (i - 0.6) / (NODE_COUNT - 1);
+        const typeEnd = nodeU;
+        const raw = typeEnd > typeStart ? (localT - typeStart) / (typeEnd - typeStart) : (localT >= nodeU ? 1 : 0);
+        const progress = Math.max(0, Math.min(1, raw));
+        const headingProgress = Math.min(1, progress * 2);
+        const supportProgress = Math.max(0, Math.min(1, (progress - 0.5) * 2));
+
+        const heading = el.dataset.heading || '';
+        const support = el.dataset.support || '';
+        const headEl = el.querySelector('.roadmap-node__heading');
+        const supEl = el.querySelector('.roadmap-node__support');
+        const cursorEl = el.querySelector('.roadmap-node__cursor');
+        if(headEl) headEl.textContent = heading.slice(0, Math.round(heading.length * headingProgress));
+        if(supEl) supEl.textContent = support.slice(0, Math.round(support.length * supportProgress));
+        el.classList.toggle('is-visible', progress > 0);
+        if(cursorEl) cursorEl.classList.toggle('is-on-support', headingProgress >= 1 && supportProgress < 1);
+      });
+    }
+    function queueRoadmapUpdate(){
+      if(roadmapTicking) return;
+      roadmapTicking = true;
+      requestAnimationFrame(updateRoadmapTyping);
+    }
+    window.addEventListener('scroll', queueRoadmapUpdate, { passive: true });
+    window.addEventListener('resize', queueRoadmapUpdate);
+    queueRoadmapUpdate();
+    onLangChange(() => { fillRoadmapDataset(); queueRoadmapUpdate(); });
+  }
 }
 
 /* ---------------------------------------------------------------
