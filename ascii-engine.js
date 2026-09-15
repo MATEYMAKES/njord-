@@ -505,7 +505,10 @@ export class AsciiOrganism{
       const nx = -dy / len, ny = dx / len;
       for(let s = 1; s <= SEEDS_PER_SEGMENT; s++){
         const u = s / (SEEDS_PER_SEGMENT + 1);
-        const jitter = (Math.random() - 0.5) * 0.2;
+        // halved again — the wider jitter, combined with the spline
+        // running through every jittered point, was producing a wavy
+        // zigzag rather than one smooth bend per segment
+        const jitter = (Math.random() - 0.5) * 0.1;
         seeds.push({ x: A.x + dx * u + nx * jitter, y: A.y + dy * u + ny * jitter, node: -1 });
       }
     }
@@ -528,18 +531,17 @@ export class AsciiOrganism{
       // stretches dense, some sparse) instead of perfectly uniform
       const warp = 0.15 * Math.sin(raw * Math.PI * 3.1);
       this.roadmapU[i] = Math.max(0, Math.min(1, raw + warp));
-      // +40% over the first pass — "thicker" means more/denser ASCII
+      // pushed further still — "thicker" means more/denser ASCII
       // characters packed into a smaller span, not a wider band (see
-      // roadmapOffset below, which went the opposite direction)
-      this.roadmapDensity[i] = (0.4 + Math.random() * 0.6) * 1.4;
+      // roadmapOffset below, which keeps going the opposite direction)
+      this.roadmapDensity[i] = (0.4 + Math.random() * 0.6) * 1.8;
       // averaging two random values (a triangular, not uniform,
       // distribution) concentrates particles near the centerline and
       // tapers off toward the edges — reads as a solid, filled stroke
-      // rather than an evenly-scattered cloud of points. Narrower than
-      // either prior pass (0.045, then a wrong-direction 0.075) — the
-      // same particle count packed into a tighter span is what actually
-      // reads as "thicker," not spreading them wider.
-      this.roadmapOffset[i] = (Math.random() + Math.random() - 1) * 0.0315;
+      // rather than an evenly-scattered cloud of points. Narrower again
+      // (0.045 → 0.075 → 0.0315 → this) — the same particle count packed
+      // into an ever-tighter span is what reads as "thicker," not width.
+      this.roadmapOffset[i] = (Math.random() + Math.random() - 1) * 0.019;
     }
   }
 
