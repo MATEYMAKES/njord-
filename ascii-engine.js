@@ -528,8 +528,16 @@ export class AsciiOrganism{
     for(let i = 0; i < n; i++){
       const raw = Math.random();
       // low-frequency warp so density varies along the path (some
-      // stretches dense, some sparse) instead of perfectly uniform
-      const warp = 0.15 * Math.sin(raw * Math.PI * 3.1);
+      // stretches dense, some sparse) instead of perfectly uniform.
+      // Real bug found: at the original 0.15 amplitude, this mapping's
+      // derivative (1 + amplitude*frequency*cos(...)) goes negative
+      // across roughly a quarter of the raw domain — meaning a WIDE
+      // range of particles' raw values all folded onto overlapping,
+      // compressed output u values instead of spreading smoothly, piling
+      // up into a hard density spike (landing right around node 2) rather
+      // than gentle texture. 0.08 keeps amplitude*frequency just under 1,
+      // which keeps the mapping monotonic (no folding) for any raw.
+      const warp = 0.08 * Math.sin(raw * Math.PI * 3.1);
       this.roadmapU[i] = Math.max(0, Math.min(1, raw + warp));
       // pushed further still — "thicker" means more/denser ASCII
       // characters packed into a smaller span, not a wider band (see
