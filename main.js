@@ -237,22 +237,26 @@ if(roadmapNodesEl && organism){
     showFull();
     onLangChange(() => { fillRoadmapDataset(); showFull(); });
   } else {
-    const NODE_COUNT = nodeEls.length;
     let roadmapTicking = false;
+    // Typing progress is driven by each node's OWN current on-screen
+    // position (getBoundingClientRect), not by slicing the organism's
+    // localT into per-node windows — that indirect approach didn't
+    // account for the container's real height-to-viewport ratio, so
+    // nodes (especially the last one) could sit blank for a while after
+    // scrolling into view and not start typing until they'd already
+    // scrolled most of the way back out near the top of the screen.
+    // Tying it directly to the element's own rect fixes both problems
+    // at once and, like everything else on this site, reverses cleanly
+    // on scroll-up since it's recomputed fresh from real position every
+    // frame rather than carrying any state of its own.
+    const TYPE_START_FRAC = 0.8; // rect.top/vh when typing begins — just past halfway up from the bottom edge
+    const TYPE_END_FRAC = 0.35;  // rect.top/vh when typing completes — settled in the upper-middle, well clear of the bottom
     function updateRoadmapTyping(){
       roadmapTicking = false;
-      const seg = organism.seg;
-      let localT = null;
-      if(seg && seg.a === 'roadmap' && seg.b === 'roadmap' && typeof seg.localT === 'number') localT = seg.localT;
-      else if(seg && seg.b === 'roadmap') localT = 0;
-      else if(seg && seg.a === 'roadmap') localT = 1;
-      if(localT === null) return; // organism hasn't reached Services yet — leave everything untyped
-
-      nodeEls.forEach((el, i) => {
-        const nodeU = i / (NODE_COUNT - 1);
-        const typeStart = i === 0 ? 0 : (i - 0.6) / (NODE_COUNT - 1);
-        const typeEnd = nodeU;
-        const raw = typeEnd > typeStart ? (localT - typeStart) / (typeEnd - typeStart) : (localT >= nodeU ? 1 : 0);
+      const vh = window.innerHeight || 1;
+      nodeEls.forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        const raw = (TYPE_START_FRAC * vh - rect.top) / ((TYPE_START_FRAC - TYPE_END_FRAC) * vh);
         const progress = Math.max(0, Math.min(1, raw));
         const headingProgress = Math.min(1, progress * 2);
         const supportProgress = Math.max(0, Math.min(1, (progress - 0.5) * 2));
