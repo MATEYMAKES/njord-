@@ -728,6 +728,14 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
   pointer-events: none;
 }
 .roadmap-node.is-visible{ opacity: 1; }
+.roadmap-node__num{
+  display: block;
+  font-family: var(--f-mono);
+  font-size: var(--fs-micro);
+  letter-spacing: .14em;
+  color: var(--signal);
+  margin-bottom: .5em;
+}
 .roadmap-node__heading{
   font-family: var(--f-mono);
   font-size: clamp(1rem, 2.2vw, 1.3rem);

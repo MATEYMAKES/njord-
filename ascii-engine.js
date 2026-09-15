@@ -554,6 +554,13 @@ export class AsciiOrganism{
         // on either side exactly like every other zone.
         points.push({ name: z.name, docY: scrollY + r.top, anchorX, anchorY });
         points.push({ name: z.name, docY: scrollY + r.top + r.height, anchorX, anchorY });
+        // the element's raw viewport-relative rect, refreshed every
+        // frame — _formationTarget('roadmap', ...) needs this to place
+        // particles at the SAME absolute on-screen position the real
+        // DOM node text uses (see main.js), since this element spans
+        // many viewport-heights and the usual compact anchor+offset
+        // math every other formation uses can't represent that spread
+        this._roadmapRect = { top: r.top, left: r.left, width: r.width, height: r.height };
       } else {
         points.push({ name: z.name, docY: scrollY + r.top + r.height / 2, anchorX, anchorY });
       }
@@ -678,13 +685,45 @@ export class AsciiOrganism{
         const localT = seg && typeof seg.localT === 'number' ? seg.localT : 0;
         const u = this.roadmapU[i];
         const revealed = u <= localT;
-        if(!revealed){
-          // held just off the path's own start, faint — reads as "hasn't
-          // arrived yet" rather than popping in once its threshold is crossed
-          const p0 = this.roadmapSeeds[0];
-          return { x: (p0.x - 0.5) * 2, y: (p0.y - 0.5) * 2, i: 0.05, c: 0.5 };
+        // not-yet-revealed particles wait right at the growing tip
+        // (localT), not at the path's fixed start — once revealed they
+        // smoothly extend the path forward from wherever it currently is
+        const samplePt = this._roadmapPointAt(revealed ? u : localT);
+
+        // Every other formation is compact — it fits within roughly one
+        // viewport around a single anchor point, so a small -1..1 local
+        // offset added to that anchor is enough. This section spans many
+        // viewport-heights (see .roadmap-nodes, style.css), so instead
+        // this computes the particle's ABSOLUTE on-screen position from
+        // the section's real, currently-scrolled bounding rect
+        // (this._roadmapRect, refreshed every frame in _timelineSegment)
+        // — the exact same math the real DOM .roadmap-node text uses to
+        // position itself (main.js) — then back-solves what local
+        // fx/fy the usual anchor-relative formula in _frame would need
+        // to land exactly there. That keeps this formation pixel-aligned
+        // with its own text while still blending smoothly through the
+        // shared anchor system on the way in from 'network' and out to
+        // 'constellation'.
+        let fx, fy;
+        const rect = this._roadmapRect;
+        if(rect && seg && this.w && this.h){
+          const absX = (rect.left + samplePt.x * rect.width) / this.w;
+          const absY = (rect.top + samplePt.y * rect.height) / this.h;
+          const minDim = Math.min(this.w, this.h) || 1;
+          const sx = (minDim / this.w) * 0.5 || 0.5;
+          const sy = (minDim / this.h) * 0.5 || 0.5;
+          fx = (absX - seg.anchorX) / sx;
+          fy = (absY - seg.anchorY) / sy;
+        } else {
+          fx = (samplePt.x - 0.5) * 2;
+          fy = (samplePt.y - 0.5) * 2;
         }
-        const pt = this._roadmapPointAt(u);
+
+        if(!revealed){
+          // a faint gathering point right at the growing tip, rather
+          // than popping in once its own threshold is crossed
+          return { x: fx, y: fy, i: 0.05, c: 0.5 };
+        }
         const density = this.roadmapDensity[i];
         const flicker = 0.5 + 0.5 * Math.sin(t * 1.8 + this.jitterSeed[i] * 3.0);
         const nearestNodeFrac = Math.round(u * (this.roadmapNodeCount - 1)) / (this.roadmapNodeCount - 1);
@@ -700,7 +739,7 @@ export class AsciiOrganism{
         const scatterX = Math.sin(this.jitterSeed[i] * 7.7 + t * 0.3) * scatterAmt;
         const scatterY = Math.cos(this.jitterSeed[i] * 5.3 + t * 0.25) * scatterAmt;
         return {
-          x: (pt.x - 0.5) * 2 + scatterX, y: (pt.y - 0.5) * 2 + scatterY,
+          x: fx + scatterX, y: fy + scatterY,
           i: intensity * (1 - dissolve * 0.6), c: 0.6 * (1 - dissolve * 0.4),
         };
       }
