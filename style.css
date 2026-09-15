@@ -1,0 +1,1078 @@
+/* ================================================================
+   NJORD — Creative Digital Studio
+   Design tokens, layout, and component styles.
+   ================================================================ */
+
+:root{
+  /* --- color tokens (light / default) --- */
+  --paper: #F4F2EA;
+  --paper-raised: #FBFAF5;
+  --ink: #15150F;
+  --ink-soft: #57564C;
+  --ink-faint: #6B6A5E;
+  --line: #DBD7C9;
+  --line-strong: #C3BFAE;
+  --signal: #CBFF3D;
+  --signal-text: #557116;
+  --signal-ink: #14140A;
+
+  /* --- project accent tokens (used only inside modal/preview scopes) --- */
+  /* each project page's background is the same color as its own ASCII
+     visual. Aurelia's diamond-blue is light enough for dark text; Pulse's
+     burgundy and Meridian's deep blue are dark enough to need light text
+     instead — recomputed per background, not assumed. */
+  --aurelia-bg: #3D7FF0; --aurelia-ink: #0B0F1A; --aurelia-accent: #0B0F1A;
+  --pulse-bg: #7A1B33; --pulse-ink: #F6ECE8; --pulse-accent: #F6ECE8;
+  --meridian-bg: #1F4C78; --meridian-ink: #E9F1F8; --meridian-accent: #E9F1F8;
+
+  /* --- type --- */
+  --f-display: 'Bricolage Grotesque', 'Helvetica Neue', Arial, sans-serif;
+  --f-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+
+  --fs-hero: clamp(3.4rem, 13vw, 10.5rem);
+  --fs-display: clamp(2rem, 5.2vw, 4.2rem);
+  --fs-h2: clamp(1.4rem, 3vw, 2rem);
+  --fs-lead: clamp(1.05rem, 1.6vw, 1.35rem);
+  --fs-body: 1rem;
+  --fs-small: 0.8125rem;
+  --fs-micro: 0.6875rem;
+
+  --gutter: clamp(20px, 4vw, 64px);
+  --maxw: 1440px;
+
+  --ease-out: cubic-bezier(.16,.84,.32,1);
+  --ease-in-out: cubic-bezier(.65,0,.35,1);
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper: #100F0A;
+    --paper-raised: #17160F;
+    --ink: #F3F1E6;
+    --ink-soft: #ACA99B;
+    --ink-faint: #93917F;
+    --line: #2A281E;
+    --line-strong: #3C3A2C;
+    --signal: #CBFF3D;
+    --signal-text: #CBFF3D;
+    --signal-ink: #0B0B06;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"]{
+  --paper: #100F0A;
+  --paper-raised: #17160F;
+  --ink: #F3F1E6;
+  --ink-soft: #ACA99B;
+  --ink-faint: #6E6C60;
+  --line: #2A281E;
+  --line-strong: #3C3A2C;
+  --signal: #CBFF3D;
+  --signal-text: #CBFF3D;
+  --signal-ink: #0B0B06;
+  color-scheme: dark;
+}
+
+/* Every clamp() above uses a vw-based preferred value that's smaller than
+   its own minimum at phone widths (e.g. --fs-micro's 11px minimum with no
+   vw term at all) — meaning on a ~390px screen every one of them bottoms
+   out at the same minimum tuned for "narrow desktop," not arm's-length
+   phone reading. Nothing actually scales up for mobile without this.
+   These aren't just bigger — most also get a real vw term so they keep
+   responding to width instead of going flat again. */
+@media (max-width: 640px){
+  :root{
+    --fs-hero: clamp(4rem, 16vw, 10.5rem);
+    --fs-display: clamp(2.6rem, 9vw, 4.2rem);
+    --fs-h2: clamp(1.7rem, 6vw, 2rem);
+    --fs-lead: clamp(1.2rem, 4.5vw, 1.35rem);
+    --fs-body: 1.125rem;
+    /* first pass (13px/15px) was confirmed on an actual iPhone screenshot
+       to still be too small — nav, eyebrows, tags, and the bottom toggle
+       bar were all still reading as tiny. This is a much bigger jump, not
+       a fine-tune: --fs-micro is nearly 50% bigger than its ORIGINAL
+       (pre-fix) 11px, not just bigger than the first attempt's 13px. */
+    --fs-small: 1.0625rem;
+    --fs-micro: 1rem;
+  }
+  /* The root tokens above only reach anything wired to var(--fs-*) — these
+     seven headings/labels each hardcode their own clamp() instead and have
+     the identical bottoms-out-at-minimum problem, so they need their own
+     mobile values too, not just a bigger minimum inherited from above. */
+  .hero-descriptor{ font-size: clamp(1.1rem, 4.5vw, 1.3rem); }
+  .work-row__title{ font-size: clamp(2rem, 9vw, 3.4rem); }
+  .service-row__title{ font-size: clamp(1.3rem, 6vw, 1.6rem); }
+  .contact-head h2{ font-size: clamp(2.6rem, 12vw, 5rem); }
+  .contact-email{ font-size: clamp(1.7rem, 8vw, 2.6rem); }
+  .project-modal__title{ font-size: clamp(3.4rem, 17vw, 7rem); }
+  .project-modal__tag{ font-size: clamp(1.25rem, 5vw, 1.5rem); }
+}
+
+/* ---------------------------------------------------------------
+   Reset
+   --------------------------------------------------------------- */
+*, *::before, *::after{ box-sizing: border-box; }
+html{ -webkit-text-size-adjust: 100%; scroll-behavior: auto; }
+body{
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--f-display);
+  font-size: var(--fs-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+ul{ list-style: none; margin: 0; padding: 0; }
+a{ color: inherit; text-decoration: none; }
+button{ font: inherit; color: inherit; background: none; border: 0; cursor: pointer; padding: 0; }
+h1,h2,h3,p{ margin: 0; }
+h1,h2,h3{ text-wrap: balance; font-weight: 500; }
+img,canvas{ display: block; max-width: 100%; }
+
+::selection{ background: var(--signal); color: var(--signal-ink); }
+
+:focus-visible{
+  outline: 2px solid var(--signal-text);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+.skip-link{
+  position: fixed; top: -100%; left: var(--gutter); z-index: 1000;
+  background: var(--ink); color: var(--paper); padding: .75em 1.25em;
+  font-family: var(--f-mono); font-size: var(--fs-small); transition: top .2s var(--ease-out);
+}
+.skip-link:focus{ top: var(--gutter); }
+
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------------------------------------------------------------
+   The ASCII organism — one persistent, page-fixed particle canvas.
+   Sits behind everything; `main` is lifted into its own positioned
+   stacking context (below) so ordinary in-flow content still paints
+   on top of it despite the canvas's explicit z-index.
+   --------------------------------------------------------------- */
+#ascii-organism{
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+main{
+  position: relative;
+  z-index: 2;
+}
+
+/* ---------------------------------------------------------------
+   Layout helpers
+   --------------------------------------------------------------- */
+.wrap{
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+.section{
+  position: relative;
+  padding-block: clamp(64px, 10vw, 140px);
+  border-top: 1px solid var(--line);
+}
+.eyebrow{
+  font-family: var(--f-mono);
+  font-size: var(--fs-micro);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  display: flex;
+  align-items: center;
+  gap: .6em;
+}
+.eyebrow::before{
+  content: "";
+  width: 6px; height: 6px;
+  background: var(--signal);
+  flex: none;
+}
+.section-head{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1.5rem 3rem;
+  margin-bottom: clamp(2.5rem, 6vw, 5rem);
+}
+.section-head h2{
+  font-size: var(--fs-display);
+  font-weight: 340;
+  letter-spacing: -0.01em;
+  max-width: 18ch;
+}
+.section-head .section-note{
+  font-family: var(--f-mono);
+  font-size: var(--fs-small);
+  color: var(--ink-soft);
+  max-width: 30ch;
+  padding-bottom: .3em;
+}
+
+/* registration marks — quiet print/technical-drawing motif */
+.reg-marks{
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+.reg-marks span{
+  position: absolute;
+  width: 13px; height: 13px;
+  opacity: .45;
+}
+.reg-marks span::before,
+.reg-marks span::after{
+  content: ""; position: absolute; background: var(--ink-faint);
+}
+.reg-marks span::before{ width: 100%; height: 1px; top: 50%; }
+.reg-marks span::after{ height: 100%; width: 1px; left: 50%; }
+.reg-marks .tl{ top: 14px; left: 14px; }
+.reg-marks .tr{ top: 14px; right: 14px; }
+.reg-marks .bl{ bottom: 14px; left: 14px; }
+.reg-marks .br{ bottom: 14px; right: 14px; }
+@media (max-width: 640px){ .reg-marks{ display:none; } }
+
+/* ---------------------------------------------------------------
+   Sound toggle — the only control for NJORD's generative audio.
+   Stays above the project modal (z-index 600) so sound can always
+   be switched off, on any page.
+   --------------------------------------------------------------- */
+.sound-toggle{
+  position: fixed;
+  left: var(--gutter);
+  bottom: calc(clamp(18px, 3vw, 32px) + env(safe-area-inset-bottom, 0px));
+  z-index: 650;
+  display: inline-flex;
+  align-items: center;
+  gap: .65em;
+  border: 1px solid var(--line-strong);
+  padding: .55em .95em;
+  font-family: var(--f-mono);
+  font-size: var(--fs-micro);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  background: color-mix(in srgb, var(--paper) 72%, transparent);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  transition: color .25s, border-color .25s;
+}
+.sound-toggle:hover{ color: var(--ink); border-color: var(--ink-faint); }
+.sound-toggle__dot{
+  width: 6px; height: 6px;
+  background: var(--line-strong);
+  flex: none;
+  transition: background .25s, box-shadow .25s;
+}
+.sound-toggle.is-on{ color: var(--ink); }
+.sound-toggle.is-on .sound-toggle__dot{
+  background: var(--signal);
+  box-shadow: 0 0 6px var(--signal);
+}
+/* mobile: text label + dot both give way to a single monospace glyph —
+   the .is-on color change above still carries the on/off state, so the
+   icon needs no state of its own beyond inheriting `color`. Moved to
+   the right — sound is the only control meant to sit on that side (see
+   .lang-toggle below, which moves to the left to make room for it). */
+.sound-toggle__icon{ display: none; font-size: 1rem; line-height: 1; }
+@media (max-width: 640px){
+  .sound-toggle{
+    left: auto;
+    right: var(--gutter);
+    padding: .65em;
+  }
+  .sound-toggle__label{ display: none; }
+  .sound-toggle__dot{ display: none; }
+  .sound-toggle__icon{ display: block; }
+}
+
+/* ---------------------------------------------------------------
+   Language toggle — EN / SHQP (Albanian). Shqip is the default;
+   mirrors the sound toggle's placement/treatment on the opposite
+   corner so the two persistent controls read as one family.
+   --------------------------------------------------------------- */
+.lang-toggle{
+  position: fixed;
+  right: var(--gutter);
+  bottom: calc(clamp(18px, 3vw, 32px) + env(safe-area-inset-bottom, 0px));
+  z-index: 650;
+  display: inline-flex;
+  align-items: center;
+  gap: .4em;
+  border: 1px solid var(--line-strong);
+  padding: .55em .95em;
+  font-family: var(--f-mono);
+  font-size: var(--fs-micro);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  background: color-mix(in srgb, var(--paper) 72%, transparent);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  transition: color .25s, border-color .25s;
+}
+.lang-toggle:hover{ color: var(--ink); border-color: var(--ink-faint); }
+.lang-toggle__sep{ opacity: .5; }
+.lang-toggle__opt{ opacity: .45; transition: opacity .25s, color .25s; }
+.lang-toggle__opt.is-active{ opacity: 1; color: var(--ink); }
+
+@media (max-width: 640px){
+  /* sound is the only control meant to occupy the right corner at
+     mobile widths (see .sound-toggle above) — language moves back to
+     the left, in its own corner rather than stacked with anything. */
+  .lang-toggle{ left: var(--gutter); right: auto; }
+}
+
+/* ---------------------------------------------------------------
+   Custom cursor
+   --------------------------------------------------------------- */
+.cursor-dot{
+  position: fixed;
+  top: 0; left: 0;
+  width: 10px; height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: var(--ink);
+  mix-blend-mode: difference;
+  pointer-events: none;
+  z-index: 999;
+  transform: translate3d(-100px,-100px,0) scale(1);
+  transition: width .25s var(--ease-out), height .25s var(--ease-out), margin .25s var(--ease-out), background-color .25s;
+  will-change: transform;
+}
+.cursor-dot.is-hover{
+  width: 46px; height: 46px; margin: -23px 0 0 -23px;
+  background: var(--signal);
+}
+.cursor-dot.is-down{ background: var(--signal); }
+@media (pointer: coarse){ .cursor-dot{ display: none; } }
+
+/* ---------------------------------------------------------------
+   Header / nav
+   --------------------------------------------------------------- */
+.site-header{
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 200;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  /* the hamburger (and logo) sit in this top strip — on a real phone
+     that strip can be under a notch/Dynamic Island or a host app's own
+     chrome, which visually looks fine (this bar's own background still
+     paints) but silently eats taps there. env(safe-area-inset-top)
+     pushes the actual interactive content down clear of that band; it's
+     0 on anything without a safe area, so this is a no-op elsewhere. */
+  padding: calc(clamp(18px,3vw,32px) + env(safe-area-inset-top, 0px)) var(--gutter) clamp(18px,3vw,32px);
+  pointer-events: none;
+}
+.site-header::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--paper) 78%, transparent), transparent);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: -1;
+}
+.site-header > *{ pointer-events: auto; }
+
+.logo-mark{
+  font-family: var(--f-display);
+  font-weight: 600;
+  font-size: 1.1rem;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: .45em;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity .5s var(--ease-out), transform .5s var(--ease-out);
+}
+.logo-mark::after{ content: ""; width: 6px; height: 6px; background: var(--signal); }
+body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
+
+.main-nav ul{ display: flex; flex-direction: column; align-items: flex-end; gap: .5rem; }
+.main-nav a{
+  font-family: var(--f-mono);
+  font-size: var(--fs-micro);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  position: relative;
+  padding: .15em 0;
+  display: inline-block;
+}
+.main-nav a .fill{
+  position: absolute; left: 0; bottom: 0; height: 1px; width: 100%;
+  background: var(--line-strong);
+}
+.main-nav a .fill::after{
+  content: ""; position: absolute; inset: 0; background: var(--signal-text);
+  transform: scaleX(0); transform-origin: left; transition: transform .35s var(--ease-out);
+}
+.main-nav a:hover .fill::after, .main-nav a:focus-visible .fill::after{ transform: scaleX(1); }
+
+/* Hamburger — hidden on desktop where the nav links are always visible
+   inline. Three thin bars matching the line-driven visual language used
+   elsewhere (.fill underlines, .reg-marks); animates into an X when open
+   rather than swapping icons. */
+.nav-toggle{
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 34px; height: 34px;
+  background: none; border: none;
+}
+.nav-toggle__bar{
+  display: block;
+  width: 100%; height: 1px;
+  background: var(--ink);
+  transition: transform .3s var(--ease-out), opacity .3s var(--ease-out);
+}
+.nav-toggle[aria-expanded="true"] .nav-toggle__bar:nth-child(1){ transform: translateY(6px) rotate(45deg); }
+.nav-toggle[aria-expanded="true"] .nav-toggle__bar:nth-child(2){ opacity: 0; }
+.nav-toggle[aria-expanded="true"] .nav-toggle__bar:nth-child(3){ transform: translateY(-6px) rotate(-45deg); }
+
+.nav-scrim{
+  position: fixed; inset: 0;
+  z-index: 620;
+  background: rgba(0,0,0,.35);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .35s var(--ease-out);
+}
+.nav-scrim.is-visible{ opacity: 1; pointer-events: auto; }
+
+@media (max-width: 640px){
+  .nav-toggle{ display: flex; }
+  /* off-canvas drawer: the nav used to always sit inline in the header
+     at this width (flex-direction:row on its own <ul>) — replaced with
+     a fixed panel sliding in from the right, since always-on top nav
+     was the exact clutter this change was meant to remove. */
+  .main-nav{
+    position: fixed;
+    inset: 0 0 0 auto;
+    z-index: 630;
+    width: min(78vw, 320px);
+    background: var(--paper);
+    border-left: 1px solid var(--line-strong);
+    padding: clamp(90px, 24vw, 120px) var(--gutter) 40px;
+    transform: translateX(100%);
+    transition: transform .4s var(--ease-out);
+    overflow-y: auto;
+  }
+  .main-nav.is-open{ transform: translateX(0); }
+  .main-nav ul{ flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+  .main-nav a{ font-size: var(--fs-body); }
+  body.nav-open{ overflow: hidden; }
+}
+
+/* ---------------------------------------------------------------
+   Hero
+   --------------------------------------------------------------- */
+.hero{
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  border-top: none;
+}
+.hero-inner{
+  position: relative;
+  z-index: 2;
+  padding-inline: var(--gutter);
+  width: 100%;
+}
+.hero-eyebrow{
+  font-family: var(--f-mono);
+  font-size: var(--fs-micro);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: .6em;
+}
+.hero-word{
+  font-family: var(--f-display);
+  font-weight: 240;
+  font-size: var(--fs-hero);
+  line-height: .86;
+  letter-spacing: -0.015em;
+  margin: 0;
+  color: var(--ink);
+  transition: opacity .6s var(--ease-out), transform .6s var(--ease-out);
+}
+/* same mark as the small header wordmark (.logo-mark::after), at the
+   exact same size-to-font-size and gap-to-font-size ratio (6px / 1.1rem
+   ≈ 0.34em, gap .45em there) — sized in em so it scales with --fs-hero's
+   own responsive clamp() automatically, desktop and mobile alike,
+   rather than needing its own breakpoint */
+.hero-word::after{
+  content: "";
+  display: inline-block;
+  width: 0.34em;
+  height: 0.34em;
+  margin-left: 0.45em;
+  background: var(--signal);
+  vertical-align: middle;
+}
+.hero-foot{
+  position: absolute;
+  left: var(--gutter); right: var(--gutter); bottom: clamp(24px,4vw,48px);
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 2rem;
+}
+.hero-descriptor{
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: clamp(.95rem, 1.6vw, 1.2rem);
+  max-width: 34ch;
+  color: var(--ink-soft);
+}
+.hero-descriptor strong{ color: var(--ink); font-weight: 500; }
+.scroll-cue{
+  font-family: var(--f-mono);
+  font-size: var(--fs-micro);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  display: flex;
+  align-items: center;
+  gap: .75em;
+  flex: none;
+}
+.scroll-cue .track{
+  width: 1px; height: 34px;
+  background: var(--line-strong);
+  position: relative;
+  overflow: hidden;
+}
+.scroll-cue .track::after{
+  content: ""; position: absolute; left: 0; top: -100%; width: 100%; height: 100%;
+  background: var(--signal-text);
+  animation: cue-fall 2.2s var(--ease-in-out) infinite;
+}
+@keyframes cue-fall{
+  0%{ top: -100%; } 60%{ top: 100%; } 100%{ top: 100%; }
+}
+@media (prefers-reduced-motion: reduce){ .scroll-cue .track::after{ animation: none; top: 0; } }
+
+@media (max-width: 720px){
+  .hero-foot{ flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+}
+
+/* ---------------------------------------------------------------
+   Work — index rows
+   --------------------------------------------------------------- */
+.work-index{ padding-top: 0; }
+.work-row{
+  position: relative;
+  display: grid;
+  grid-template-columns: 90px 1fr auto;
+  align-items: center;
+  gap: clamp(1rem,3vw,3rem);
+  padding-block: clamp(1.6rem, 4vw, 3rem);
+  border-top: 1px solid var(--line);
+  cursor: pointer;
+  overflow: hidden;
+}
+.work-row:last-child{ border-bottom: 1px solid var(--line); }
+.work-row + .work-row{ margin-top: clamp(6rem, 16vw, 14rem); }
+/* Aurelia and Pulse each command a generous gap before the NEXT row via
+   the rule above — Meridian, being last, has no following .work-row to
+   trigger that margin, so without this it only got the section's own
+   (much smaller) bottom padding. That's what made its "section" read as
+   tiny next to the other two: not its own box, but the empty space
+   around it not matching theirs. Give it the same total trailing space —
+   subtracting .work-index's own bottom padding (which stacks on top of
+   this margin, they don't collapse, since non-zero padding sits between
+   them) so the total comes out equal to the others' gap, not bigger. */
+.work-row:last-child{
+  /* started at 180px (measured from a screenshot against Pulse's row),
+     increased further per follow-up feedback that it still needed more.
+     Deliberately padding-bottom, not margin-bottom: this needs to land
+     BETWEEN the text and this row's own border-bottom line (inside the
+     box), not after the line. Adjust this single number up/down based
+     on how it actually looks live. */
+  padding-bottom: 230px;
+}
+
+.work-row__index canvas{ width: 100%; height: 100%; }
+.work-row__index{ position: relative; z-index: 1; width: 72px; height: 72px; display: flex; align-items: center; }
+.work-row__index.is-pulsing{ animation: glyph-pulse .7s var(--ease-out); }
+/* the plain numeral fallback (mobile only, see max-width:720px below) —
+   hidden on desktop where the animated ASCII glyph canvas is the real
+   index mark */
+.work-row__index-num{
+  display: none;
+  font-family: var(--f-mono);
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--ink-faint);
+  letter-spacing: .02em;
+}
+@keyframes glyph-pulse{
+  0%{ transform: scale(1); opacity: 1; }
+  40%{ transform: scale(1.18); opacity: .7; }
+  100%{ transform: scale(1); opacity: 1; }
+}
+/* a shared floor, not a per-row guess — description lengths differ (and
+   differ again once translated), so wrap-to-2-vs-3-lines can vary per
+   row/language in ways that are impractical to hand-tune text for; this
+   keeps every row the same height regardless, rather than chasing exact
+   pixel matches */
+.work-row__body{ position: relative; z-index: 1; min-width: 0; }
+.work-row__title{
+  font-size: clamp(1.8rem, 4.4vw, 3.4rem);
+  font-weight: 350;
+  letter-spacing: -0.01em;
+  transition: transform .4s var(--ease-out);
+}
+.work-row:hover .work-row__title{ transform: translateX(.2em); }
+.work-row__desc{
+  font-family: var(--f-mono);
+  font-size: var(--fs-small);
+  color: var(--ink-soft);
+  margin-top: .5em;
+  max-width: 46ch;
+}
+.work-row__tags{
+  display: flex; flex-wrap: wrap; gap: .5em 1em; margin-top: .9em;
+}
+.work-row__tags span{
+  font-family: var(--f-mono);
+  font-size: var(--fs-micro);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  border: 1px solid var(--line-strong);
+  padding: .3em .6em;
+}
+.work-row__meta{
+  position: relative; z-index: 1;
+  font-family: var(--f-mono);
+  font-size: var(--fs-small);
+  color: var(--ink-faint);
+  text-align: right;
+  display: flex; flex-direction: column; align-items: flex-end; gap: .6em;
+}
+.work-row__enter{
+  font-family: var(--f-mono);
+  font-size: var(--fs-micro);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink);
+  display: inline-flex; align-items: center; gap: .5em;
+}
+.work-row__enter .arrow{ transition: transform .3s var(--ease-out); }
+.work-row:hover .work-row__enter .arrow{ transform: translateX(4px); }
+
+@media (max-width: 720px){
+  .work-row{ grid-template-columns: 56px 1fr; }
+  .work-row__meta{ grid-column: 1 / -1; flex-direction: row; justify-content: space-between; align-items: center; }
+  .work-row__index{ width: 48px; height: 48px; }
+  /* the animated ASCII glyph reads as noisy clutter at this size — swap
+     it for a plain static numeral instead of just trying to calm the
+     animation down further */
+  .work-row__index canvas{ display: none; }
+  .work-row__index-num{ display: block; }
+  /* the gap directly under the meta row (year + Enter, right under
+     "2025") and Meridian's own border-bottom line — this is the one
+     that was actually being tuned; a separate mobile experiment on the
+     section's own trailing padding (after that line) has been reverted */
+  .work-row:last-child{ padding-bottom: 102px; }
+}
+
+/* ---------------------------------------------------------------
+   Services — ledger
+   --------------------------------------------------------------- */
+.service-row{
+  position: relative;
+  display: grid;
+  grid-template-columns: 3rem 1fr;
+  align-items: center;
+  gap: 1.5rem;
+  padding-block: 1.4rem;
+  border-top: 1px solid var(--line);
+}
+.services-list .service-row:last-child{ border-bottom: 1px solid var(--line); }
+.service-row__num{
+  font-family: var(--f-mono);
+  font-size: var(--fs-small);
+  color: var(--ink-faint);
+}
+.service-row__content{
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  column-gap: 1.5em;
+  row-gap: .3em;
+  min-width: 0;
+}
+/* the trigger is the title text itself, not the row — the row's own
+   height changes when the reveal below expands, and if the hover
+   target were the whole row that growth could push the cursor outside
+   it, un-hovering it, collapsing it, re-hovering it... (a real bug,
+   seen and fixed: the row would flicker/"spazz" open and shut). The
+   title's own box never moves or resizes, so it can't feed back on
+   itself like that. */
+.service-row__title{
+  display: inline-block;
+  font-size: clamp(1.15rem, 2.4vw, 1.6rem);
+  font-weight: 450;
+  flex: none;
+  cursor: pointer;
+  transition: color .25s;
+}
+.service-row__title:hover{ color: var(--signal-text); }
+
+/* no separate card — the description lives right on the row's own
+   line, next to the title, and reveals itself by widening from zero:
+   text appears left-to-right as if sliding in along the line that's
+   already there, rather than popping up somewhere else.
+
+   Two things had to be pinned down, or the title itself would move:
+   1. `align-self: center` (not the container's own `baseline`) takes
+      this element OUT of the title's shared baseline-alignment group.
+      Without that, even an invisibly narrow (max-width:0) box still
+      contributes its own baseline to that shared calculation — and at
+      width 0 with normal text wrapping, every word lands on its own
+      line, making it very tall despite being invisible, which dragged
+      the shared baseline (and the title sitting on it) down. That's
+      what was actually causing "the text starts lower, then jumps up
+      on hover" and the resulting hover/collapse feedback loop.
+   2. `max-height: 0` at rest, clipped by `overflow:hidden`, removes
+      that phantom wrapped-line height outright rather than relying on
+      (1) alone — belt and suspenders, so the row itself doesn't sit
+      taller than it needs to before anything is ever revealed. */
+.service-row__reveal{
+  display: inline-block;
+  align-self: center;
+  max-width: 0;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  margin: 0;
+  transition: max-width .55s var(--ease-out), max-height .55s var(--ease-out), opacity .4s var(--ease-out);
+}
+.service-row__reveal span{
+  display: inline-block;
+  font-family: var(--f-mono);
+  font-size: var(--fs-small);
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+.service-row__title:hover ~ .service-row__reveal,
+.service-row__title:focus-visible ~ .service-row__reveal,
+.service-row.is-expanded .service-row__reveal{
+  max-width: 620px;
+  max-height: 200px;
+  opacity: 1;
+}
+
+@media (max-width: 640px){
+  .service-row{ grid-template-columns: 2.2rem 1fr; }
+  /* on touch, the row itself becomes the entry point into that service's
+     own page (see main.js) instead of a hover/tap reveal-toggle — the
+     reveal below still plays, but it's now driven by scroll position,
+     not by this tap */
+  .service-row{ cursor: pointer; }
+}
+
+/* ---------------------------------------------------------------
+   Studio
+   --------------------------------------------------------------- */
+.studio-copy p{
+  font-size: var(--fs-lead);
+  font-weight: 380;
+  color: var(--ink-soft);
+  max-width: 58ch;
+}
+.studio-copy p + p{ margin-top: 1.1em; }
+.studio-copy strong{ color: var(--ink); font-weight: 550; }
+.studio-principles{
+  margin-top: 2.2rem;
+  display: grid;
+  gap: .75rem;
+}
+.studio-principles li{
+  font-family: var(--f-mono);
+  font-size: var(--fs-small);
+  letter-spacing: .04em;
+  color: var(--ink);
+  display: flex; gap: .8em; align-items: baseline;
+}
+.studio-principles li::before{
+  content: "";
+  width: 4px; height: 4px;
+  background: var(--signal);
+  flex: none;
+  transform: translateY(-2px);
+}
+/* ---------------------------------------------------------------
+   Contact
+   --------------------------------------------------------------- */
+.contact{ overflow: hidden; }
+.contact-inner{ position: relative; z-index: 1; }
+.contact-head h2{
+  font-size: clamp(2.2rem, 6vw, 5rem);
+  font-weight: 320;
+  max-width: 18ch;
+  letter-spacing: -0.01em;
+}
+.contact-row{
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end;
+  gap: 2rem;
+  margin-top: clamp(2rem, 6vw, 4rem);
+  padding-top: 2rem;
+  border-top: 1px solid var(--line);
+}
+.contact-email{
+  font-family: var(--f-display);
+  font-weight: 420;
+  font-size: clamp(1.4rem, 4vw, 2.6rem);
+  letter-spacing: -0.01em;
+  display: inline-flex;
+  align-items: center;
+  gap: .5em;
+}
+.contact-email .status{
+  font-family: var(--f-mono);
+  font-size: var(--fs-micro);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--signal-text);
+  opacity: 0;
+  transition: opacity .3s;
+}
+.contact-email.is-copied .status{ opacity: 1; }
+.contact-meta{
+  font-family: var(--f-mono);
+  font-size: var(--fs-small);
+  color: var(--ink-soft);
+  text-align: right;
+}
+.site-footer{
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 1rem; flex-wrap: wrap;
+  padding-top: clamp(2rem, 5vw, 3.5rem);
+  margin-top: clamp(2rem, 5vw, 3.5rem);
+  border-top: 1px solid var(--line);
+  font-family: var(--f-mono);
+  font-size: var(--fs-micro);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* ---------------------------------------------------------------
+   Project preview overlay
+   --------------------------------------------------------------- */
+.project-modal{
+  position: fixed; inset: 0; z-index: 600;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px);
+  transition: opacity .5s var(--ease-out), transform .5s var(--ease-out), visibility 0s linear .5s;
+  background: var(--paper);
+  color: var(--ink);
+  will-change: clip-path;
+}
+.project-modal.is-open{
+  opacity: 1; visibility: visible; transform: none;
+  transition: opacity .5s var(--ease-out), transform .5s var(--ease-out);
+}
+
+/* full-bleed ASCII texture behind every project page — dense and faint,
+   a watermark the text sits on top of, never competing for attention */
+.project-modal__bg{
+  position: absolute; inset: 0; z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.project-modal__bg canvas{
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  opacity: .16;
+}
+
+.project-modal__bar{
+  position: relative; z-index: 1;
+  display: flex; justify-content: space-between; align-items: center;
+  /* same reasoning as .site-header above — this bar sits flush against
+     the real viewport top (the modal itself is position:fixed; inset:0),
+     so its own close/brand button needs the same safe-area clearance */
+  padding: calc(clamp(18px,3vw,32px) + env(safe-area-inset-top, 0px)) var(--gutter) clamp(18px,3vw,32px);
+  font-family: var(--f-mono);
+  font-size: var(--fs-micro);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+/* the wordmark itself is the close control now — no separate "back"
+   button/label — it simply grows on hover/focus to read as clickable */
+.project-modal__brand,
+.service-modal__brand{
+  font-family: var(--f-display);
+  font-weight: 600;
+  font-size: 1.1rem;
+  letter-spacing: -0.01em;
+  transform-origin: left center;
+  transition: transform .3s var(--ease-out);
+}
+.project-modal__brand:hover,
+.project-modal__brand:focus-visible,
+.service-modal__brand:hover,
+.service-modal__brand:focus-visible{
+  transform: scale(1.18);
+}
+.project-modal__body{
+  position: relative; z-index: 1;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding: clamp(1rem,4vw,3rem) var(--gutter) clamp(3rem,6vw,5rem);
+  max-width: var(--maxw);
+  margin-inline: auto;
+  width: 100%;
+}
+.project-modal__body > div{ max-width: 60ch; }
+.project-modal__eyebrow{ font-family: var(--f-mono); font-size: var(--fs-micro); letter-spacing: .14em; text-transform: uppercase; opacity: .7; margin-bottom: .8em; }
+.project-modal__title{ font-size: clamp(3rem, 9vw, 7rem); line-height: .9; margin-bottom: .3em; }
+.project-modal__tag{ font-size: clamp(1.1rem, 2vw, 1.5rem); opacity: .85; max-width: 22ch; margin-bottom: 1.1em; }
+.project-modal__desc{ font-size: 1.02rem; max-width: 52ch; opacity: .85; line-height: 1.65; }
+.project-modal__meta{
+  margin-top: 2rem; display: grid; gap: .5rem;
+  font-family: var(--f-mono); font-size: var(--fs-small); opacity: .75;
+}
+
+.project-modal__highlights{
+  position: relative; z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1.2rem, 3vw, 2rem);
+  max-width: var(--maxw);
+  margin-inline: auto;
+  width: 100%;
+  padding: clamp(1.5rem,4vw,2.5rem) var(--gutter) clamp(2rem,5vw,3rem);
+  border-top: 1px solid color-mix(in srgb, currentColor 15%, transparent);
+}
+.project-modal__highlights > div{ display: flex; flex-direction: column; gap: .7em; }
+.project-modal__highlight-num{
+  font-family: var(--f-mono); font-size: var(--fs-micro); letter-spacing: .1em; opacity: .5;
+}
+.project-modal__highlights p{ font-size: .95rem; line-height: 1.55; max-width: 30ch; opacity: .9; }
+
+.project-modal__cta-row{
+  position: relative; z-index: 1;
+  display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap;
+  max-width: var(--maxw); margin-inline: auto; width: 100%;
+  padding: 0 var(--gutter) clamp(3rem,6vw,4.5rem);
+}
+.project-modal__cta{
+  border: 1px solid currentColor;
+  padding: .85em 1.6em;
+  font-family: var(--f-mono); font-size: var(--fs-small); letter-spacing: .03em;
+  display: inline-flex; align-items: center; gap: .6em;
+  transition: background .25s, color .25s, border-color .25s;
+}
+.project-modal__cta-note{
+  font-family: var(--f-mono); font-size: var(--fs-micro); letter-spacing: .06em; text-transform: uppercase;
+  opacity: 0; transition: opacity .3s;
+}
+.project-modal__cta-note.is-visible{ opacity: .65; }
+
+/* right-middle link out to the project's real, eventual live site —
+   inert for now (no build to send it to), interactive feedback stands
+   in until there is one to link to */
+.project-modal__sitelink-wrap{
+  position: fixed; z-index: 40;
+  right: var(--gutter); top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column; align-items: flex-end; gap: .6em;
+}
+.project-modal__sitelink{
+  border: 1px solid currentColor;
+  padding: .7em 1.2em;
+  font-family: var(--f-mono); font-size: var(--fs-small); letter-spacing: .04em; text-transform: uppercase;
+  display: inline-flex; align-items: center; gap: .6em;
+  white-space: nowrap;
+  transition: background .25s, color .25s;
+}
+.project-modal__sitelink-note{
+  font-family: var(--f-mono); font-size: var(--fs-micro); letter-spacing: .06em; text-transform: uppercase;
+  opacity: 0; transition: opacity .3s;
+}
+.project-modal__sitelink-note.is-visible{ opacity: .65; }
+
+.project-modal--aurelia{ background: var(--aurelia-bg); color: var(--aurelia-ink); font-family: 'Fraunces', serif; }
+.project-modal--aurelia .project-modal__title{ font-style: italic; font-weight: 500; }
+.project-modal--aurelia .project-modal__desc{ font-family: 'Fraunces', serif; font-weight: 400; }
+.project-modal--aurelia .project-modal__cta{ border-color: var(--aurelia-accent); }
+.project-modal--aurelia .project-modal__cta:hover{ background: var(--aurelia-accent); color: var(--aurelia-bg); }
+.project-modal--aurelia .project-modal__sitelink{ border-color: var(--aurelia-accent); }
+.project-modal--aurelia .project-modal__sitelink:hover{ background: var(--aurelia-accent); color: var(--aurelia-bg); }
+
+.project-modal--pulse{ background: var(--pulse-bg); color: var(--pulse-ink); font-family: 'Archivo', sans-serif; }
+.project-modal--pulse .project-modal__title{ font-family: 'Bebas Neue', sans-serif; letter-spacing: .01em; text-transform: uppercase; }
+.project-modal--pulse .project-modal__desc{ font-weight: 500; }
+.project-modal--pulse .project-modal__cta{ border-color: var(--pulse-accent); }
+.project-modal--pulse .project-modal__cta:hover{ background: var(--pulse-accent); color: var(--pulse-bg); }
+.project-modal--pulse .project-modal__sitelink{ border-color: var(--pulse-accent); }
+.project-modal--pulse .project-modal__sitelink:hover{ background: var(--pulse-accent); color: var(--pulse-bg); }
+
+.project-modal--meridian{ background: var(--meridian-bg); color: var(--meridian-ink); font-family: 'IBM Plex Sans', sans-serif; }
+.project-modal--meridian .project-modal__title{ font-family: 'IBM Plex Mono', monospace; letter-spacing: -0.02em; }
+.project-modal--meridian .project-modal__eyebrow, .project-modal--meridian .project-modal__meta{ font-family: 'IBM Plex Mono', monospace; }
+.project-modal--meridian .project-modal__cta{ border-color: var(--meridian-accent); }
+.project-modal--meridian .project-modal__cta:hover{ background: var(--meridian-accent); color: var(--meridian-bg); }
+.project-modal--meridian .project-modal__sitelink{ border-color: var(--meridian-accent); }
+.project-modal--meridian .project-modal__sitelink:hover{ background: var(--meridian-accent); color: var(--meridian-bg); }
+
+/* Service pages (mobile-only entry point, see main.js) reuse the exact
+   same portal-modal chrome/mechanics as the project pages above, but
+   stay in NJORD's own neutral paper/ink palette rather than a client
+   color — these are the studio's own capabilities, not client work, so
+   no client accent and no ASCII watermark background. */
+.service-modal__eyebrow::before{
+  content: "";
+  display: inline-block;
+  width: 4px; height: 4px;
+  background: var(--signal);
+  margin-right: .6em;
+  transform: translateY(-2px);
+}
+.service-modal__desc{ font-size: 1.15rem; }
+
+@media (max-width: 860px){
+  .project-modal__highlights{ grid-template-columns: 1fr; }
+}
+@media (max-width: 720px){
+  .project-modal__sitelink-wrap{ display: none; }
+}
+
+body.modal-open{ overflow: hidden; }

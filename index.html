@@ -1,0 +1,256 @@
+<title>NJORD</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=JetBrains+Mono:wght@400;500;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,450&family=Bebas+Neue&family=Archivo:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+
+<a class="skip-link" href="#main" data-i18n="skip.link">Skip to content</a>
+
+<canvas id="ascii-organism" aria-hidden="true"></canvas>
+
+<div class="reg-marks" aria-hidden="true">
+  <span class="tl"></span><span class="tr"></span><span class="bl"></span><span class="br"></span>
+</div>
+
+<button id="sound-toggle" class="sound-toggle" type="button" aria-pressed="false" data-i18n-aria="sound.ariaLabel">
+  <span class="sound-toggle__dot" aria-hidden="true"></span>
+  <span class="sound-toggle__icon" aria-hidden="true">&#9834;</span>
+  <span class="sound-toggle__label" data-i18n="sound.off">Sound off</span>
+</button>
+
+<button id="lang-toggle" class="lang-toggle" type="button" aria-label="Toggle language / Ndrysho gjuhën">
+  <span class="lang-toggle__opt" data-lang="en">EN</span>
+  <span class="lang-toggle__sep" aria-hidden="true">/</span>
+  <span class="lang-toggle__opt" data-lang="sq">SHQP</span>
+</button>
+
+<header class="site-header">
+  <a href="#hero" class="logo-mark" data-i18n-aria="logo.ariaLabel">NJORD</a>
+  <button id="nav-toggle" class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-nav" data-i18n-aria="nav.toggleAria">
+    <span class="nav-toggle__bar"></span>
+    <span class="nav-toggle__bar"></span>
+    <span class="nav-toggle__bar"></span>
+  </button>
+  <nav id="main-nav" class="main-nav" aria-label="Primary">
+    <ul>
+      <li><a class="magnetic" href="#work"><span data-i18n="nav.work">Work</span><span class="fill"></span></a></li>
+      <li><a class="magnetic" href="#studio"><span data-i18n="nav.studio">Studio</span><span class="fill"></span></a></li>
+      <li><a class="magnetic" href="#services"><span data-i18n="nav.services">Services</span><span class="fill"></span></a></li>
+      <li><a class="magnetic" href="#contact"><span data-i18n="nav.contact">Contact</span><span class="fill"></span></a></li>
+    </ul>
+  </nav>
+  <div class="nav-scrim" aria-hidden="true"></div>
+</header>
+
+<main id="main">
+
+  <section id="hero" class="hero">
+    <div class="hero-inner">
+      <p class="hero-eyebrow" data-i18n="hero.eyebrow">Web & Branding Studio</p>
+      <h1 class="hero-word">NJORD</h1>
+    </div>
+    <div class="hero-foot">
+      <p class="hero-descriptor" data-i18n-html="hero.descriptor">We take <strong>primitive digital material</strong> — characters, grids, code — and engineer it into interfaces, identities, and experiences.</p>
+      <span class="scroll-cue"><span class="track" aria-hidden="true"></span><span data-i18n="hero.scroll">Scroll</span></span>
+    </div>
+  </section>
+
+  <section id="work" class="section work-index">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow" data-i18n="work.eyebrow">Selected Work — 03 Projects</p>
+          <h2 data-i18n="work.h2">Three worlds, three languages.</h2>
+        </div>
+        <p class="section-note" data-i18n="work.note">Each project below runs on its own visual system. NJORD is the index — not the identity — behind any of them.</p>
+      </div>
+
+      <div class="work-row" data-project="aurelia" data-index="01" tabindex="0" role="button" aria-haspopup="dialog" data-i18n-aria="work.aurelia.aria">
+        <div class="work-row__index" aria-hidden="true"><canvas></canvas><span class="work-row__index-num">01</span></div>
+        <div class="work-row__body">
+          <h3 class="work-row__title">Aurelia</h3>
+          <p class="work-row__desc" data-i18n="work.aurelia.desc">An editorial approach to jewelry retail: slow motion, warm materials, quiet confidence.</p>
+          <ul class="work-row__tags">
+            <li data-i18n="work.aurelia.tag1">Brand Identity</li><li data-i18n="work.aurelia.tag2">E-Commerce</li><li data-i18n="work.aurelia.tag3">Art Direction</li>
+          </ul>
+        </div>
+        <div class="work-row__meta">
+          <span>2025</span>
+          <span class="work-row__enter"><span data-i18n="work.enter">Enter</span> <span class="arrow">→</span></span>
+        </div>
+      </div>
+
+      <div class="work-row" data-project="pulse" data-index="02" tabindex="0" role="button" aria-haspopup="dialog" data-i18n-aria="work.pulse.aria">
+        <div class="work-row__index" aria-hidden="true"><canvas></canvas><span class="work-row__index-num">02</span></div>
+        <div class="work-row__body">
+          <h3 class="work-row__title">Pulse</h3>
+          <p class="work-row__desc" data-i18n="work.pulse.desc">A loud, kinetic identity for a music festival that never sits still.</p>
+          <ul class="work-row__tags">
+            <li data-i18n="work.pulse.tag1">Web Design</li><li data-i18n="work.pulse.tag2">Motion</li><li data-i18n="work.pulse.tag3">Brand System</li>
+          </ul>
+        </div>
+        <div class="work-row__meta">
+          <span>2024</span>
+          <span class="work-row__enter"><span data-i18n="work.enter">Enter</span> <span class="arrow">→</span></span>
+        </div>
+      </div>
+
+      <div class="work-row" data-project="meridian" data-index="03" tabindex="0" role="button" aria-haspopup="dialog" data-i18n-aria="work.meridian.aria">
+        <div class="work-row__index" aria-hidden="true"><canvas></canvas><span class="work-row__index-num">03</span></div>
+        <div class="work-row__body">
+          <h3 class="work-row__title">Meridian</h3>
+          <p class="work-row__desc" data-i18n="work.meridian.desc">Precision-first interface design for a financial platform built on trust and data.</p>
+          <ul class="work-row__tags">
+            <li data-i18n="work.meridian.tag1">Product Design</li><li data-i18n="work.meridian.tag2">UI System</li><li data-i18n="work.meridian.tag3">Data Viz</li>
+          </ul>
+        </div>
+        <div class="work-row__meta">
+          <span>2025</span>
+          <span class="work-row__enter"><span data-i18n="work.enter">Enter</span> <span class="arrow">→</span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="services" class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow" data-i18n="services.eyebrow">Capabilities</p>
+          <h2 data-i18n="services.h2">What we do.</h2>
+        </div>
+        <p class="section-note" data-i18n="services.note">Five disciplines, one process. We rarely deliver just one in isolation.</p>
+      </div>
+      <div class="services-list">
+        <div class="service-row" data-service="01">
+          <span class="service-row__num">01</span>
+          <div class="service-row__content">
+            <p class="service-row__title" tabindex="0" data-i18n="services.01.title">Web Design</p>
+            <p class="service-row__reveal"><span data-i18n="services.01.desc">Interfaces designed as systems, not templates.</span></p>
+          </div>
+        </div>
+        <div class="service-row" data-service="02">
+          <span class="service-row__num">02</span>
+          <div class="service-row__content">
+            <p class="service-row__title" tabindex="0" data-i18n="services.02.title">Web Development</p>
+            <p class="service-row__reveal"><span data-i18n="services.02.desc">Fast, resilient front ends built to hold complex motion.</span></p>
+          </div>
+        </div>
+        <div class="service-row" data-service="03">
+          <span class="service-row__num">03</span>
+          <div class="service-row__content">
+            <p class="service-row__title" tabindex="0" data-i18n="services.03.title">Web Hosting and Maintenance</p>
+            <p class="service-row__reveal"><span data-i18n="services.03.desc">Reliable infrastructure and ongoing care, so a shipped site keeps running the way it launched.</span></p>
+          </div>
+        </div>
+        <div class="service-row" data-service="04">
+          <span class="service-row__num">04</span>
+          <div class="service-row__content">
+            <p class="service-row__title" tabindex="0" data-i18n="services.04.title">Logo Designs</p>
+            <p class="service-row__reveal"><span data-i18n="services.04.desc">Marks built to hold up at any size, from a favicon to a storefront.</span></p>
+          </div>
+        </div>
+        <div class="service-row" data-service="05">
+          <span class="service-row__num">05</span>
+          <div class="service-row__content">
+            <p class="service-row__title" tabindex="0" data-i18n="services.05.title">Brand Guidelines</p>
+            <p class="service-row__reveal"><span data-i18n="services.05.desc">The rules that keep an identity consistent long after we hand it off.</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="studio" class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow" data-i18n="studio.eyebrow">Studio</p>
+          <h2 data-i18n="studio.h2">Websites and brands, built from scratch.</h2>
+        </div>
+      </div>
+      <div class="studio-copy">
+        <p data-i18n="studio.p1">NJORD is a web and branding studio. We design and develop websites, create visual identities, and build a digital presence that represents your business properly.</p>
+        <p data-i18n="studio.p2">We handle the entire process, from idea to launch — structure, design, development, animation and brand identity. Every project is built specifically for the business, with no templates and no off-the-shelf solutions.</p>
+        <p data-i18n="studio.p3">After launch, we host the website on servers in Kosovo and take care of the technical maintenance, so it stays fast, stable, and trouble-free.</p>
+        <ul class="studio-principles">
+          <li data-i18n="studio.li1">Web Design & Development</li>
+          <li data-i18n="studio.li2">Branding & Visual Identity</li>
+          <li data-i18n="studio.li3">Hosting in Kosovo</li>
+          <li data-i18n="studio.li4">Maintenance & Support</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="section contact">
+    <div class="wrap contact-inner">
+      <div class="contact-head">
+        <p class="eyebrow" data-i18n="contact.eyebrow">Get In Touch</p>
+        <h2 data-i18n="contact.h2">Let's build something that doesn't look like anything else.</h2>
+      </div>
+      <div class="contact-row">
+        <a id="contact-email" class="contact-email" href="mailto:studio@njord.design" data-address="studio@njord.design">
+          studio@njord.design
+          <span class="status" data-i18n="contact.copied">Copied</span>
+        </a>
+        <p class="contact-meta" data-i18n-html="contact.meta">Based remotely, worldwide.<br>Currently booking Q1 2026.</p>
+      </div>
+      <div class="site-footer">
+        <span>© 2026 NJORD Studio</span>
+        <span data-i18n="footer.tagline">Web & Branding Studio</span>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div id="project-modal" class="project-modal" role="dialog" aria-modal="true" data-i18n-aria="modal.ariaLabel" hidden>
+  <div class="project-modal__bg" aria-hidden="true">
+    <canvas id="aurelia-visual" data-panel="aurelia"></canvas>
+    <canvas id="pulse-visual" data-panel="pulse" hidden></canvas>
+    <canvas id="meridian-visual" data-panel="meridian" hidden></canvas>
+  </div>
+  <div class="project-modal__bar">
+    <button class="project-modal__brand" type="button" data-i18n-aria="modal.brandAria">NJORD</button>
+  </div>
+  <div class="project-modal__body">
+    <div>
+      <p class="project-modal__eyebrow"></p>
+      <h2 class="project-modal__title"></h2>
+      <p class="project-modal__tag"></p>
+      <p class="project-modal__desc"></p>
+      <dl class="project-modal__meta">
+        <div><dt style="display:inline" data-i18n="modal.discipline">Discipline — </dt><dd style="display:inline" data-meta="discipline"></dd></div>
+        <div><dt style="display:inline" data-i18n="modal.year">Year — </dt><dd style="display:inline" data-meta="year"></dd></div>
+        <div><dt style="display:inline" data-i18n="modal.deliverables">Deliverables — </dt><dd style="display:inline" data-meta="deliverables"></dd></div>
+      </dl>
+    </div>
+  </div>
+  <div class="project-modal__highlights">
+    <div><span class="project-modal__highlight-num">01</span><p data-highlight="0"></p></div>
+    <div><span class="project-modal__highlight-num">02</span><p data-highlight="1"></p></div>
+    <div><span class="project-modal__highlight-num">03</span><p data-highlight="2"></p></div>
+  </div>
+  <div class="project-modal__cta-row">
+    <button class="project-modal__cta magnetic" type="button"><span data-i18n="modal.cta">View full case study</span> <span aria-hidden="true">→</span></button>
+    <span class="project-modal__cta-note" aria-live="polite"></span>
+  </div>
+  <div class="project-modal__sitelink-wrap">
+    <a class="project-modal__sitelink magnetic" href="#"><span data-i18n="modal.sitelink">Visit live site</span> <span aria-hidden="true">↗</span></a>
+    <span class="project-modal__sitelink-note" aria-live="polite"></span>
+  </div>
+</div>
+
+<div id="service-modal" class="project-modal service-modal" role="dialog" aria-modal="true" data-i18n-aria="modal.ariaLabel" hidden>
+  <div class="project-modal__bar">
+    <button class="service-modal__brand" type="button" data-i18n-aria="modal.brandAria">NJORD</button>
+  </div>
+  <div class="project-modal__body">
+    <div>
+      <p class="project-modal__eyebrow service-modal__eyebrow"></p>
+      <h2 class="project-modal__title service-modal__title"></h2>
+      <p class="project-modal__desc service-modal__desc"></p>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="main.js"></script>
