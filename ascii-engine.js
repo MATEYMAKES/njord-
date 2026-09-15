@@ -789,13 +789,17 @@ export class AsciiOrganism{
         // barely any flicker left — even the toned-down first pass still
         // read as thin/airy; a genuinely solid form needs to hold steady
         const flicker = 0.94 + 0.06 * Math.sin(t * 1.8 + this.jitterSeed[i] * 3.0);
+        // each node's real DOM text sits exactly on this same point (see
+        // main.js) — the path used to BOOST density right there, which
+        // put the thickest cluster of characters directly under the
+        // text it was fighting for legibility. Inverted: this now
+        // DAMPENS density in a radius around each node instead, so the
+        // route stays visible right up to the text without rendering
+        // heavily underneath it.
         const nearestNodeFrac = Math.round(u * (this.roadmapNodeCount - 1)) / (this.roadmapNodeCount - 1);
-        const nodeCloseness = Math.max(0, 1 - Math.abs(u - nearestNodeFrac) * 14);
-        // pushed further still — floor raised again, and a <1 power curve
-        // pulls the whole mid-range up toward the dense end of the
-        // character set (' .:-=+*#%@') rather than sitting mid-scale
+        const textClearance = Math.max(0, 1 - Math.abs(u - nearestNodeFrac) * 9);
         const baseIntensity = (0.58 + density * 0.35) * flicker;
-        const intensity = Math.pow(Math.min(1, Math.max(baseIntensity, nodeCloseness * 0.95)), 0.65);
+        const intensity = Math.pow(Math.min(1, baseIntensity), 0.65) * lerp(1, 0.15, textClearance);
         // after the route is fully traversed and we're actually leaving
         // the section (seg.a is roadmap, seg.b is the NEXT formation),
         // scatter and fade the path — "loses structure and disperses"
