@@ -724,6 +724,14 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
   opacity: 0;
   transition: opacity .3s var(--ease-out);
   pointer-events: none;
+  /* the path deliberately passes right through each node — without this,
+     the densest cluster of ASCII characters sits directly behind the
+     text and fights it for legibility. A near-solid paper backdrop puts
+     the text on its own readable plate instead of trying to steer the
+     canvas around a dynamically-sized, per-language text box every
+     frame (fragile, and expensive to measure that often). */
+  background: color-mix(in srgb, var(--paper) 94%, transparent);
+  padding: .9em 1.15em;
 }
 .roadmap-node.is-visible{ opacity: 1; }
 .roadmap-node__num{
