@@ -528,13 +528,18 @@ export class AsciiOrganism{
       // stretches dense, some sparse) instead of perfectly uniform
       const warp = 0.15 * Math.sin(raw * Math.PI * 3.1);
       this.roadmapU[i] = Math.max(0, Math.min(1, raw + warp));
-      this.roadmapDensity[i] = 0.4 + Math.random() * 0.6;
+      // +40% over the first pass — "thicker" means more/denser ASCII
+      // characters packed into a smaller span, not a wider band (see
+      // roadmapOffset below, which went the opposite direction)
+      this.roadmapDensity[i] = (0.4 + Math.random() * 0.6) * 1.4;
       // averaging two random values (a triangular, not uniform,
       // distribution) concentrates particles near the centerline and
       // tapers off toward the edges — reads as a solid, filled stroke
-      // rather than an evenly-scattered cloud of points. Widened again —
-      // still felt thin/airy at the previous, tighter band.
-      this.roadmapOffset[i] = (Math.random() + Math.random() - 1) * 0.075;
+      // rather than an evenly-scattered cloud of points. Narrower than
+      // either prior pass (0.045, then a wrong-direction 0.075) — the
+      // same particle count packed into a tighter span is what actually
+      // reads as "thicker," not spreading them wider.
+      this.roadmapOffset[i] = (Math.random() + Math.random() - 1) * 0.0315;
     }
   }
 
