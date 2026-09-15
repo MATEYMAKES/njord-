@@ -376,6 +376,8 @@ export class AsciiOrganism{
     for(let i = 0; i < n; i++){ this.jitterSeed[i] = rnd() * Math.PI * 2; }
     for(let i = 0; i < n; i++){ this.x[i] = 0.5 + (rnd() - 0.5) * 0.2; this.y[i] = 0.5 + (rnd() - 0.5) * 0.2; }
 
+    this._generateRoadmapLayout();
+
     this.zones = [];
     this.getWaveform = null; // set via setWaveformSource() once audio exists
     this.seg = null; // last resolved timeline segment — read by the audio engine
@@ -446,6 +448,79 @@ export class AsciiOrganism{
     }
   }
   stop(){ if(!this.reduced) ticker.remove(this._frame); }
+
+  /* ----------------------------------------------------------------
+     ROADMAP (Services section) — node x-positions and the path
+     between them are randomized ONCE per page load (Math.random(), not
+     mulberry32 — deliberately NOT seeded, so every refresh produces a
+     different composition; every other formation in this file IS
+     seeded for stability, this is the one intentional exception).
+     Node y is fixed/evenly-spaced (order must always read top-to-
+     bottom); only x varies. Stored as normalized 0-1 fractions so a
+     resize reflows proportionally instead of re-rolling — this is what
+     "fixed during the session" means once devicePixelRatio/viewport
+     changes happen (including iOS's own toolbar-driven resize).
+     ---------------------------------------------------------------- */
+  _generateRoadmapLayout(){
+    const NODE_COUNT = 5;
+    this.roadmapNodeCount = NODE_COUNT;
+    const xBand = this.isMobile ? [0.38, 0.62] : [0.18, 0.82];
+    const minSep = this.isMobile ? 0.08 : 0.14;
+    const nodes = [];
+    for(let k = 0; k < NODE_COUNT; k++){
+      let x = xBand[0] + Math.random() * (xBand[1] - xBand[0]);
+      let attempts = 0;
+      while(k > 0 && Math.abs(x - nodes[k - 1].x) < minSep && attempts < 12){
+        x = xBand[0] + Math.random() * (xBand[1] - xBand[0]);
+        attempts++;
+      }
+      nodes.push({ x, y: (k + 0.5) / NODE_COUNT });
+    }
+    this.roadmapNodes = nodes;
+
+    // path: each node plus 3 jittered intermediate seeds per segment, so
+    // the route bends rather than running straight between nodes
+    const seeds = [];
+    const SEEDS_PER_SEGMENT = 3;
+    for(let k = 0; k < NODE_COUNT - 1; k++){
+      const A = nodes[k], B = nodes[k + 1];
+      seeds.push({ x: A.x, y: A.y, node: k });
+      const dx = B.x - A.x, dy = B.y - A.y;
+      const len = Math.hypot(dx, dy) || 1;
+      const nx = -dy / len, ny = dx / len;
+      for(let s = 1; s <= SEEDS_PER_SEGMENT; s++){
+        const u = s / (SEEDS_PER_SEGMENT + 1);
+        const jitter = (Math.random() - 0.5) * 0.09;
+        seeds.push({ x: A.x + dx * u + nx * jitter, y: A.y + dy * u + ny * jitter, node: -1 });
+      }
+    }
+    seeds.push({ x: nodes[NODE_COUNT - 1].x, y: nodes[NODE_COUNT - 1].y, node: NODE_COUNT - 1 });
+    this.roadmapSeeds = seeds;
+
+    // per-particle identity along the path — computed once, like every
+    // other formation's identity fields above
+    const n = this.count;
+    this.roadmapU = new Float32Array(n);
+    this.roadmapDensity = new Float32Array(n);
+    for(let i = 0; i < n; i++){
+      const raw = Math.random();
+      // low-frequency warp so density varies along the path (some
+      // stretches dense, some sparse) instead of perfectly uniform
+      const warp = 0.15 * Math.sin(raw * Math.PI * 3.1);
+      this.roadmapU[i] = Math.max(0, Math.min(1, raw + warp));
+      this.roadmapDensity[i] = 0.4 + Math.random() * 0.6;
+    }
+  }
+
+  _roadmapPointAt(u){
+    const seeds = this.roadmapSeeds;
+    const segCount = seeds.length - 1;
+    const pos = Math.max(0, Math.min(1, u)) * segCount;
+    const idx = Math.min(segCount - 1, Math.floor(pos));
+    const frac = pos - idx;
+    const A = seeds[idx], B = seeds[idx + 1];
+    return { x: A.x + (B.x - A.x) * frac, y: A.y + (B.y - A.y) * frac };
+  }
 
   /* One continuous timeline instead of competing zones. The zones are
      registered in scroll order (globe, diamond, wave, network, constellation, globe);
