@@ -90,10 +90,10 @@ const translations = {
     en: 'The build underneath — functionality, motion, everything that has to work.',
     sq: 'Ndërtimi nën sipërfaqe — funksionaliteti, lëvizja, gjithçka që duhet të funksionojë.',
   },
-  'services.04.title': { en: 'Hosting & Maintenance', sq: 'Hosting & Mirëmbajtje' },
+  'services.04.title': { en: 'Local Hosting', sq: 'Hosting Lokal' },
   'services.04.desc': {
-    en: 'Hosted on servers in Kosovo, kept fast and stable after launch.',
-    sq: 'E hostuar në serverë në Kosovë, e mbajtur e shpejtë dhe stabile pas lansimit.',
+    en: "Every website we build is hosted on local servers, ensuring near-instant loading times and supporting Kosovo's growing digital market.",
+    sq: 'Çdo webfaqe që ndërtojmë hostohet në serverë lokalë, duke siguruar kohë ngarkimi pothuajse të menjëhershme dhe duke përkrahur tregun dixhital në rritje të Kosovës.',
   },
   'services.05.title': { en: 'SEO & Ongoing Support', sq: 'SEO & Përkrahje e Vazhdueshme' },
   'services.05.desc': {
