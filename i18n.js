@@ -77,8 +77,8 @@ const translations = {
   },
   'services.01.title': { en: 'Branding & Identity', sq: 'Brending & Identitet' },
   'services.01.desc': {
-    en: 'A visual identity built to carry a business, not just decorate it.',
-    sq: 'Një identitet vizual i ndërtuar për ta mbajtur biznesin, jo vetëm për ta zbukuruar.',
+    en: 'A visual identity built to propel a business forward. In a market full of noise, consistency is what makes a brand instantly recognizable and easy to trust — across every screen, platform and touchpoint, not just the ones people remember.',
+    sq: "Një identitet vizual i ndërtuar për ta shtyrë biznesin përpara. Në një treg plot zhurmë, qëndrueshmëria është ajo që e bën një brend menjëherë të njohshëm dhe të lehtë për t'u besuar — në çdo ekran, platformë dhe pikë kontakti, jo vetëm në ato që njerëzit i mbajnë mend.",
   },
   'services.02.title': { en: 'Website Design & UI/UX', sq: 'Dizajn Webfaqeje & UI/UX' },
   'services.02.desc': {
