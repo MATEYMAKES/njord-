@@ -97,8 +97,8 @@ const translations = {
   },
   'services.05.title': { en: 'SEO & Ongoing Support', sq: 'SEO & Përkrahje e Vazhdueshme' },
   'services.05.desc': {
-    en: "We don't call it a day when the site goes live. We make sure everything keeps running smoothly throughout the website's lifetime.",
-    sq: 'Nuk e mbyllim punën kur faqja bëhet live. Sigurohemi që gjithçka të vazhdojë të funksionojë pa probleme gjatë gjithë jetëgjatësisë së saj.',
+    en: "We don't call it a day when the site goes live. We make sure everything keeps running smoothly throughout the website's lifetime, with on-call support ready to resolve any issues rapidly.",
+    sq: 'Nuk e mbyllim punën kur faqja bëhet live. Sigurohemi që gjithçka të vazhdojë të funksionojë pa probleme gjatë gjithë jetëgjatësisë së saj, me përkrahje gjithmonë gati për të zgjidhur shpejt çdo problem.',
   },
 
   'studio.eyebrow': { en: 'Studio', sq: 'Studio' },
