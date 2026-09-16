@@ -490,11 +490,10 @@ export class AsciiOrganism{
     }
     this.roadmapNodes = nodes;
 
-    // path: each node plus 5 jittered intermediate seeds per segment —
-    // more seed points and a wider jitter than the first pass, since
-    // _roadmapPointAt below now runs a Catmull-Rom spline through them
-    // (genuine curvature) rather than straight lerps between them, and
-    // a sparser/smaller-jitter seed set was reading as too straight
+    // path: each node plus 5 jittered intermediate seeds per segment.
+    // _roadmapPointAt below runs a Catmull-Rom spline through these
+    // points for genuine curvature (not straight lerps); jitter is kept
+    // modest so the spline bends smoothly rather than zigzagging.
     const seeds = [];
     const SEEDS_PER_SEGMENT = 5;
     for(let k = 0; k < NODE_COUNT - 1; k++){
@@ -505,9 +504,6 @@ export class AsciiOrganism{
       const nx = -dy / len, ny = dx / len;
       for(let s = 1; s <= SEEDS_PER_SEGMENT; s++){
         const u = s / (SEEDS_PER_SEGMENT + 1);
-        // halved again — the wider jitter, combined with the spline
-        // running through every jittered point, was producing a wavy
-        // zigzag rather than one smooth bend per segment
         const jitter = (Math.random() - 0.5) * 0.1;
         seeds.push({ x: A.x + dx * u + nx * jitter, y: A.y + dy * u + ny * jitter, node: -1 });
       }
@@ -529,26 +525,26 @@ export class AsciiOrganism{
       const raw = Math.random();
       // low-frequency warp so density varies along the path (some
       // stretches dense, some sparse) instead of perfectly uniform.
-      // Real bug found: at the original 0.15 amplitude, this mapping's
-      // derivative (1 + amplitude*frequency*cos(...)) goes negative
-      // across roughly a quarter of the raw domain — meaning a WIDE
-      // range of particles' raw values all folded onto overlapping,
-      // compressed output u values instead of spreading smoothly, piling
-      // up into a hard density spike (landing right around node 2) rather
-      // than gentle texture. 0.08 keeps amplitude*frequency just under 1,
-      // which keeps the mapping monotonic (no folding) for any raw.
+      // Amplitude must stay low: this mapping's derivative is
+      // (1 + amplitude*frequency*cos(...)) — once amplitude*frequency
+      // exceeds 1, the derivative goes negative across part of the raw
+      // domain, meaning a whole range of particles fold onto overlapping
+      // output u values instead of spreading smoothly, producing a hard
+      // density spike rather than gentle texture (this is what caused a
+      // visible clump right around node 2 at a first-pass 0.15 amplitude
+      // — 0.08 keeps amplitude*frequency safely under 1). If this
+      // amplitude or the *3.1 frequency below is ever retuned, keep
+      // their product under 1.
       const warp = 0.08 * Math.sin(raw * Math.PI * 3.1);
       this.roadmapU[i] = Math.max(0, Math.min(1, raw + warp));
-      // pushed further still — "thicker" means more/denser ASCII
-      // characters packed into a smaller span, not a wider band (see
-      // roadmapOffset below, which keeps going the opposite direction)
+      // "thicker" means more/denser ASCII characters packed into a
+      // smaller span, not a wider band — see roadmapOffset below, which
+      // stays narrow for the same reason.
       this.roadmapDensity[i] = (0.4 + Math.random() * 0.6) * 1.8;
       // averaging two random values (a triangular, not uniform,
       // distribution) concentrates particles near the centerline and
       // tapers off toward the edges — reads as a solid, filled stroke
-      // rather than an evenly-scattered cloud of points. Narrower again
-      // (0.045 → 0.075 → 0.0315 → this) — the same particle count packed
-      // into an ever-tighter span is what reads as "thicker," not width.
+      // rather than an evenly-scattered cloud of points.
       this.roadmapOffset[i] = (Math.random() + Math.random() - 1) * 0.019;
     }
   }
@@ -794,16 +790,14 @@ export class AsciiOrganism{
           return { x: fx, y: fy, i: 0.05, c: 0.5 };
         }
         const density = this.roadmapDensity[i];
-        // barely any flicker left — even the toned-down first pass still
-        // read as thin/airy; a genuinely solid form needs to hold steady
+        // barely any flicker — a solid, filled form needs to hold steady
+        // rather than shimmer
         const flicker = 0.94 + 0.06 * Math.sin(t * 1.8 + this.jitterSeed[i] * 3.0);
         // each node's real DOM text sits exactly on this same point (see
-        // main.js) — the path used to BOOST density right there, which
-        // put the thickest cluster of characters directly under the
-        // text it was fighting for legibility. Inverted: this now
-        // DAMPENS density in a radius around each node instead, so the
-        // route stays visible right up to the text without rendering
-        // heavily underneath it.
+        // main.js), so density is DAMPENED in a radius around each node
+        // rather than boosted — the route stays visible right up to the
+        // text without a dense cluster of characters rendering underneath
+        // it and fighting it for legibility.
         const nearestNodeFrac = Math.round(u * (this.roadmapNodeCount - 1)) / (this.roadmapNodeCount - 1);
         const textClearance = Math.max(0, 1 - Math.abs(u - nearestNodeFrac) * 9);
         const baseIntensity = (0.58 + density * 0.35) * flicker;
