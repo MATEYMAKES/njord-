@@ -700,7 +700,7 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
      "2025") and Meridian's own border-bottom line — this is the one
      that was actually being tuned; a separate mobile experiment on the
      section's own trailing padding (after that line) has been reverted */
-  .work-row:last-child{ padding-bottom: 102px; }
+  .work-row:last-child{ padding-bottom: 116px; }
 }
 
 /* ---------------------------------------------------------------
