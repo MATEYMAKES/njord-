@@ -85,10 +85,10 @@ const translations = {
     en: 'Interfaces designed around what people need and how people think. More than just a pretty front — we build what your business actually needs.',
     sq: 'Ndërfaqe të dizajnuara sipas asaj që njerëzit kanë nevojë dhe si mendojnë. Më shumë se një pamje e bukur — ne ndërtojmë atë që i nevojitet vërtet biznesit tuaj.',
   },
-  'services.03.title': { en: 'Development & Interaction', sq: 'Zhvillim & Ndërveprim' },
+  'services.03.title': { en: 'Back-End Development', sq: 'Zhvillim Back-End' },
   'services.03.desc': {
-    en: 'The build underneath — functionality, motion, everything that has to work.',
-    sq: 'Ndërtimi nën sipërfaqe — funksionaliteti, lëvizja, gjithçka që duhet të funksionojë.',
+    en: 'Custom back-end functionality for whatever your business needs — sales pages, reservation and appointment systems, and everything in between. From A to Z, we build the logic that makes it work.',
+    sq: 'Funksionalitet back-end i personalizuar për çdo gjë që i nevojitet biznesit tuaj — faqe shitjesh, sisteme rezervimesh dhe takimesh, dhe gjithçka në mes. Nga A deri në ZH, ne ndërtojmë logjikën që e bën të funksionojë.',
   },
   'services.04.title': { en: 'Local Hosting', sq: 'Hosting Lokal' },
   'services.04.desc': {
