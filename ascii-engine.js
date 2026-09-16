@@ -611,6 +611,19 @@ export class AsciiOrganism{
         // many viewport-heights and the usual compact anchor+offset
         // math every other formation uses can't represent that spread
         this._roadmapRect = { top: r.top, left: r.left, width: r.width, height: r.height };
+        // each node's CURRENT on-screen position (changes every frame as
+        // the section scrolls) — computed once per frame here, not once
+        // per particle, since _formationTarget uses it to repel nearby
+        // particles away from the text the same way the cursor already
+        // repels particles elsewhere in this file (see _frame's
+        // desiredOffX/Y) rather than just dimming them.
+        if(this.roadmapNodes){
+          const vw = this.w || 1, vhPx = this.h || vh;
+          this._roadmapNodeScreen = this.roadmapNodes.map((node) => ({
+            x: (r.left + node.x * r.width) / vw,
+            y: (r.top + node.y * r.height) / vhPx,
+          }));
+        }
       } else {
         points.push({ name: z.name, docY: scrollY + r.top + r.height / 2, anchorX, anchorY });
       }
@@ -772,8 +785,34 @@ export class AsciiOrganism{
         let fx, fy;
         const rect = this._roadmapRect;
         if(rect && seg && this.w && this.h){
-          const absX = (rect.left + samplePt.x * rect.width) / this.w;
-          const absY = (rect.top + samplePt.y * rect.height) / this.h;
+          let absX = (rect.left + samplePt.x * rect.width) / this.w;
+          let absY = (rect.top + samplePt.y * rect.height) / this.h;
+          // repel away from whichever node's text is nearest, the same
+          // way particles already repel away from the cursor elsewhere
+          // in this file (_frame's desiredOffX/Y): a radius, a falloff
+          // that's strongest at zero distance and fades to nothing at
+          // the radius's edge, pushing radially outward from the point
+          // being avoided. This is real displacement, not just a dimmer
+          // render — the route visibly steps around the text instead of
+          // rendering underneath it.
+          const nodesScreen = this._roadmapNodeScreen;
+          if(nodesScreen){
+            let nearestDist = Infinity, nearestDx = 0, nearestDy = 0;
+            for(let k = 0; k < nodesScreen.length; k++){
+              const nd = nodesScreen[k];
+              const ddx = absX - nd.x, ddy = absY - nd.y;
+              const d = Math.hypot(ddx, ddy);
+              if(d < nearestDist){ nearestDist = d; nearestDx = ddx; nearestDy = ddy; }
+            }
+            const REPEL_RADIUS = 0.1;
+            if(nearestDist < REPEL_RADIUS){
+              const dist = nearestDist || 0.0001;
+              const falloff = 1 - dist / REPEL_RADIUS;
+              const push = falloff * falloff * 0.11;
+              absX += (nearestDx / dist) * push;
+              absY += (nearestDy / dist) * push;
+            }
+          }
           const minDim = Math.min(this.w, this.h) || 1;
           const sx = (minDim / this.w) * 0.5 || 0.5;
           const sy = (minDim / this.h) * 0.5 || 0.5;
