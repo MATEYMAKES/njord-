@@ -97,8 +97,8 @@ const translations = {
   },
   'services.05.title': { en: 'SEO & Ongoing Support', sq: 'SEO & Përkrahje e Vazhdueshme' },
   'services.05.desc': {
-    en: 'Optimized to be found, supported long after the handoff.',
-    sq: 'E optimizuar për t\'u gjetur, e përkrahur gjatë kohës pas dorëzimit.',
+    en: "We don't call it a day when the site goes live. We make sure everything keeps running smoothly throughout the website's lifetime.",
+    sq: 'Nuk e mbyllim punën kur faqja bëhet live. Sigurohemi që gjithçka të vazhdojë të funksionojë pa probleme gjatë gjithë jetëgjatësisë së saj.',
   },
 
   'studio.eyebrow': { en: 'Studio', sq: 'Studio' },
