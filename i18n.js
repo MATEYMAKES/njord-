@@ -82,8 +82,8 @@ const translations = {
   },
   'services.02.title': { en: 'Website Design & UI/UX', sq: 'Dizajn Webfaqeje & UI/UX' },
   'services.02.desc': {
-    en: 'Interfaces designed around how people actually use them.',
-    sq: 'Ndërfaqe të dizajnuara sipas mënyrës si njerëzit vërtet i përdorin.',
+    en: 'Interfaces designed around what people need and how people think. More than just a pretty front — we build what your business actually needs.',
+    sq: 'Ndërfaqe të dizajnuara sipas asaj që njerëzit kanë nevojë dhe si mendojnë. Më shumë se një pamje e bukur — ne ndërtojmë atë që biznesi juaj ka vërtet nevojë.',
   },
   'services.03.title': { en: 'Development & Interaction', sq: 'Zhvillim & Ndërveprim' },
   'services.03.desc': {
