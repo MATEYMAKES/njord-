@@ -127,6 +127,25 @@ const translations = {
     en: 'Based remotely, worldwide.<br>Currently booking Q1 2026.',
     sq: 'Me bazë në distancë, kudo në botë.<br>Aktualisht duke rezervuar T1 2026.',
   },
+  'contact.form.intro': {
+    en: 'Prefer to write it out? Send a message directly.',
+    sq: 'Preferoni ta shkruani? Dërgoni një mesazh direkt.',
+  },
+  'contact.form.name': { en: 'Name', sq: 'Emri' },
+  'contact.form.email': { en: 'Email', sq: 'Email' },
+  'contact.form.message': { en: 'Message', sq: 'Mesazhi' },
+  'contact.form.submit': { en: 'Send message', sq: 'Dërgo mesazhin' },
+  'contact.form.sending': { en: 'Sending…', sq: 'Duke dërguar…' },
+  'contact.form.success': {
+    en: "Message sent — we'll get back to you soon.",
+    sq: "Mesazhi u dërgua — do t'ju përgjigjemi së shpejti.",
+  },
+  'contact.form.error': {
+    en: 'Something went wrong — try again, or email us directly.',
+    sq: 'Diçka shkoi keq — provoni përsëri, ose na shkruani direkt me email.',
+  },
+  'contact.form.errorRequired': { en: 'Please fill in all fields.', sq: 'Ju lutem plotësoni të gjitha fushat.' },
+
   'footer.tagline': { en: 'Web & Branding Studio', sq: 'Studio Web & Brendi' },
 
   'modal.ariaLabel': { en: 'Project preview', sq: 'Pamje projekti' },

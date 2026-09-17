@@ -621,3 +621,53 @@ if(emailEl){
     setTimeout(() => emailEl.classList.remove('is-copied'), 1800);
   });
 }
+
+/* ---------------------------------------------------------------
+   Contact form — submits via Web3Forms since the site has no
+   backend of its own (a claude.ai Artifact). The access key below
+   only routes submissions to the studio's inbox; it isn't a secret
+   the way an API key normally is, so it's fine embedded client-side.
+   --------------------------------------------------------------- */
+const WEB3FORMS_ACCESS_KEY = 'a7d50666-5e41-4bdf-8051-3bd0a93010c1';
+const contactForm = document.getElementById('contact-form');
+if(contactForm){
+  const note = contactForm.querySelector('.contact-form__note');
+  const submitBtn = contactForm.querySelector('.contact-form__submit');
+  contactForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if(contactForm.botcheck.value) return; // honeypot tripped — drop silently, no error shown
+    const name = contactForm.name.value.trim();
+    const email = contactForm.email.value.trim();
+    const message = contactForm.message.value.trim();
+    if(!name || !email || !message){
+      note.textContent = t('contact.form.errorRequired');
+      note.classList.add('is-visible', 'is-error');
+      return;
+    }
+    submitBtn.disabled = true;
+    note.classList.remove('is-error');
+    note.textContent = t('contact.form.sending');
+    note.classList.add('is-visible');
+    try{
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_ACCESS_KEY,
+          subject: 'New message from the NJORD site',
+          from_name: 'NJORD website',
+          name, email, message,
+        }),
+      });
+      const data = await res.json();
+      if(!data.success) throw new Error(data.message || 'submit failed');
+      contactForm.reset();
+      note.textContent = t('contact.form.success');
+    }catch(err){
+      note.textContent = t('contact.form.error');
+      note.classList.add('is-error');
+    }finally{
+      submitBtn.disabled = false;
+    }
+  });
+}

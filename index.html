@@ -194,6 +194,32 @@
         </a>
         <p class="contact-meta" data-i18n-html="contact.meta">Based remotely, worldwide.<br>Currently booking Q1 2026.</p>
       </div>
+
+      <form id="contact-form" class="contact-form" novalidate>
+        <p class="contact-form__intro" data-i18n="contact.form.intro">Prefer to write it out? Send a message directly.</p>
+        <div class="contact-form__row">
+          <label class="contact-form__field">
+            <span data-i18n="contact.form.name">Name</span>
+            <input type="text" name="name" autocomplete="name" required>
+          </label>
+          <label class="contact-form__field">
+            <span data-i18n="contact.form.email">Email</span>
+            <input type="email" name="email" autocomplete="email" required>
+          </label>
+        </div>
+        <label class="contact-form__field">
+          <span data-i18n="contact.form.message">Message</span>
+          <textarea name="message" rows="4" required></textarea>
+        </label>
+        <input type="text" name="botcheck" class="contact-form__honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <div class="contact-form__foot">
+          <button type="submit" class="contact-form__submit magnetic">
+            <span data-i18n="contact.form.submit">Send message</span> <span aria-hidden="true">→</span>
+          </button>
+          <span class="contact-form__note" aria-live="polite"></span>
+        </div>
+      </form>
+
       <div class="site-footer">
         <span>© 2026 NJORD Studio</span>
         <span data-i18n="footer.tagline">Web & Branding Studio</span>
