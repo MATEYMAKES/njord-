@@ -1,8 +1,18 @@
 # NJORD Contact-Section Mascot — Appearance, Formation & Personality
 
-Status: approved for implementation (2026-09-17). Appearance/formation/
-personality/interaction-shell only — the actual helper/contact assistant
-experience behind the click is explicitly **out of scope** for this spec.
+Status: approved for implementation, revised 2026-09-17 after design
+review. Appearance/formation/personality/interaction-shell only — the
+actual helper/contact assistant experience behind the click is
+explicitly **out of scope** for this spec.
+
+**Guiding principle (governs every section below):** do not make him
+look or behave like a robot, chatbot, button, or polished mascot. He is
+a tiny, imperfect person who happens to be made out of the website's
+own ASCII material. The signal-green point is a NJORD artifact that
+happens to be lodged in him, not a glowing robot eye or status light.
+His personality comes entirely from tiny physical reactions — looking,
+shifting weight, watching a nearby particle, noticing the cursor — never
+from UI effects like glowing, highlighting, or brightening.
 
 ## Why
 
@@ -27,13 +37,16 @@ NOT being built yet.
   site's existing "nothing is one-shot, everything reverses with scroll"
   rule used by every other formation.
 - Once formed: idle personality (look around occasionally, weight shift,
-  inspect nearby stray characters) that is mostly calm, not constantly
-  animating. Continuous (never thresholded) reaction to cursor proximity;
-  subtle head/face tracking of the cursor as it nears.
-- Click triggers a **placeholder** reaction only (confirmed with the user):
-  a brief startled-jitter of his own particles, plus a tiny fading ASCII
-  text fragment near his head (e.g. "...", "?"). No button chrome, no chat
-  bubble, no floating widget, no real contact/helper logic.
+  inspect/interact with nearby stray characters) that is mostly calm, not
+  constantly animating. Continuous (never thresholded) reaction to cursor
+  proximity, expressed only through subtle head movement — never through
+  brightness, glow, or highlighting.
+- Click triggers a **placeholder** reaction only, revised after review: he
+  looks directly at the cursor and straightens up — no text fragment, no
+  button chrome, no chat bubble, no floating widget, no real contact/
+  helper logic. This is deliberately the seed of a future transition
+  (idle → clicked → notices you → helper conversation begins), not a
+  disposable animation.
 - Preserve the current contact section, typography, spacing, colors,
   existing ASCII artwork (GLOBE reformation + ambient field) and overall
   creative direction untouched. This is an addition, not a redesign.
@@ -46,8 +59,8 @@ NOT being built yet.
 sibling to the existing `FormationPortrait`/`StaticGlyphField` classes —
 same file, same rendering conventions (char ramp, font, color handling,
 shared `ticker`, `mulberry32`, `lerp`, `smoothstep` helpers), but its own
-canvas and its own small (~40-particle) pool, entirely independent of
-`AsciiOrganism`.
+canvas and its own small (~47-particle: 22 body + 25 stray) pool,
+entirely independent of `AsciiOrganism`.
 
 Rejected alternative: adding `mascot` as a new formation case inside
 `AsciiOrganism`'s shared particle pool/zone system. Every existing
@@ -67,22 +80,39 @@ All positions are in the mascot's own local unit space (roughly a
 `[-1, 1]` box, rendered via `cx + x*scale, cy + y*scale`, matching
 `FormationPortrait`'s existing coordinate convention).
 
-**Body points (fixed silhouette, 15 total)** — each tagged with a `part`
-used by the idle-animation and cursor-tracking logic below:
+**Body points (fixed silhouette, 22 total)** — expanded from an earlier
+15-point pass that read as a bare stick figure; each point is tagged with
+a `part` used by the idle-animation, stagger, and cursor-tracking logic
+below:
 
 ```
-head   (4 pts): (0,-0.95) accent-eye, (-0.06,-1.0), (0.06,-1.0), (0,-0.88)
-torso  (3 pts): (0,-0.6), (0,-0.4), (0,-0.2)
-armL   (2 pts): (-0.14,-0.55) shoulder, (-0.28,-0.25) hand
-armR   (2 pts): (0.14,-0.55) shoulder, (0.28,-0.25) hand
-legL   (2 pts): (-0.08,-0.05) hip, (-0.14,0.35) foot
-legR   (2 pts): (0.08,-0.05) hip, (0.14,0.35) foot
+head  (6 pts): a small square outline + 2 interior points —
+               (-0.08,-1.02) (0.08,-1.02) (-0.08,-0.86) (0.08,-0.86)
+               corners, plus (0,-0.98) (0,-0.90) interior
+torso (4 pts): (0,-0.62), (0,-0.48), (0,-0.34), (0,-0.20)
+armL  (3 pts): shoulder(-0.14,-0.58), elbow(-0.22,-0.42), hand(-0.30,-0.24)
+armR  (3 pts): shoulder(0.14,-0.58), elbow(0.22,-0.42), hand(0.30,-0.24)
+legL  (3 pts): hip(-0.09,-0.06), knee(-0.12,0.16), foot(-0.16,0.38)
+legR  (3 pts): hip(0.09,-0.06), knee(0.12,0.16), foot(0.16,0.38)
 ```
 
-One head point (the `(0,-0.95)` "eye") is flagged `accent: true` — the
-single restrained signal-green detail. Every other point renders in the
-page's own ink color (`getInkColor()`, matching `AsciiOrganism`/
-`FormationPortrait`), so light/dark mode is automatic.
+Enough points for a recognizable square head, torso, and jointed limbs
+while still reading as loose ASCII fragments rather than a filled
+illustration.
+
+**The signal-green detail is not an eye and is not centered on the
+face.** One head corner point — fixed at construction, e.g. the
+top-right corner `(0.08,-1.02)` — is flagged `accent: true` and rendered
+in NJORD's signal green. It reads as a stray fragment of the
+environment that happens to be lodged in his head, not a robot
+indicator light or a face part, and it is placed off to one side
+specifically so it doesn't default into looking like an eye. Two of the
+head's interior points may render at a very low, barely-visible
+intensity as an almost-absent suggestion of a face — deliberately never
+bold enough to read as a clear expression. No point is positioned or
+described as an eye. Every non-accent point renders in the page's own
+ink color (`getInkColor()`, matching `AsciiOrganism`/`FormationPortrait`),
+so light/dark mode is automatic.
 
 **Stray points (25 total)** — each has a fixed `home` position (seeded
 random point at radius 1.0–1.7 from center, `mulberry32` seed dedicated
@@ -115,23 +145,47 @@ p = smoothstep(0, 1, raw)
 (Naming mirrors the existing `TYPE_START_FRAC`/`TYPE_END_FRAC` pattern in
 `main.js`'s roadmap typewriter — same technique, new constants.)
 
-Per body point, per frame:
+**Per-part stagger** — revised after review so the body does not
+interpolate in lockstep (which read as "a particle morph preset" rather
+than something assembling itself). Each `part` gets its own fixed offset
+into the same global `p`, seeded once, deliberately asymmetric between
+left/right:
 
 ```
-noiseAmp   = lerp(0.35, 0.02, p)          // shrinks as he forms; never fully zero (texture)
-basePos    = lerp(scatterPos, silhouettePos, p)
-renderPos  = basePos + noise(seed, t) * noiseAmp + idleOffset(part, t, p)  // idle: see Component 3
+STAGGER = { head: 0.00, torso: 0.05, armR: 0.08, legR: 0.10, armL: 0.14, legL: 0.18 }
+partP(part) = smoothstep(0, 1, clamp((p - STAGGER[part]) / (1 - STAGGER[part]), 0, 1))
 ```
+
+The head becomes recognizable first; the left arm and leg noticeably lag
+the right side — a deliberate asymmetry, not a mirrored pair.
+
+Per body point, per frame (using its own `partP`, not the raw global `p`):
+
+```
+noiseAmp   = lerp(0.35, 0.02, partP)      // shrinks as this part forms; never fully zero (texture)
+basePos    = lerp(scatterPos, silhouettePos, partP)
+renderPos  = basePos + noise(seed, t) * noiseAmp + idleOffset(part, t, partP)  // idle: see Component 3
+```
+
+**Flicker dropout** — two specific points, one on `legL` and one on
+`armL` (the same laggard limbs, reinforcing the "still figuring itself
+out" read), get one extra rule: while that point's own `partP` is
+between 0.35 and 0.55, its intensity multiplies by a seeded on/off
+flicker (dropping briefly to near-zero once or twice) before locking in
+solid past 0.55 — a character that hasn't "caught" yet, not a rendering
+bug. Only active during that specific formation band for those two
+points; never while fully scattered or fully formed.
 
 Stray points always render (never gated by `p`); their blend toward
-`home` is itself `lerp(fartherWanderRadius, home, p * settleWeight)`, so
-low-settle-weight strays barely move in and high-settle-weight ones tuck
-in close — a natural-looking scatter of "some remained nearby" rather
-than a binary in/out state.
+`home` is itself `lerp(fartherWanderRadius, home, p * settleWeight)`
+(using the global `p`, since strays are ambient rather than part of the
+staggered body), so low-settle-weight strays barely move in and
+high-settle-weight ones tuck in close — a natural-looking scatter of
+"some remained nearby" rather than a binary in/out state.
 
-Scrolling back up runs `p` back down through the same formula — no
-separate reverse animation needed, matching the rest of the codebase's
-"reversible by construction" formations.
+Scrolling back up runs `p` (and every derived `partP`) back down through
+the same formulas — no separate reverse animation needed, matching the
+rest of the codebase's "reversible by construction" formations.
 
 ## Component 3 — Idle personality (only once mostly/fully formed)
 
@@ -149,11 +203,39 @@ personality fades in/out with formation rather than popping.
   offsets toward the current position of a randomly chosen nearby stray
   point (small offset, capped at 0.06 local units) — this is the "looks
   around occasionally" / "inspects nearby ASCII characters" beat. A glance
-  in progress is suppressed while cursor attention (Component 4) is above
+  in progress is suppressed while cursor attention (Component 5) is above
   a small threshold, so he doesn't glance away from a cursor that's
-  actively near him.
+  actively near him, and is also suppressed while a stray encounter
+  (Component 4) is active — the encounter's own head-target takes over
+  instead of fighting it.
 
-## Component 4 — Cursor awareness
+## Component 4 — Stray encounters
+
+New behavior added after review so the ambient strays have more purpose
+than passive wandering — this is what sells "he belongs to the ASCII
+environment" rather than sitting next to it.
+
+Every 15–30s (randomized, re-rolled after each encounter finishes), pick
+one currently free-wandering stray (excluding ones already resting close
+in with a high `settle` weight) and one encounter `type`, uniformly at
+random:
+
+- **watch** — the stray eases toward a point roughly at head height in
+  front of him over ~1s; his head targets it (overriding idle glance) for
+  ~1.5s; the stray eases back to its normal wander home over ~1s. No
+  physical contact.
+- **nudge** — the stray eases toward a point near a foot over ~1s; that
+  foot gets a small one-off targeted offset toward it, as if nudging it;
+  the stray gets a small displacement away and resumes normal wandering.
+- **catch** — the stray eases toward a hand point over ~1s, then its
+  position locks to that hand (plus a tiny fixed offset) for ~1.5–2s —
+  it briefly sticks to him — before releasing and easing back to its
+  normal wander home over ~1s.
+
+Total encounter duration is ~3.5–5s, well inside the 15–30s gap between
+them, so it reads as a rare, noticed moment rather than a repeating tic.
+
+## Component 5 — Cursor awareness
 
 Pointer position is tracked in raw viewport pixels (reusing the same
 `pointermove`/`touchmove` wiring already set up in `main.js` for
@@ -168,11 +250,13 @@ attention  = smoothstep(0, 1, attention)                 // continuous, no thres
 - Head points get an added pull toward the cursor's direction, scaled by
   `attention * MAX_PULL` (`MAX_PULL ≈ 0.05` local units) — subtle
   head/face tracking, strongest when the cursor is close.
-- All body-point intensity gets a small continuous boost
-  (`intensity *= 1 + attention * 0.15`) — a restrained "he notices you"
-  brightening with no hard on/off "hover" state.
+- **Removed after review: no intensity/brightness change from cursor
+  proximity at all.** Head movement alone carries "he noticed you" —
+  brightening read as a UI hover effect (a button lighting up), which
+  works against the whole point of him being a creature rather than a
+  control. Attention manifests only as movement, never as lighting.
 
-## Component 5 — Click placeholder & accessibility
+## Component 6 — Click reaction & accessibility
 
 A real, transparent, focusable `<button>` sits exactly over the mascot's
 canvas (same size, stacked via CSS, no per-frame position tracking needed
@@ -185,22 +269,28 @@ real interactive semantics in DOM elements layered over decorative canvas
 (project modal's full-bleed background canvas + real buttons is the
 existing precedent).
 
-On click or Enter/Space activation (guarded so a reaction already playing
-blocks a new one from stacking):
+On click or Enter/Space activation (guarded so a new activation while
+already alerted just refreshes the hold timer rather than stacking):
 
-- All body points get a brief (~0.4s) boosted noise-amplitude jitter —
-  the "startled" physical reaction — then settle back to normal idle.
-- A small `<span class="mascot__note" aria-live="polite">` (same
-  fade-via-`.is-visible` convention as `.contact-form__note` /
-  `.project-modal__cta-note` elsewhere in the codebase — no new UI
-  pattern) shows one randomly picked fragment from a short pool
-  (`"...", ". . .", "?"`) for ~1.2s then fades. These fragments are
-  punctuation, not language-bearing text, so no i18n entry is needed for
-  them; only the button's `aria-label` is translated.
+- He turns to look directly at the cursor's current position — a
+  stronger, sustained version of the ambient head-pull from Component 5
+  (`MAX_PULL` roughly doubled) — and "straightens up": idle sway
+  amplitude on torso/limbs eases down toward zero and the silhouette
+  eases toward a slightly more upright variant of its resting pose.
+- This "alerted" state holds for a few seconds (~3–4s), refreshing on
+  repeat activation, then eases back to ordinary idle. While alerted,
+  idle glancing (Component 3) and stray encounters (Component 4) are
+  suppressed so nothing competes with the reaction.
+- Revised after review: no text fragment, no note element, no popup —
+  removed the earlier "...", "?" fragment idea entirely. This alerted
+  state is deliberately the seed of a future transition (idle → clicked
+  → notices you → helper conversation begins), not a disposable
+  animation, so it's worth building cleanly now rather than throwing it
+  away later.
 
-This is explicitly a dead end for now — no state machine beyond "is a
-reaction currently playing," no click payload, no follow-up UI. The real
-assistant/questionnaire experience is future work.
+This is explicitly a dead end for now beyond that — no click payload, no
+follow-up UI, no dialogue. The real assistant/questionnaire experience is
+future work.
 
 ## Integration points (files touched)
 
@@ -208,8 +298,8 @@ assistant/questionnaire experience is future work.
   idle, cursor, reaction, render), exported alongside the existing
   classes. No existing class or formation is modified.
 - `index.html` — inside `#contact`, near `.site-footer`: a small wrapper
-  (`<div class="mascot">`) containing the canvas, the hit-target button,
-  and the note span.
+  (`<div class="mascot">`) containing the canvas and the hit-target
+  button only — no note/text element (removed after review).
 - `style.css` — new `.mascot*` rules: small fixed size (roughly
   64–96px depending on viewport, exact size tuned visually during
   implementation, consistent with this codebase's existing practice of
@@ -221,8 +311,8 @@ assistant/questionnaire experience is future work.
   for that anchor (no other change to its layout).
 - `main.js` — instantiate `AsciiMascot`, forward the existing pointer
   listeners to it, wire the hit-target's click/keyboard activation to
-  `mascot.triggerReaction()` plus the note text, start/stop it via the
-  existing `whenVisible()` helper.
+  `mascot.triggerReaction()`, start/stop it via the existing
+  `whenVisible()` helper.
 - `i18n.js` — one new key, `mascot.ariaLabel` (EN + Albanian).
 
 ## Performance & accessibility
@@ -257,23 +347,33 @@ server (`_dev_server.py`) — this feature needs a real page, not the
 claude.ai Artifact preview:
 
 1. Scroll slowly into `#contact` and confirm the four staging looks
-   (scattered → vague → recognizable → formed) read distinctly, and that
-   scrolling back up dissolves him the same way in reverse.
+   (scattered → vague → recognizable → formed) read distinctly, that the
+   head settles before the left arm/leg (asymmetric stagger, not
+   lockstep), that the `legL`/`armL` flicker-dropout is visible but reads
+   as "still assembling" rather than broken, and that scrolling back up
+   dissolves him the same way in reverse.
 2. Confirm stray characters remain visibly wandering near him after full
-   formation, not just his exact silhouette.
+   formation, not just his exact silhouette, and confirm the green accent
+   point reads as an off-center artifact, not a centered eye/face.
 3. Sit still once formed and confirm calm sway + an occasional glance
-   toward a nearby stray point happen without excessive motion.
-4. Move the cursor toward him from a distance and confirm a continuous
-   (not stepped) brightening/head-tracking response; confirm a glance in
-   progress is suppressed while the cursor is close.
-5. Click him (mouse) and Tab+Enter him (keyboard) and confirm the same
-   jitter + fading fragment reaction, and that rapid repeat clicks don't
-   stack reactions.
-6. Confirm `:focus-visible` outline appears correctly on Tab.
-7. Toggle `prefers-reduced-motion` and confirm instant fully-formed idle
+   toward a nearby stray point happen without excessive motion, and that
+   no face/expression is legible beyond a faint suggestion.
+4. Wait through a full 15–30s window and confirm a stray encounter
+   (watch/nudge/catch, randomly chosen) plays once, reads as rare and
+   intentional, and that idle glancing pauses correctly during it.
+5. Move the cursor toward him from a distance and confirm a continuous
+   (not stepped) head-tracking response with **no brightness/intensity
+   change anywhere on his body**; confirm a glance in progress is
+   suppressed while the cursor is close.
+6. Click him (mouse) and Tab+Enter him (keyboard) and confirm he looks
+   directly at the cursor and straightens up (no text, no popup), that
+   the alerted state holds a few seconds then eases back to idle, and
+   that repeat activation refreshes rather than stacks.
+7. Confirm `:focus-visible` outline appears correctly on Tab.
+8. Toggle `prefers-reduced-motion` and confirm instant fully-formed idle
    state with no scroll-driven assembly.
-8. Check mobile width (< 720px) doesn't clip or overlap footer text.
-9. Toggle dark mode and confirm ink/signal colors swap automatically
-   (no hardcoded hex colors in the new code).
-10. Confirm the existing GLOBE reformation, ambient field, footer layout,
+9. Check mobile width (< 720px) doesn't clip or overlap footer text.
+10. Toggle dark mode and confirm ink/signal colors swap automatically
+    (no hardcoded hex colors in the new code).
+11. Confirm the existing GLOBE reformation, ambient field, footer layout,
     and contact form are visually unchanged from before this feature.
