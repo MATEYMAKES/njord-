@@ -813,6 +813,14 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
    --------------------------------------------------------------- */
 .contact{ overflow: hidden; }
 .contact-inner{ position: relative; z-index: 1; }
+/* fades out while the mascot conversation is open (mascot-convo.js
+   toggles this class) so the heading doesn't compete with him for
+   attention — room for the conversation to breathe */
+.contact-head{ transition: opacity .4s var(--ease-out); }
+.contact-head.is-convo-open{ opacity: 0; pointer-events: none; }
+@media (prefers-reduced-motion: reduce){
+  .contact-head{ transition: none; }
+}
 .contact-head h2{
   font-size: clamp(2.2rem, 6vw, 5rem);
   font-weight: 320;
@@ -820,6 +828,7 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
   letter-spacing: -0.01em;
 }
 .contact-row{
+  position: relative;
   display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end;
   gap: 2rem;
   margin-top: clamp(2rem, 6vw, 4rem);
@@ -852,6 +861,7 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
   text-align: right;
 }
 .site-footer{
+  position: relative;
   display: flex; justify-content: space-between; align-items: center;
   gap: 1rem; flex-wrap: wrap;
   padding-top: clamp(2rem, 5vw, 3.5rem);
@@ -863,31 +873,166 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
   text-transform: uppercase;
   color: var(--ink-faint);
 }
-
-.contact-form{
-  max-width: 640px;
-  margin-top: clamp(2rem, 5vw, 3.5rem);
-  padding-top: clamp(1.5rem, 4vw, 2.5rem);
-  border-top: 1px solid var(--line);
-  display: grid;
-  gap: 1.5rem;
+/* MASCOT — a real point marker sitting exactly on .contact-row's own
+   top border line: its rect (near-zero size) is what AsciiOrganism's
+   anchor formula uses as the mascot formation's pivot, so he reads as
+   straddling this line the same way the old standalone version
+   straddled the footer's. He now RENDERS on the shared #ascii-organism
+   canvas (see ascii-engine.js), not a canvas of his own — this marker
+   only exists to give the organism something to measure. The real
+   hit-target button is positioned every frame from JS (main.js reads
+   AsciiOrganism.getMascotFrame()), since his idle sway/glances keep
+   him moving slightly even when the page isn't scrolling. */
+.mascot-anchor{
+  position: absolute;
+  top: 0; right: 30px;
+  width: 1px; height: 1px;
+  pointer-events: none;
 }
-.contact-form__intro{
+.mascot-hit{
+  position: fixed;
+  top: 0; left: 0;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  pointer-events: auto;
+  cursor: pointer;
+  z-index: 3;
+  /* browsers show a default blue tap-highlight/focus glow on a plain
+     button click — exactly the "button chrome" this element must not
+     have, since his own click reaction (looking at you, straightening)
+     is the only feedback that should read */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* MASCOT HINT — a one-time "click here" nudge with an arrow curling
+   toward his head, positioned every frame from the same
+   getMascotFrame() data as the hit-target above (see main.js). Shown
+   once per visitor (tracked via localStorage, same pattern as
+   njord-lang) until they actually click him, then dismissed for good. */
+.mascot-hint{
+  position: fixed;
+  top: 0; left: 0;
+  z-index: 4;
+  display: flex;
+  align-items: baseline;
+  gap: .35em;
+  pointer-events: none;
+  font-family: var(--f-mono);
+  font-size: var(--fs-small);
+  letter-spacing: .04em;
+  color: var(--signal-text);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity .5s var(--ease-out);
+}
+.mascot-hint.is-visible{ opacity: 1; }
+.mascot-hint__arrow{
+  display: inline-block;
+  font-size: 1.2em;
+  animation: mascotHintNudge 1.6s ease-in-out infinite;
+}
+@keyframes mascotHintNudge{
+  0%, 100%{ transform: translate(0, 0); }
+  50%{ transform: translate(3px, -3px); }
+}
+@media (prefers-reduced-motion: reduce){
+  .mascot-hint{ transition: none; }
+  .mascot-hint__arrow{ animation: none; }
+}
+
+/* MASCOT CONVERSATION — a guided, conversational project intake
+   opened by clicking the mascot (see mascot-convo.js). Grows in place
+   right below the contact-row (where he sits) rather than a modal, so
+   it reads as "he opened this up," not a page overlay. Restrained
+   fade + slight rise on open/close, per the brief. */
+/* No box — floating text/options positioned by JS (main.js reads
+   AsciiOrganism.getMascotFrame() every frame and calls
+   mascotConvo.updatePosition()) to the left and slightly above the
+   mascot's own on-screen position, so it reads as him talking rather
+   than a form anchored to the page. The outer element owns POSITION
+   only (JS sets its transform every frame); the inner __panel owns
+   the open/close fade — keeping these on separate elements avoids the
+   two transforms fighting each other. */
+.mascot-convo{
+  position: fixed;
+  top: 0; left: 0;
+  z-index: 500;
+  width: min(720px, calc(100vw - 32px));
+}
+.mascot-convo__panel{
+  display: grid; gap: .65rem;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity .3s var(--ease-out), transform .3s var(--ease-out);
+}
+.mascot-convo.is-open .mascot-convo__panel{ opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce){
+  .mascot-convo__panel{ transition: none; }
+}
+.mascot-convo__top{
+  display: flex; align-items: center; gap: .75rem;
+}
+.mascot-convo__back,
+.mascot-convo__close{
+  font-family: var(--f-mono);
+  font-size: 1rem;
+  line-height: 1;
+  color: var(--ink-faint);
+  padding: .3em .4em;
+  transition: color .2s;
+}
+.mascot-convo__back:hover,
+.mascot-convo__close:hover{ color: var(--ink); }
+.mascot-convo__progress{
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+.mascot-convo__progress-fill{
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: var(--signal-text);
+  transition: width .3s var(--ease-out);
+}
+/* Panel grows up-and-left from the mascot (see updatePosition() in
+   mascot-convo.js) — a long option list (e.g. the problem/goal choices)
+   could otherwise push its top edge past the section's own border line
+   above #contact, forcing the visitor to scroll the PAGE up just to
+   see the first option. Capping height and scrolling internally here
+   instead keeps the whole thing within reach of the mascot, and keeps
+   back/progress/close (in __top, outside this element) reachable
+   regardless of scroll position within the content itself. */
+.mascot-convo__stage{
+  display: grid; gap: .75rem;
+  max-height: min(48vh, 380px);
+  overflow-y: auto;
+  padding-inline: 8px .3rem;
+}
+.mascot-convo__prompt{ display: grid; gap: .15em; }
+.mascot-convo__prompt p{
+  font-family: var(--f-display);
+  font-weight: 380;
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+.mascot-convo__sr{
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0; border: 0; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap;
+}
+.mascot-convo__helper{
   font-family: var(--f-mono);
   font-size: var(--fs-small);
   color: var(--ink-faint);
+  margin-top: -.6em;
 }
-.contact-form__row{ display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-.contact-form__field{ display: flex; flex-direction: column; gap: .6em; }
-.contact-form__field > span{
-  font-family: var(--f-mono);
-  font-size: var(--fs-micro);
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-}
-.contact-form__field input,
-.contact-form__field textarea{
+.mascot-convo__stage input,
+.mascot-convo__stage textarea{
+  width: 100%;
   font: inherit;
   font-family: var(--f-display);
   font-size: 1.05rem;
@@ -895,34 +1040,68 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
   background: transparent;
   border: none;
   border-bottom: 1px solid var(--line-strong);
-  padding: .5em .1em;
+  padding: .35em .45em;
+  box-sizing: border-box;
   transition: border-color .25s;
   resize: vertical;
 }
-.contact-form__field textarea{ min-height: 6rem; }
-.contact-form__field input:focus-visible,
-.contact-form__field textarea:focus-visible{ border-color: var(--signal-text); }
-/* honeypot — present for bots, invisible and unreachable for real visitors */
-.contact-form__honeypot{
-  position: absolute; width: 1px; height: 1px;
-  margin: -1px; padding: 0; border: 0; overflow: hidden;
-  clip: rect(0,0,0,0); white-space: nowrap;
+.mascot-convo__stage textarea{ min-height: 3.5rem; }
+.mascot-convo__stage input:focus-visible,
+.mascot-convo__stage textarea:focus-visible{ border-color: var(--signal-text); }
+.mascot-convo__field--important{
+  font-size: 1.2rem;
+  border-bottom-width: 2px;
 }
-.contact-form__foot{
-  display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap;
+.mascot-convo__choices{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+  gap: .45rem;
 }
-.contact-form__submit{
+.mascot-convo__choice{
+  border: 1px solid var(--line-strong);
+  padding: .5em .8em;
+  font-family: var(--f-mono);
+  font-size: var(--fs-small);
+  text-align: left;
+  transition: background .2s, color .2s, border-color .2s;
+}
+.mascot-convo__choice:hover{ border-color: var(--ink); }
+.mascot-convo__choice.is-selected,
+.mascot-convo__choice--primary{
+  background: var(--ink); color: var(--paper); border-color: var(--ink);
+}
+.mascot-convo__contact-row{ display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.mascot-convo__contact-field{ display: flex; flex-direction: column; gap: .35em; }
+.mascot-convo__contact-field > span{
+  font-family: var(--f-mono);
+  font-size: var(--fs-micro);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+@media (max-width: 640px){
+  .mascot-convo__contact-row{ grid-template-columns: 1fr; }
+}
+.mascot-convo__foot{ display: flex; align-items: center; gap: .8rem; flex-wrap: wrap; }
+.mascot-convo__primary{
   border: 1px solid currentColor;
-  padding: .85em 1.6em;
+  padding: .65em 1.2em;
   font-family: var(--f-mono);
   font-size: var(--fs-small);
   letter-spacing: .03em;
   display: inline-flex; align-items: center; gap: .6em;
   transition: background .25s, color .25s, opacity .25s;
 }
-.contact-form__submit:hover{ background: var(--ink); color: var(--paper); }
-.contact-form__submit:disabled{ opacity: .5; pointer-events: none; }
-.contact-form__note{
+.mascot-convo__primary:hover{ background: var(--ink); color: var(--paper); }
+.mascot-convo__primary:disabled{ opacity: .4; pointer-events: none; }
+.mascot-convo__skip{
+  font-family: var(--f-mono);
+  font-size: var(--fs-small);
+  color: var(--ink-faint);
+  transition: color .2s;
+}
+.mascot-convo__skip:hover{ color: var(--ink); }
+.mascot-convo__note{
   font-family: var(--f-mono);
   font-size: var(--fs-micro);
   letter-spacing: .06em;
@@ -931,11 +1110,8 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
   opacity: 0;
   transition: opacity .3s;
 }
-.contact-form__note.is-visible{ opacity: .75; }
-.contact-form__note.is-error{ color: var(--error); opacity: 1; }
-@media (max-width: 640px){
-  .contact-form__row{ grid-template-columns: 1fr; }
-}
+.mascot-convo__note.is-visible{ opacity: .75; }
+.mascot-convo__note.is-error{ color: var(--error); opacity: 1; }
 
 /* ---------------------------------------------------------------
    Project preview overlay

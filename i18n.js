@@ -127,24 +127,80 @@ const translations = {
     en: 'Based remotely, worldwide.<br>Currently booking Q1 2026.',
     sq: 'Me bazë në distancë, kudo në botë.<br>Aktualisht duke rezervuar T1 2026.',
   },
-  'contact.form.intro': {
-    en: 'Prefer to write it out? Send a message directly.',
-    sq: 'Preferoni ta shkruani? Dërgoni një mesazh direkt.',
+  'mascot.ariaLabel': {
+    en: "A small figure formed from the page's own characters",
+    sq: 'Një figurë e vogël e formuar nga vetë karakteret e faqes',
   },
-  'contact.form.name': { en: 'Name', sq: 'Emri' },
-  'contact.form.email': { en: 'Email', sq: 'Email' },
-  'contact.form.message': { en: 'Message', sq: 'Mesazhi' },
-  'contact.form.submit': { en: 'Send message', sq: 'Dërgo mesazhin' },
-  'contact.form.sending': { en: 'Sending…', sq: 'Duke dërguar…' },
-  'contact.form.success': {
-    en: "Message sent — we'll get back to you soon.",
-    sq: "Mesazhi u dërgua — do t'ju përgjigjemi së shpejti.",
+  'mascot.hint': { en: 'click here', sq: 'kliko këtu' },
+
+  // Mascot conversation — a guided, conversational project intake that
+  // opens when the mascot is clicked. See mascot-convo.js. Same
+  // conversational, lowercase, informal voice throughout — this is him
+  // talking, not a form. Not reviewed by a native Albanian speaker yet,
+  // same caveat as the rest of the site's Shqip copy.
+  'convo.panelLabel': { en: 'Tell NJORD about your project', sq: 'Trego NJORD-it për projektin tënd' },
+  'convo.close': { en: 'Close', sq: 'Mbyll' },
+  'convo.back': { en: 'Back', sq: 'Prapa' },
+  'convo.continue': { en: 'Continue', sq: 'Vazhdo' },
+  'convo.skip': { en: 'Skip', sq: 'Kapërce' },
+  'convo.requiredNote': { en: "Just need this one before we continue.", sq: 'Kjo më duhet para se të vazhdojmë.' },
+
+  'convo.open.line1': { en: 'oh, hey.', sq: 'hej.' },
+  'convo.open.line2': { en: "you've got something in mind?", sq: 'ke diçka në mendje?' },
+  'convo.open.project': { en: 'yeah, i have a project', sq: 'po, kam një projekt' },
+  'convo.open.justLooking': { en: 'just looking', sq: 'vetëm po shikoj' },
+  'convo.justLooking.reply': {
+    en: "cool — i'll be around if you change your mind.",
+    sq: 'mirë — jam këtu nëse ndërron mendje.',
   },
-  'contact.form.error': {
+
+  'convo.s1.prompt': { en: "what's the name of your business or project?", sq: 'si quhet biznesi apo projekti yt?' },
+
+  'convo.s2.prompt': { en: 'and what do you guys do?', sq: 'dhe çfarë bëni ju?' },
+  'convo.s2.placeholder': { en: 'Tell me in a sentence or two...', sq: 'Më trego me një a dy fjali...' },
+
+  'convo.s3.prompt': { en: 'what brought you to NJORD?', sq: 'çfarë të solli te NJORD?' },
+  'convo.s3.opt1': { en: 'Website', sq: 'Website' },
+  'convo.s3.opt2': { en: 'Logo / Branding', sq: 'Logo / Brendim' },
+  'convo.s3.opt3': { en: 'Both', sq: 'Të dyja' },
+  'convo.s3.opt4': { en: 'Something else', sq: 'Diçka tjetër' },
+  'convo.s3.opt5': { en: 'Not really sure yet', sq: 'Nuk jam ende i/e sigurt' },
+
+  'convo.s4.prompt1': { en: "tell me what's going on.", sq: 'më trego çfarë po ndodh.' },
+  'convo.s4.prompt2': {
+    en: 'what are you trying to change, improve or create?',
+    sq: 'çfarë po përpiqesh të ndryshosh, përmirësosh apo krijosh?',
+  },
+  'convo.s4.opt1': { en: 'Starting something brand new', sq: 'Po filloj diçka krejt të re' },
+  'convo.s4.opt2': { en: 'Replacing something outdated', sq: 'Po zëvendësoj diçka të vjetëruar' },
+  'convo.s4.opt3': { en: 'Growing what we already have', sq: 'Po zgjeroj diçka që tashmë kemi' },
+  'convo.s4.opt4': { en: "Something isn't working right", sq: 'Diçka nuk po funksionon si duhet' },
+  'convo.s4.opt5': { en: 'Not sure yet', sq: 'Ende nuk jam i/e sigurt' },
+
+  'convo.s5.prompt': { en: 'who are you trying to reach?', sq: 'kë po përpiqesh të arrish?' },
+  'convo.s5.opt1': { en: 'Everyday customers', sq: 'Klientë të përditshëm' },
+  'convo.s5.opt2': { en: 'Other businesses', sq: 'Biznese të tjera' },
+  'convo.s5.opt3': { en: 'My local community', sq: 'Komuniteti im lokal' },
+  'convo.s5.opt4': { en: 'A specific niche or group', sq: 'Një grup apo nishë specifike' },
+  'convo.s5.opt5': { en: 'Not sure yet', sq: 'Ende nuk jam i/e sigurt' },
+
+  'convo.s14.prompt1': { en: "alright. i think i've got the picture.", sq: 'mirë. mendoj se e kuptova pamjen e përgjithshme.' },
+  'convo.s14.prompt2': { en: 'who am i talking to?', sq: 'me kë po flas?' },
+  'convo.s14.name': { en: 'Name', sq: 'Emri' },
+  'convo.s14.email': { en: 'Email', sq: 'Email' },
+  'convo.s14.phone': { en: 'Phone / WhatsApp (optional)', sq: 'Telefon / WhatsApp (opsionale)' },
+
+  'convo.s15.prompt': { en: 'anything else you want the team to know?', sq: 'ka diçka tjetër që do të donte ta dinte ekipi?' },
+
+  'convo.end.line1': { en: 'perfect.', sq: 'perfekte.' },
+  'convo.end.line2': { en: "i'll take it from here.", sq: 'e marr unë nga këtu.' },
+  'convo.end.send': { en: 'SEND', sq: 'DËRGO' },
+  'convo.end.sending': { en: 'Sending...', sq: 'Duke dërguar...' },
+  'convo.end.success': { en: "Sent — we'll be in touch soon.", sq: "U dërgua — do t'ju kontaktojmë së shpejti." },
+  'convo.end.error': {
     en: 'Something went wrong — try again, or email us directly.',
     sq: 'Diçka shkoi keq — provoni përsëri, ose na shkruani direkt me email.',
   },
-  'contact.form.errorRequired': { en: 'Please fill in all fields.', sq: 'Ju lutem plotësoni të gjitha fushat.' },
 
   'footer.tagline': { en: 'Web & Branding Studio', sq: 'Studio Web & Brendi' },
 

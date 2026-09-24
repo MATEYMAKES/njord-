@@ -188,6 +188,12 @@
         <h2 data-i18n="contact.h2">Let's build something that doesn't look like anything else.</h2>
       </div>
       <div class="contact-row">
+        <span id="mascot-anchor" class="mascot-anchor" aria-hidden="true"></span>
+        <button id="mascot-hit" class="mascot-hit" type="button" data-i18n-aria="mascot.ariaLabel"></button>
+        <div id="mascot-hint" class="mascot-hint" aria-hidden="true">
+          <span class="mascot-hint__label" data-i18n="mascot.hint">click here</span>
+          <span class="mascot-hint__arrow">&#8599;</span>
+        </div>
         <a id="contact-email" class="contact-email" href="mailto:studio@njord.design" data-address="studio@njord.design">
           studio@njord.design
           <span class="status" data-i18n="contact.copied">Copied</span>
@@ -195,30 +201,16 @@
         <p class="contact-meta" data-i18n-html="contact.meta">Based remotely, worldwide.<br>Currently booking Q1 2026.</p>
       </div>
 
-      <form id="contact-form" class="contact-form" novalidate>
-        <p class="contact-form__intro" data-i18n="contact.form.intro">Prefer to write it out? Send a message directly.</p>
-        <div class="contact-form__row">
-          <label class="contact-form__field">
-            <span data-i18n="contact.form.name">Name</span>
-            <input type="text" name="name" autocomplete="name" required>
-          </label>
-          <label class="contact-form__field">
-            <span data-i18n="contact.form.email">Email</span>
-            <input type="email" name="email" autocomplete="email" required>
-          </label>
+      <div id="mascot-convo" class="mascot-convo" hidden>
+        <div class="mascot-convo__panel" role="region" data-i18n-aria="convo.panelLabel">
+          <div class="mascot-convo__top">
+            <button type="button" class="mascot-convo__back" data-i18n-aria="convo.back" hidden>&larr;</button>
+            <div class="mascot-convo__progress" aria-hidden="true"><span class="mascot-convo__progress-fill"></span></div>
+            <button type="button" class="mascot-convo__close" data-i18n-aria="convo.close">&times;</button>
+          </div>
+          <div class="mascot-convo__stage" aria-live="polite"></div>
         </div>
-        <label class="contact-form__field">
-          <span data-i18n="contact.form.message">Message</span>
-          <textarea name="message" rows="4" required></textarea>
-        </label>
-        <input type="text" name="botcheck" class="contact-form__honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
-        <div class="contact-form__foot">
-          <button type="submit" class="contact-form__submit magnetic">
-            <span data-i18n="contact.form.submit">Send message</span> <span aria-hidden="true">→</span>
-          </button>
-          <span class="contact-form__note" aria-live="polite"></span>
-        </div>
-      </form>
+      </div>
 
       <div class="site-footer">
         <span>© 2026 NJORD Studio</span>

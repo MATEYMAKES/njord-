@@ -535,6 +535,40 @@ export class GenerativeAudio{
     return this._pulseWaveform;
   }
 
+  /* One-shot robotic beep — see the identical A2 implementation in
+     audio-engine-a2.js for the full explanation. Kept numerically
+     identical here too (this sound isn't part of A1 vs A2's "eerie vs.
+     not eerie" tuning) so switching the one import line in main.js never
+     breaks the mascot conversation's typing sfx. Draws its pitch from
+     THIS file's own SCALE/degreeHz, so on A1 the beeps carry A1's
+     six-note scale rather than A2's pentatonic — same mechanism,
+     whichever tuning is currently live. */
+  playKeyTick(){
+    if(!this.enabled || !this.ctx) return;
+    const ctx = this.ctx;
+    const now = ctx.currentTime;
+    const rnd = this.rnd;
+
+    const beep = ctx.createOscillator();
+    beep.type = 'square';
+    const degree = Math.floor(rnd() * SCALE.length * 3);
+    beep.frequency.setValueAtTime(degreeHz(degree, 2), now);
+
+    const beepFilter = ctx.createBiquadFilter();
+    beepFilter.type = 'lowpass';
+    beepFilter.frequency.value = 3200;
+    beepFilter.Q.value = 0.5;
+
+    const beepGain = ctx.createGain();
+    beepGain.gain.setValueAtTime(0.0001, now);
+    beepGain.gain.linearRampToValueAtTime(0.18 + rnd() * 0.05, now + 0.003);
+    beepGain.gain.setValueAtTime(beepGain.gain.value, now + 0.018);
+    beepGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.045);
+    beep.connect(beepFilter).connect(beepGain).connect(this.master);
+    beep.start(now);
+    beep.stop(now + 0.05);
+  }
+
   _build(){
     const ctx = this.ctx;
     this._targetVolume = 0.32;

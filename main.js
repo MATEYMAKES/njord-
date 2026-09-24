@@ -3,11 +3,12 @@
    portals, project modal, contact.
    ================================================================ */
 import {
-  prefersReducedMotion, whenVisible,
+  prefersReducedMotion, whenVisible, ticker,
   AsciiOrganism, StaticGlyphField, FormationPortrait,
 } from './ascii-engine.js';
 import { GenerativeAudio } from './audio-engine-a2.js'; // A2 (lighter) — A1 kept intact in audio-engine.js
 import { t, getLang, setLang, applyStaticTranslations, onLangChange } from './i18n.js';
+import { initMascotConvo } from './mascot-convo.js';
 
 applyStaticTranslations(getLang());
 
@@ -57,12 +58,13 @@ if(isFinePointer){
 /* ---------------------------------------------------------------
    The ASCII organism — one persistent particle population for the
    whole page. It never respawns; it only ever retargets, cycling
-   through GLOBE → CLOUD → DIAMOND → CLOUD → WAVE → CLOUD → NETWORK
-   → CLOUD → CONSTELLATION → CLOUD → GLOBE as the visitor scrolls
-   past each anchor below. CONSTELLATION (the studio section) used to
-   be its own small standalone decorative canvas next to the studio
-   copy — it's now just another formation the one organism resolves
-   into, same as diamond/wave/network.
+   through GLOBE → DIAMOND → WAVE → NETWORK → ROADMAP → CONSTELLATION
+   → MASCOT as the visitor scrolls past each anchor below. CONSTELLATION
+   (the studio section) used to be its own small standalone decorative
+   canvas next to the studio copy, and MASCOT used to be a standalone
+   inhabitant with his own tiny particle pool in the footer — both are
+   now just another formation the one organism resolves into, same as
+   diamond/wave/network.
    --------------------------------------------------------------- */
 const hero = document.getElementById('hero');
 const heroWord = document.querySelector('.hero-word');
@@ -78,7 +80,7 @@ if(organismCanvas){
     { name: 'network', el: document.querySelector('.work-row[data-project="meridian"]') },
     { name: 'roadmap', el: document.getElementById('services'), ranged: true },
     { name: 'constellation', el: document.getElementById('studio') },
-    { name: 'globe', el: document.getElementById('contact') },
+    { name: 'mascot', el: document.getElementById('mascot-anchor') },
   ].filter((z) => z.el));
 
   if(isFinePointer){
@@ -623,51 +625,85 @@ if(emailEl){
 }
 
 /* ---------------------------------------------------------------
-   Contact form — submits via Web3Forms since the site has no
-   backend of its own (a claude.ai Artifact). The access key below
-   only routes submissions to the studio's inbox; it isn't a secret
-   the way an API key normally is, so it's fine embedded client-side.
+   Web3Forms — the site has no backend of its own (a claude.ai
+   Artifact), so the mascot conversation below submits through this
+   free form-relay instead. The access key only routes submissions to
+   the studio's inbox; it isn't a secret the way an API key normally
+   is, so it's fine embedded client-side. (The old standalone contact
+   form that used to share this key was removed — the mascot
+   conversation is the only way to reach the studio now.)
    --------------------------------------------------------------- */
 const WEB3FORMS_ACCESS_KEY = 'a7d50666-5e41-4bdf-8051-3bd0a93010c1';
-const contactForm = document.getElementById('contact-form');
-if(contactForm){
-  const note = contactForm.querySelector('.contact-form__note');
-  const submitBtn = contactForm.querySelector('.contact-form__submit');
-  contactForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if(contactForm.botcheck.value) return; // honeypot tripped — drop silently, no error shown
-    const name = contactForm.name.value.trim();
-    const email = contactForm.email.value.trim();
-    const message = contactForm.message.value.trim();
-    if(!name || !email || !message){
-      note.textContent = t('contact.form.errorRequired');
-      note.classList.add('is-visible', 'is-error');
-      return;
+
+/* ---------------------------------------------------------------
+   Mascot — the organism's own closing formation (see ascii-engine.js's
+   AsciiOrganism 'mascot' case and
+   docs/superpowers/specs/2026-09-17-ascii-mascot-design.md for the
+   original design). He's performed by the shared particle pool now,
+   so no separate canvas or pointer wiring is needed — organism.setPointer()
+   above already feeds his cursor attention. The only thing left to wire
+   here is a real hit-target button, synced to his on-screen position
+   every frame (his idle sway/glances keep him moving slightly even
+   when the page isn't scrolling, so this can't be a one-off scroll
+   calculation the way the roadmap's DOM nodes are). No real
+   assistant/helper logic yet — triggerMascotReaction() is a
+   placeholder look-at-cursor pose.
+   --------------------------------------------------------------- */
+const mascotHit = document.getElementById('mascot-hit');
+if(mascotHit && organism){
+  const mascotConvoEl = document.getElementById('mascot-convo');
+  const mascotConvo = mascotConvoEl ? initMascotConvo(mascotConvoEl, {
+    accessKey: WEB3FORMS_ACCESS_KEY,
+    onKeystroke: () => audio.playKeyTick(),
+    // while the conversation is open, the mascot should hold his fully-
+    // formed pose through much more upward scroll than usual before he
+    // starts unforming (see AsciiOrganism.setMascotConvoOpen)
+    onOpenChange: (open) => organism.setMascotConvoOpen(open),
+  }) : null;
+
+  // One-time "click here" nudge — shown until the visitor actually
+  // clicks him, then dismissed for good (localStorage, same
+  // try/catch-degrades-silently pattern as njord-lang in i18n.js).
+  const mascotHint = document.getElementById('mascot-hint');
+  let mascotHintSeen = true;
+  try{ mascotHintSeen = localStorage.getItem('njord-mascot-hint-seen') === '1'; }catch(e){ /* per-viewer convenience only */ }
+  const dismissMascotHint = () => {
+    if(!mascotHint) return;
+    mascotHint.classList.remove('is-visible');
+    try{ localStorage.setItem('njord-mascot-hint-seen', '1'); }catch(e){ /* ignore */ }
+  };
+
+  const syncMascotHit = () => {
+    const f = organism.getMascotFrame();
+    mascotHit.style.width = `${f.width}px`;
+    mascotHit.style.height = `${f.height}px`;
+    mascotHit.style.transform = `translate(-50%, -50%) translate(${f.x}px, ${f.y}px)`;
+    mascotConvo?.updatePosition(f);
+    if(mascotHint){
+      // parked to the lower-left of his head (top of his bounding
+      // box), arrow curling up-right into it — see getMascotFrame()
+      // in ascii-engine.js for the box this reads from
+      const headX = f.x - f.width / 2, headY = f.y - f.height / 2;
+      mascotHint.style.transform = `translate(-100%, 0%) translate(${headX - 14}px, ${headY + 10}px)`;
     }
-    submitBtn.disabled = true;
-    note.classList.remove('is-error');
-    note.textContent = t('contact.form.sending');
-    note.classList.add('is-visible');
-    try{
-      const res = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({
-          access_key: WEB3FORMS_ACCESS_KEY,
-          subject: 'New message from the NJORD site',
-          from_name: 'NJORD website',
-          name, email, message,
-        }),
-      });
-      const data = await res.json();
-      if(!data.success) throw new Error(data.message || 'submit failed');
-      contactForm.reset();
-      note.textContent = t('contact.form.success');
-    }catch(err){
-      note.textContent = t('contact.form.error');
-      note.classList.add('is-error');
-    }finally{
-      submitBtn.disabled = false;
-    }
+  };
+  whenVisible(document.getElementById('contact'), () => {
+    ticker.add(syncMascotHit);
+    if(!mascotHintSeen && mascotHint) mascotHint.classList.add('is-visible');
+  }, () => ticker.remove(syncMascotHit));
+  mascotHit.addEventListener('click', () => {
+    organism.triggerMascotReaction();
+    mascotConvo?.open();
+    dismissMascotHint();
+  });
+  // Temporary animation-review shortcuts. Avoid intercepting number
+  // entry in the contact form or any other editable control.
+  window.addEventListener('keydown', (e) => {
+    const target = e.target;
+    const editing = target instanceof HTMLInputElement
+      || target instanceof HTMLTextAreaElement
+      || target?.isContentEditable;
+    if(editing || e.ctrlKey || e.metaKey || e.altKey) return;
+    if(e.key >= '1' && e.key <= '3') organism.triggerMascotIdleRoutine(Number(e.key));
   });
 }

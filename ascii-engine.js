@@ -210,34 +210,23 @@ function isLand(latDeg, lonDeg){
   return false;
 }
 
-/* an 8-sided bipyramid — a "brilliant cut" simplified enough to stay
-   perceptible as ASCII facets, flat-shaded per triangle */
-function buildDiamondFacets(girdle = 8){
-  // y is negative toward the TOP of the screen (canvas convention) — the
-  // short crown must sit at negative y, the long pointed pavilion at
-  // positive y, or the diamond renders upside down.
-  const ring = [];
-  for(let k = 0; k < girdle; k++){
-    const a = (k / girdle) * Math.PI * 2;
-    ring.push({ x: Math.cos(a), y: -0.1, z: Math.sin(a) });
-  }
-  const top = { x: 0, y: -0.55, z: 0 };
-  const bottom = { x: 0, y: 1.15, z: 0 };
-  const facets = [];
-  for(let k = 0; k < girdle; k++){
-    const a = ring[k], b = ring[(k + 1) % girdle];
-    facets.push(makeFacet(top, a, b));
-    facets.push(makeFacet(bottom, b, a));
-  }
-  return facets;
+/* a torus — a thin golden ring, parameterized by theta (position
+   around the main loop) and phi (position around the tube's own
+   cross-section). RING_MAJOR/RING_MINOR set its overall proportions;
+   ringPoint/ringNormalAt are pure functions of (theta, phi) so any
+   particle's position is a deterministic function of its own fixed
+   identity, same as every other formation. */
+const RING_MAJOR = 0.85, RING_MINOR = 0.24;
+function ringPoint(theta, phi, major = RING_MAJOR, minor = RING_MINOR){
+  const cosT = Math.cos(theta), sinT = Math.sin(theta);
+  const cosP = Math.cos(phi), sinP = Math.sin(phi);
+  const tubeR = major + minor * cosP;
+  return { x: tubeR * cosT, y: minor * sinP, z: tubeR * sinT };
 }
-function makeFacet(v0, v1, v2){
-  const ux = v1.x - v0.x, uy = v1.y - v0.y, uz = v1.z - v0.z;
-  const vx = v2.x - v0.x, vy = v2.y - v0.y, vz = v2.z - v0.z;
-  let nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx;
-  const len = Math.sqrt(nx * nx + ny * ny + nz * nz) || 1;
-  nx /= len; ny /= len; nz /= len;
-  return { v0, v1, v2, normal: { x: nx, y: ny, z: nz } };
+function ringNormalAt(theta, phi){
+  const cosT = Math.cos(theta), sinT = Math.sin(theta);
+  const cosP = Math.cos(phi), sinP = Math.sin(phi);
+  return { x: cosP * cosT, y: sinP, z: cosP * sinT };
 }
 
 const ORGANISM_DENSE = ' .:-=+*#%@';
@@ -283,15 +272,14 @@ export class AsciiOrganism{
       this.earthLand[i] = isLand(lat, lon) ? 1 : 0;
     });
 
-    this.facets = buildDiamondFacets();
-    this.diamondFacet = new Uint8Array(n);
-    this.diamondU = new Float32Array(n);
-    this.diamondV = new Float32Array(n);
+    // ring identity: theta is spread evenly around the loop (with a little
+    // jitter so it doesn't read as a perfect grid), phi is free around the
+    // tube's own cross-section — same "identity fixed at construction" rule
+    this.ringTheta = new Float32Array(n);
+    this.ringPhi = new Float32Array(n);
     for(let i = 0; i < n; i++){
-      this.diamondFacet[i] = i % this.facets.length;
-      let u = rnd(), v = rnd();
-      if(u + v > 1){ u = 1 - u; v = 1 - v; }
-      this.diamondU[i] = u; this.diamondV[i] = v;
+      this.ringTheta[i] = (i / n) * Math.PI * 2 + (rnd() - 0.5) * (Math.PI * 2 / n);
+      this.ringPhi[i] = rnd() * Math.PI * 2;
     }
 
     this.waveLine = new Uint8Array(n);
@@ -386,6 +374,7 @@ export class AsciiOrganism{
     for(let i = 0; i < n; i++){ this.x[i] = 0.5 + (rnd() - 0.5) * 0.2; this.y[i] = 0.5 + (rnd() - 0.5) * 0.2; }
 
     this._generateRoadmapLayout();
+    this._generateMascotLayout(rnd);
 
     this.zones = [];
     this.getWaveform = null; // set via setWaveformSource() once audio exists
@@ -408,6 +397,40 @@ export class AsciiOrganism{
     this._burstAccentRGB = [203, 255, 61];
     this._burstRevealed = false;
     this._lastAnchorX = 0.5; this._lastAnchorY = 0.5;
+
+    // MASCOT runtime state — idle glance/stray-encounter/click-alert
+    // timers and the last-resolved cursor pull, all updated once per
+    // frame in _updateMascotState() rather than per particle. Timers
+    // only advance while 'mascot' is actually part of the current
+    // timeline segment (see _updateMascotState), matching the
+    // standalone version's old whenVisible()-gated start/stop.
+    this._mascotGlanceElapsed = -1;
+    this._mascotNextGlanceIn = mascotNextGlanceWait(Math.random);
+    this._mascotGlanceTargetIdx = 0;
+    this._mascotGlanceAmount = 0;
+    this._mascotGlanceTarget = MASCOT_WATCH_PT;
+    this._mascotEncounter = null;
+    this._mascotNextEncounterIn = mascotNextEncounterWait(Math.random);
+    this._mascotAlertElapsed = -1;
+    this._mascotAlertAmount = 0;
+    this._mascotPullX = 0; this._mascotPullY = 0;
+    this._mascotAttention = 0;
+    this._mascotTorsoShiftX = 0;
+    this._mascotTorsoShiftY = 0;
+    this._mascotIdleElapsed = 0;
+    this._mascotIdleRoutineIndex = 0;
+    this._mascotIdleForced = false;
+    this._mascotJumpJackAmount = 0;
+    this._mascotWaveAmount = 0;
+    this._mascotHeadInspectAmount = 0;
+    this._mascotBalanceAmount = 0;
+    this._mascotBalanceWobble = 0;
+    this._mascotFrame = { x: 0, y: 0, width: 0, height: 0 };
+    this._mascotAnchor = { x: 0.5, y: 0.5 };
+    // While the mascot conversation panel is open, he should hold his
+    // fully-formed pose through a lot more upward scroll than usual
+    // before starting to unform — see setMascotConvoOpen()/_timelineSegment.
+    this._mascotHoldOpen = false;
   }
 
   setZones(zones){
@@ -420,6 +443,10 @@ export class AsciiOrganism{
      injected callback so this file stays audio-agnostic; see main.js and
      audio-engine.js for the actual wiring. */
   setWaveformSource(fn){ this.getWaveform = fn; }
+  /** Called by main.js whenever the mascot conversation panel opens or
+   *  closes (see mascot-convo.js's onOpenChange). See _timelineSegment
+   *  for what this actually does to the scroll-to-formation mapping. */
+  setMascotConvoOpen(open){ this._mascotHoldOpen = !!open; }
   setPointer(nx, ny){
     this.lastPointerX = this.pointerX; this.lastPointerY = this.pointerY;
     this.pointerX = nx; this.pointerY = ny;
@@ -575,6 +602,34 @@ export class AsciiOrganism{
     return { x: dx / len, y: dy / len };
   }
 
+  /* ----------------------------------------------------------------
+     MASCOT — assigns every particle a fixed identity within the
+     mascot's silhouette (once, like every other formation's identity
+     fields above): most join the dense body grid and a small minority
+     remain ambient strays. Every particle receives a mascot target;
+     none are hidden or replaced by a separate drawing layer, so the
+     same cloud visibly retargets into and back out of the figure.
+     ---------------------------------------------------------------- */
+  _generateMascotLayout(rnd){
+    const n = this.count;
+    this.mascotStrays = mascotBuildStrays(rnd, 25);
+    this.mascotKind = new Uint8Array(n);
+    this.mascotIdx = new Int16Array(n);
+    this.mascotMicroX = new Float32Array(n);
+    this.mascotMicroY = new Float32Array(n);
+    const strayCount = Math.max(12, Math.floor(n * 0.12));
+    for(let i = 0; i < n; i++){
+      const stray = i < strayCount;
+      this.mascotKind[i] = stray ? 1 : 0;
+      this.mascotIdx[i] = stray
+        ? i % this.mascotStrays.length
+        : (i - strayCount) % MASCOT_BODY_POINTS.length;
+      const spread = stray ? 0.05 : 0.045;
+      this.mascotMicroX[i] = (rnd() - 0.5) * spread * 2;
+      this.mascotMicroY[i] = (rnd() - 0.5) * spread * 2;
+    }
+  }
+
   /* One continuous timeline instead of competing zones. The zones are
      registered in scroll order (globe, diamond, wave, network, constellation, globe);
      this finds exactly which TWO neighboring anchors the viewport's
@@ -593,8 +648,34 @@ export class AsciiOrganism{
     const points = [];
     this.zones.forEach((z) => {
       const r = z.el.getBoundingClientRect();
-      const anchorX = Math.max(0.16, Math.min(0.8, (r.left + r.width * 0.74) / this.w));
-      const anchorY = Math.max(0.1, Math.min(0.9, (r.top + r.height / 2) / vh));
+      // Compact formations use the editorial 74% bias and stay inside
+      // the usual safe band. The mascot's marker is already positioned
+      // exactly where he belongs on the contact rule, so preserve it.
+      const mascotTargetH = this.isMobile ? MASCOT_TARGET_HEIGHT_MOBILE_PX : MASCOT_TARGET_HEIGHT_PX;
+      const mascotHalfW = mascotTargetH * 3 / 14;
+      const rawAnchorX = z.name === 'mascot'
+        ? (r.left + r.width / 2 - mascotHalfW) / this.w
+        : (r.left + r.width * 0.74) / this.w;
+      const anchorX = z.name === 'mascot'
+        ? Math.max(0.02, Math.min(0.98, rawAnchorX))
+        : Math.max(0.16, Math.min(0.8, rawAnchorX));
+      // The mascot belongs to the document: his anchor tracks the real
+      // scroll position rather than pinning to a fixed viewport band
+      // like every other formation's. But #contact's own remaining
+      // scroll room (past the anchor marker, through the form/footer)
+      // isn't tall enough to ever carry him fully off the top of the
+      // screen — the raw value bottoms out around 0.09 at max scroll —
+      // and MASCOT_Y_OFFSET_PX's upward shift plus his own head-square
+      // geometry need at least ~0.18 of headroom above that to keep the
+      // head on-screen. A real bug hit during live verification: without
+      // this floor, the head square rendered above the viewport entirely
+      // (y < 0) once scrolled all the way down. Other formations keep
+      // their own separate viewport safe-band clamp.
+      const rawAnchorY = (r.top + r.height / 2) / vh;
+      const anchorY = z.name === 'mascot'
+        ? Math.max(0.20, rawAnchorY)
+        : Math.max(0.1, Math.min(0.9, rawAnchorY));
+      if(z.name === 'mascot') this._mascotAnchor = { x: anchorX, y: anchorY };
       if(z.ranged){
         // spans its own full scroll height instead of one pivot point —
         // contributes two points sharing its name, so the segment
@@ -628,7 +709,22 @@ export class AsciiOrganism{
         points.push({ name: z.name, docY: scrollY + r.top + r.height / 2, anchorX, anchorY });
       }
     });
-    const playheadY = scrollY + vh / 2;
+    let playheadY = scrollY + vh / 2;
+    // While the mascot conversation is open, hold him fully-formed
+    // through a large dead-zone of upward scroll before letting the
+    // usual scroll-to-formation mapping resume — done by clamping the
+    // EFFECTIVE playhead so it lags behind the real one by up to
+    // MASCOT_HOLD_VH viewport-heights once the visitor starts scrolling
+    // back up out of him, rather than unforming at the first pixel of
+    // scroll the way every other formation transition does.
+    if(this._mascotHoldOpen && points.length){
+      const mascotPoint = points[points.length - 1];
+      if(mascotPoint.name === 'mascot' && playheadY < mascotPoint.docY){
+        const MASCOT_HOLD_VH = 1.15;
+        const deficit = mascotPoint.docY - playheadY;
+        playheadY = mascotPoint.docY - Math.max(0, deficit - vh * MASCOT_HOLD_VH);
+      }
+    }
 
     if(points.length === 1 || playheadY <= points[0].docY){
       const p = points[0];
@@ -641,6 +737,14 @@ export class AsciiOrganism{
       const A = points[k], B = points[k + 1];
       if(playheadY >= A.docY && playheadY <= B.docY){
         const raw = (playheadY - A.docY) / Math.max(1, B.docY - A.docY);
+        // There is slightly less than half a viewport of document below
+        // the final marker, so the playhead can stop a few pixels short
+        // of it even at maximum scroll. Resolve the closing formation
+        // before that unreachable endpoint and keep it firmly locked
+        // until the user scrolls back above this final approach band.
+        if(B === last && B.name === 'mascot' && raw >= 0.88){
+          return { a: B.name, b: B.name, t: 0, anchorX: B.anchorX, anchorY: B.anchorY };
+        }
         const t = smoothstep(0, 1, raw);
         const seg = { a: A.name, b: B.name, t, anchorX: lerp(A.anchorX, B.anchorX, t), anchorY: lerp(A.anchorY, B.anchorY, t) };
         if(A.name === B.name && rangedNames.has(A.name)){
@@ -669,17 +773,12 @@ export class AsciiOrganism{
           c: 0,
         };
       }
-      case 'diamond': {
-        const facet = this.facets[this.diamondFacet[i]];
-        const u = this.diamondU[i], v = this.diamondV[i];
-        const lp = {
-          x: facet.v0.x * (1 - u - v) + facet.v1.x * u + facet.v2.x * v,
-          y: facet.v0.y * (1 - u - v) + facet.v1.y * u + facet.v2.y * v,
-          z: facet.v0.z * (1 - u - v) + facet.v1.z * u + facet.v2.z * v,
-        };
+      case 'diamond': { // now a golden rotating ring (torus), see ringPoint/ringNormalAt
+        const theta = this.ringTheta[i], phi = this.ringPhi[i];
+        const lp = ringPoint(theta, phi);
         const angle = t * 0.16;
         const rp = rotate3(lp, angle, 0.5);
-        const rn = rotate3(facet.normal, angle, 0.5);
+        const rn = rotate3(ringNormalAt(theta, phi), angle, 0.5);
         const proj = project3(rp, 2.3);
         const light = Math.max(0, rn.x * 0.3 + rn.y * 0.5 + rn.z * 0.8);
         const vis = smoothstep(-0.25, 0.1, rn.z);
@@ -870,9 +969,321 @@ export class AsciiOrganism{
           i: 0.14 + 0.1 * Math.sin(t * 0.5 + this.jitterSeed[i]), c: 0.55,
         };
       }
+      case 'mascot': {
+        // assembly progress is just the organism's own timeline blend
+        // toward 'mascot' — reversible by the exact same construction
+        // as every other formation, no bespoke scroll math needed.
+        const seg = this.seg;
+        const p = (seg && seg.a === seg.b) ? 1 : (seg ? seg.t : 0);
+        const idleAmp = smoothstep(0.85, 1, p) * (1 - this._mascotAlertAmount * 0.7);
+        const kind = this.mascotKind[i], idx = this.mascotIdx[i];
+        const scale = this._mascotScale, yOff = this._mascotYOffsetLocal;
+
+        if(kind === 1){
+          const s = this.mascotStrays[idx];
+          const enc = this._mascotEncounter;
+          let hx, hy;
+          if(enc && enc.strayIdx === idx){
+            const tp = enc.targetPt;
+            if(enc.phase === 'hold'){ hx = tp.x; hy = tp.y; }
+            else { hx = lerp(s.homeX, tp.x, enc.amount); hy = lerp(s.homeY, tp.y, enc.amount); }
+          } else {
+            const wander = 1 - p * s.settle;
+            hx = s.homeX + Math.sin(t * s.speed + s.phase) * s.amp * wander;
+            hy = s.homeY + Math.cos(t * s.speed * 0.8 + s.phase * 1.4) * s.amp * wander;
+          }
+          const intensity = 0.16 + 0.09 * Math.sin(t * 0.6 + this.jitterSeed[i]);
+          hx += this.mascotMicroX[i];
+          hy += this.mascotMicroY[i];
+          return { x: hx * scale, y: hy * scale + yOff, i: Math.max(0.1, intensity), c: 0 };
+        }
+
+        const pt = MASCOT_BODY_POINTS[idx];
+        let ox = pt.x + this.mascotMicroX[i];
+        let oy = pt.y + this.mascotMicroY[i];
+        const bob = Math.sin(t * 0.9) * 0.018 * idleAmp;
+        const torsoX = this._mascotTorsoShiftX || 0;
+        const torsoY = this._mascotTorsoShiftY || 0;
+        const jack = this._mascotJumpJackAmount || 0;
+        const wave = this._mascotWaveAmount || 0;
+        const inspect = this._mascotHeadInspectAmount || 0;
+        const balance = this._mascotBalanceAmount || 0;
+        const balanceWobble = this._mascotBalanceWobble || 0;
+
+        if(pt.part === 'torso'){
+          // The torso follows the head as one coordinated upper-body
+          // pose during every routine EXCEPT head-inspection, where the
+          // waist deliberately stays put while the head leans away from it.
+          ox += torsoX + balanceWobble * 0.025;
+          oy += torsoY + bob - jack * 0.05 + balance * 0.015;
+        } else if(pt.part === 'armL' || pt.part === 'armR'){
+          const side = pt.part === 'armR' ? 1 : -1;
+          // Every point in an arm uses the same shoulder pivot and angle.
+          // The rectangle may rotate, but can never bend or curve.
+          const greeting = side > 0 ? this._mascotAlertAmount : 0;
+          const attentive = side > 0 ? this._mascotAttention : this._mascotAttention * 0.2;
+          const helperLift = Math.max(greeting, attentive * 0.55);
+          const pivotX = side * 0.27, pivotY = -0.06;
+          let angle = -side * (jack * 2.35 + helperLift * (side > 0 ? 1.55 : 0.16));
+          if(side > 0 && wave > 0) angle += -2.05 * wave + Math.sin(t * 14) * 0.16 * wave;
+          angle -= side * balance * 1.55;
+          if(side > 0) angle -= inspect * 0.85;
+          const moved = mascotRigidLimbPoint(
+            ox, oy, pivotX, pivotY, angle,
+            torsoX + balanceWobble * 0.025,
+            torsoY + bob - jack * 0.05 + balance * 0.015,
+          );
+          ox = moved.x; oy = moved.y;
+        } else {
+          // Legs follow the same rigid-limb rule: one hip pivot and one
+          // shared angle per complete rectangular leg.
+          const side = pt.part === 'legR' ? 1 : -1;
+          const pivotX = side * 0.10, pivotY = 0.56;
+          let angle = -side * jack * 0.45;
+          if(side > 0) angle -= balance * 0.85;
+          else angle += balanceWobble * 0.08;
+          const moved = mascotRigidLimbPoint(
+            ox, oy, pivotX, pivotY, angle,
+            torsoX * 0.22, -jack * 0.05,
+          );
+          ox = moved.x; oy = moved.y;
+        }
+
+        const intensity = 0.72 + 0.18 * Math.sin(t * 0.45 + this.jitterSeed[i]);
+        return { x: ox * scale, y: oy * scale + yOff, i: intensity, c: 0 };
+      }
       default: return { x: 0, y: 0, i: 0.15, c: 0 };
     }
   }
+
+  /* Advances the mascot's stateful timers (idle glance, stray
+     encounters, click alert) and resolves cursor attention — all once
+     per frame, not per particle, exactly mirroring how _timelineSegment
+     computes shared per-frame state for 'roadmap'. Timers only advance
+     while 'mascot' is actually part of the current segment, matching
+     the old standalone class's whenVisible()-gated start/stop. */
+  _updateMascotState(dt, seg){
+    const active = seg.a === 'mascot' || seg.b === 'mascot';
+    if(!active){
+      this._mascotGlanceAmount = 0;
+      this._mascotEncounter = null;
+      this._mascotAlertAmount = 0;
+      this._mascotPullX = 0; this._mascotPullY = 0;
+      this._mascotAttention = 0;
+      this._mascotTorsoShiftX = 0;
+      this._mascotTorsoShiftY = 0;
+      this._mascotIdleElapsed = 0;
+      this._mascotJumpJackAmount = 0;
+      this._mascotWaveAmount = 0;
+      this._mascotHeadInspectAmount = 0;
+      this._mascotBalanceAmount = 0;
+      this._mascotBalanceWobble = 0;
+      return;
+    }
+    const alerted = this._mascotAlertElapsed >= 0;
+    const encountering = !!this._mascotEncounter;
+
+    if(!alerted && !encountering){
+      if(this._mascotGlanceElapsed >= 0){
+        this._mascotGlanceElapsed += dt;
+        if(this._mascotGlanceElapsed > MASCOT_GLANCE_DURATION_S){
+          this._mascotGlanceElapsed = -1;
+          this._mascotNextGlanceIn = mascotNextGlanceWait(Math.random);
+        }
+      } else {
+        this._mascotNextGlanceIn -= dt;
+        if(this._mascotNextGlanceIn <= 0){
+          this._mascotGlanceElapsed = 0;
+          this._mascotGlanceTargetIdx = Math.floor(Math.random() * this.mascotStrays.length);
+        }
+      }
+    }
+    const glanceActive = !alerted && !encountering && this._mascotGlanceElapsed >= 0;
+    this._mascotGlanceAmount = glanceActive ? mascotGlanceAmount(this._mascotGlanceElapsed) : 0;
+    if(glanceActive){
+      const s = this.mascotStrays[this._mascotGlanceTargetIdx];
+      this._mascotGlanceTarget = { x: s.homeX, y: s.homeY };
+    }
+
+    if(alerted){
+      this._mascotEncounter = null;
+    } else if(this._mascotEncounter){
+      this._mascotEncounter.elapsed += dt;
+      const dur = mascotEncounterDuration(this._mascotEncounter.type);
+      if(this._mascotEncounter.elapsed > dur){
+        this._mascotEncounter = null;
+        this._mascotNextEncounterIn = mascotNextEncounterWait(Math.random);
+      } else {
+        const { phase, amount } = mascotEncounterPhase(this._mascotEncounter.type, this._mascotEncounter.elapsed);
+        this._mascotEncounter.phase = phase;
+        this._mascotEncounter.amount = amount;
+      }
+    } else {
+      this._mascotNextEncounterIn -= dt;
+      if(this._mascotNextEncounterIn <= 0){
+        const type = MASCOT_ENCOUNTER_TYPES[Math.floor(Math.random() * MASCOT_ENCOUNTER_TYPES.length)];
+        const strayIdx = Math.floor(Math.random() * this.mascotStrays.length);
+        const targetPt = type === 'nudge' ? MASCOT_FOOT_R : (type === 'watch' ? MASCOT_WATCH_PT : MASCOT_HAND_R);
+        this._mascotEncounter = { strayIdx, type, elapsed: 0, phase: 'approach', amount: 0, targetPt };
+      }
+    }
+
+    if(this._mascotAlertElapsed >= 0){
+      this._mascotAlertElapsed += dt;
+      const totalDur = MASCOT_ALERT_IN_S + MASCOT_ALERT_HOLD_S + MASCOT_ALERT_OUT_S;
+      if(this._mascotAlertElapsed > totalDur) this._mascotAlertElapsed = -1;
+    }
+    this._mascotAlertAmount = this._mascotAlertElapsed >= 0 ? mascotAlertAmount(this._mascotAlertElapsed) : 0;
+
+    // cursor attention -> head pull. Direction comes from real pixel
+    // space (so it's correct regardless of viewport aspect ratio);
+    // magnitude is a small local-unit constant, same mix the standalone
+    // version used. MASCOT_Y_OFFSET_PX shifts his whole on-screen
+    // position up from the anchor's own resolved point (attention/pull,
+    // the hit-target frame, and the per-particle render below all read
+    // off this same shifted anchor, so everything moves together).
+    const mascotResolved = seg.a === 'mascot' && seg.b === 'mascot';
+    // The lime square is the stationary seed that the ASCII cloud grows
+    // around. Keep it at the mascot's final anchor throughout either
+    // transition; it only joins the character's motion once the body is
+    // completely resolved.
+    const baseAnchor = this._mascotAnchor || { x: seg.anchorX, y: seg.anchorY };
+    const anchorPxX = baseAnchor.x * this.w, anchorPxY = baseAnchor.y * this.h + MASCOT_Y_OFFSET_PX;
+    const pointerPxX = this.pointerX * this.w, pointerPxY = this.pointerY * this.h;
+    const dist = Math.hypot(pointerPxX - anchorPxX, pointerPxY - anchorPxY);
+    const attention = mascotCursorAttention(dist);
+    this._mascotAttention = attention;
+    const userActive = !this._mascotIdleForced && (attention > 0.04 || alerted || !mascotResolved);
+    if(userActive){
+      this._mascotIdleElapsed = 0;
+    } else {
+      this._mascotIdleElapsed += dt;
+      const routineDuration = mascotIdleRoutineDuration(this._mascotIdleRoutineIndex);
+      if(this._mascotIdleElapsed >= MASCOT_IDLE_DELAY_S + routineDuration){
+        this._mascotIdleElapsed = 0;
+        this._mascotIdleForced = false;
+        this._mascotIdleRoutineIndex = (this._mascotIdleRoutineIndex + 1) % MASCOT_IDLE_ROUTINES.length;
+      }
+    }
+    const idlePose = mascotIdleRoutinePose(this._mascotIdleElapsed, this._mascotIdleRoutineIndex);
+    if(idlePose.amount > 0){
+      this._mascotEncounter = null;
+      this._mascotGlanceAmount = 0;
+    }
+    this._mascotJumpJackAmount = idlePose.name === 'jumping-jacks' ? idlePose.amount : 0;
+    this._mascotWaveAmount = idlePose.name === 'tiny-wave' ? idlePose.amount : 0;
+    this._mascotHeadInspectAmount = idlePose.name === 'head-inspection' ? idlePose.amount : 0;
+    this._mascotBalanceAmount = idlePose.name === 'balance-wobble' ? idlePose.amount : 0;
+    this._mascotBalanceWobble = idlePose.name === 'balance-wobble'
+      ? idlePose.amount * Math.sin(idlePose.localT * Math.PI * 6) : 0;
+    let pullX = 0, pullY = 0;
+    if(attention > 0.001){
+      const d = dist || 1;
+      pullX = ((pointerPxX - anchorPxX) / d) * attention * 0.05;
+      pullY = ((pointerPxY - anchorPxY) / d) * attention * 0.05;
+    }
+    if(this._mascotAlertAmount > 0.001){
+      const d = dist || 1;
+      pullX = ((pointerPxX - anchorPxX) / d) * this._mascotAlertAmount * 0.10;
+      pullY = ((pointerPxY - anchorPxY) / d) * this._mascotAlertAmount * 0.10;
+    }
+    this._mascotPullX = pullX; this._mascotPullY = pullY;
+
+    // Fixed on-screen size (matching the original standalone canvas's
+    // own fixed CSS box — 96px/76px tall desktop/mobile — rather than
+    // scaling with viewport size like every other formation). Computed
+    // fresh each frame from the CURRENT minDim so it stays exactly this
+    // tall regardless of viewport: the local-space multiplier that
+    // would otherwise be a fixed MASCOT_SCALE constant is solved for
+    // here instead, then used both below (hit-target frame) and in
+    // _formationTarget's 'mascot' case (this._mascotScale) so the
+    // per-particle render matches exactly.
+    const minDim = Math.min(this.w, this.h) || 1;
+    const targetH = this.isMobile ? MASCOT_TARGET_HEIGHT_MOBILE_PX : MASCOT_TARGET_HEIGHT_PX;
+    this._mascotScale = targetH / (1.4 * minDim * 0.5);
+    // same conversion for the constant MASCOT_Y_OFFSET_PX upward shift,
+    // expressed as a local-space delta so it survives the outer blend's
+    // own minDim-dependent scaling and comes out as a true constant
+    // pixel offset regardless of viewport.
+    this._mascotYOffsetLocal = MASCOT_Y_OFFSET_PX / (minDim * 0.5);
+
+    // publish his current on-screen bounding box (viewport px) so
+    // main.js can position the real hit-target button over him —
+    // needed every frame, not just on scroll, since idle sway/glances
+    // keep him moving slightly even while the anchor itself is still.
+    const pxPerUnit = this._mascotScale * minDim * 0.5; // === targetH / 1.4, by construction
+    const bboxW = 0.60 * pxPerUnit, bboxH = 1.40 * pxPerUnit;
+    const livePullX = mascotResolved ? this._mascotPullX : 0;
+    const livePullY = mascotResolved ? this._mascotPullY : 0;
+    this._mascotFrame = {
+      x: anchorPxX + livePullX * pxPerUnit,
+      y: anchorPxY + livePullY * pxPerUnit,
+      width: bboxW, height: bboxH,
+    };
+    const now = performance.now() / 1000;
+    const idleAmp = mascotResolved ? (1 - this._mascotAlertAmount * 0.7) : 0;
+    let headX = this._mascotFrame.x + Math.sin(now * 0.5) * 0.02 * pxPerUnit * idleAmp;
+    let headY = this._mascotFrame.y - 0.62 * pxPerUnit
+      + Math.cos(now * 0.45) * 0.02 * pxPerUnit * idleAmp
+      - this._mascotJumpJackAmount * 0.05 * pxPerUnit;
+    if(mascotResolved && this._mascotGlanceAmount > 0){
+      headX += this._mascotGlanceTarget.x * 0.15 * this._mascotGlanceAmount * pxPerUnit;
+      headY += (this._mascotGlanceTarget.y + 0.62) * 0.15 * this._mascotGlanceAmount * pxPerUnit;
+    }
+    const enc = this._mascotEncounter;
+    if(mascotResolved && enc && enc.type === 'watch'){
+      const watchAmount = enc.phase === 'hold' ? 1 : enc.amount;
+      headX += MASCOT_WATCH_PT.x * 0.15 * watchAmount * pxPerUnit;
+      headY += (MASCOT_WATCH_PT.y + 0.62) * 0.15 * watchAmount * pxPerUnit;
+    }
+    // Balance moves the head with the torso; both remain part of the
+    // same coordinated pose, so this is folded in BEFORE the torso-shift
+    // coupling below is computed.
+    headX += this._mascotBalanceWobble * 0.025 * pxPerUnit;
+    if(mascotResolved){
+      const headLocalX = (headX - this._mascotFrame.x) / pxPerUnit;
+      const headLocalY = (headY - (this._mascotFrame.y - 0.62 * pxPerUnit)) / pxPerUnit;
+      this._mascotTorsoShiftX = livePullX + headLocalX * 0.62;
+      this._mascotTorsoShiftY = livePullY + headLocalY * 0.42;
+    } else {
+      this._mascotTorsoShiftX = 0;
+      this._mascotTorsoShiftY = 0;
+    }
+    // During inspection the square leaves its neck position and travels
+    // well out toward the raised right hand — added AFTER the torso-shift
+    // coupling above (not before, like balance/glance/watch are) so the
+    // waist deliberately holds still while only the head travels.
+    headX += this._mascotHeadInspectAmount * 0.85 * pxPerUnit;
+    headY += this._mascotHeadInspectAmount * 0.30 * pxPerUnit;
+    this._mascotHead = { x: headX, y: headY, size: 0.44 * pxPerUnit };
+  }
+
+  /** Called on click/Enter/Space of the mascot's hit-target button
+   *  (main.js). Refreshes rather than stacks on repeat activation. */
+  triggerMascotReaction(){
+    if(this.reduced){
+      this._mascotAlertElapsed = MASCOT_ALERT_IN_S + MASCOT_ALERT_HOLD_S;
+      this._frame(0.05);
+      return;
+    }
+    this._mascotAlertElapsed = 0;
+  }
+
+  /** Temporary review hook: immediately plays idle routines 1–4. */
+  triggerMascotIdleRoutine(shortcutNumber){
+    const index = mascotShortcutRoutineIndex(shortcutNumber);
+    if(index < 0) return false;
+    this._mascotIdleRoutineIndex = index;
+    this._mascotIdleElapsed = MASCOT_IDLE_DELAY_S + 0.02;
+    this._mascotIdleForced = true;
+    this._mascotAlertElapsed = -1;
+    this._mascotEncounter = null;
+    return true;
+  }
+
+  /** Current on-screen bounding box (viewport px) of the mascot
+   *  formation, for positioning the real hit-target button. */
+  getMascotFrame(){ return this._mascotFrame; }
 
   _frame(dtIn){
     let dt = this.reduced ? 0.05 : dtIn;
@@ -938,6 +1349,7 @@ export class AsciiOrganism{
     const seg = this._timelineSegment();
     this._lastAnchorX = seg.anchorX; this._lastAnchorY = seg.anchorY;
     this.seg = seg; // public — polled by the audio engine
+    this._updateMascotState(dt, seg);
 
     // globe is neutral (c: 0 in _formationTarget) and must contribute
     // NOTHING to the color blend, ever — weighting each side's accent by
@@ -948,8 +1360,8 @@ export class AsciiOrganism{
     // own acid-signal-green, not a bug like the yellow-flash one above: this
     // is the one formation actually meant to carry the site's own identity
     // color, since it represents NJORD describing itself rather than a client
-    const ACCENTS = { diamond: [61, 127, 240], wave: [122, 27, 51], network: [31, 76, 120], globe: [203, 255, 61], constellation: [203, 255, 61], roadmap: [203, 255, 61] };
-    const FORM_C = { globe: 0, diamond: 1, wave: 1, network: 0.4, constellation: 0.55, roadmap: 0.5 };
+    const ACCENTS = { diamond: [212, 175, 55], wave: [122, 27, 51], network: [31, 76, 120], globe: [203, 255, 61], constellation: [203, 255, 61], roadmap: [203, 255, 61], mascot: [203, 255, 61] };
+    const FORM_C = { globe: 0, diamond: 1, wave: 1, network: 0.4, constellation: 0.55, roadmap: 0.5, mascot: 1 };
     const cwA = (FORM_C[seg.a] ?? 0) * (1 - seg.t);
     const cwB = (FORM_C[seg.b] ?? 0) * seg.t;
     const cwSum = cwA + cwB;
@@ -962,9 +1374,18 @@ export class AsciiOrganism{
     }
     const sameEnds = seg.a === seg.b;
 
-    const posEase = this.reduced ? 1 : 0.045;
     const offEase = this.reduced ? 1 : 0.1;
     const wobble = 0.012 + turbulence * 0.01;
+    const mascotBlend = seg.a === 'mascot' && seg.b === 'mascot'
+      ? 1
+      : seg.b === 'mascot' ? seg.t
+      : seg.a === 'mascot' ? 1 - seg.t
+      : 0;
+    // Preserve the slow, organic morph between normal formations, but
+    // register the particles quickly once the mascot's final state is
+    // reached. At the old 0.045 rate he remained a cloud-shaped clump
+    // for several seconds before his limb gaps became readable.
+    const posEase = this.reduced ? 1 : (mascotBlend === 1 ? 0.22 : 0.045);
 
     for(let i = 0; i < n; i++){
       const fA = this._formationTarget(seg.a, i, t);
@@ -977,8 +1398,9 @@ export class AsciiOrganism{
       // a small amount of organic wobble riding on top of the resolved
       // target — texture, not a competing state, so it can never make
       // the shape read as unresolved or muddy
-      const wx = Math.sin(t * 0.6 + this.jitterSeed[i]) * wobble;
-      const wy = Math.cos(t * 0.5 + this.jitterSeed[i] * 1.3) * wobble;
+      const resolvedWobble = wobble * (1 - mascotBlend);
+      const wx = Math.sin(t * 0.6 + this.jitterSeed[i]) * resolvedWobble;
+      const wy = Math.cos(t * 0.5 + this.jitterSeed[i] * 1.3) * resolvedWobble;
 
       const targetX = seg.anchorX + (fx + wx) * sx * 0.5;
       const targetY = seg.anchorY + (fy + wy) * sy * 0.5;
@@ -1001,13 +1423,19 @@ export class AsciiOrganism{
         const radius = 0.11;
         if(dist < radius){
           const falloff = 1 - dist / radius;
-          const strength = falloff * falloff * (0.045 + pointerSpeed * 0.09);
+          // Keep the shared cloud responsive while it forms, then make
+          // its cursor displacement nearly imperceptible once it has
+          // resolved into the mascot. Full-strength repulsion is large
+          // enough to close the narrow gaps between his body blocks.
+          const mascotCursorScale = lerp(1, 0.02, mascotBlend);
+          const strength = falloff * falloff * (0.045 + pointerSpeed * 0.09) * mascotCursorScale;
           desiredOffX = (dx / dist) * strength;
           desiredOffY = (dy / dist) * strength;
         }
       }
-      this.vx[i] += (desiredOffX - this.vx[i]) * offEase;
-      this.vy[i] += (desiredOffY - this.vy[i]) * offEase;
+      const resolvedOffEase = mascotBlend === 1 ? Math.max(offEase, 0.35) : offEase;
+      this.vx[i] += (desiredOffX - this.vx[i]) * resolvedOffEase;
+      this.vy[i] += (desiredOffY - this.vy[i]) * resolvedOffEase;
 
       this.intensity[i] += (targetIntensity - this.intensity[i]) * 0.06;
       this.colorMix[i] += (colorTarget - this.colorMix[i]) * 0.035;
@@ -1019,11 +1447,25 @@ export class AsciiOrganism{
   _render(ar, ag, ab){
     const { ctx, w, h } = this;
     ctx.clearRect(0, 0, w, h);
-    ctx.font = "700 13px 'JetBrains Mono', monospace";
+    const organismFont = "700 13px 'JetBrains Mono', monospace";
+    // Match the original block silhouette: the mascot keeps the exact
+    // same point positions and dimensions, but each black block is made
+    // from heavy, tightly overlapping hash characters. From a distance
+    // they read almost solid; up close the ASCII construction remains
+    // visible.
+    const mascotBodyFont = "900 8px 'JetBrains Mono', monospace";
+    ctx.font = organismFont;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     const inkRGB = hexToRgb(this.getInkColor());
     const n = this.count;
+    const seg = this.seg;
+    let mascotPresence = 0;
+    if(seg){
+      if(seg.a === 'mascot' && seg.b === 'mascot') mascotPresence = 1;
+      else if(seg.b === 'mascot') mascotPresence = seg.t;
+      else if(seg.a === 'mascot') mascotPresence = 1 - seg.t;
+    }
     let lastMixKey = -1, lastFill = '';
     for(let i = 0; i < n; i++){
       const inten = this.intensity[i];
@@ -1043,7 +1485,23 @@ export class AsciiOrganism{
       }
       ctx.globalAlpha = Math.min(1, inten + 0.1);
       ctx.fillStyle = lastFill;
-      ctx.fillText(chars[idx], (this.x[i] + this.vx[i]) * w, (this.y[i] + this.vy[i]) * h);
+      const mascotBodyParticle = mascotPresence > 0.35 && this.mascotKind[i] === 0;
+      ctx.font = mascotBodyParticle ? mascotBodyFont : organismFont;
+      ctx.fillText(mascotBodyParticle ? '#' : chars[idx], (this.x[i] + this.vx[i]) * w, (this.y[i] + this.vy[i]) * h);
+    }
+    const head = this._mascotHead;
+    if(seg && head){
+      let presence = 0;
+      if(seg.a === 'mascot' && seg.b === 'mascot') presence = 1;
+      else if(seg.b === 'mascot') presence = seg.t;
+      else if(seg.a === 'mascot') presence = 1 - seg.t;
+      if(presence > 0.01){
+        // The square remains fully present while the cloud forms or
+        // disperses. It is the fixed origin of the transformation.
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = 'rgb(203,255,61)';
+        ctx.fillRect(head.x - head.size / 2, head.y - head.size / 2, head.size, head.size);
+      }
     }
     ctx.globalAlpha = 1;
   }
@@ -1176,15 +1634,12 @@ export class FormationPortrait{
     const rnd = mulberry32(opts.seed || 77);
     const n = this.count;
 
-    if(name === 'diamond'){
-      this.facets = buildDiamondFacets(14); // more facets than the on-page organism's diamond
-      this.facetIdx = new Uint8Array(n);
-      this.u = new Float32Array(n); this.v = new Float32Array(n);
+    if(name === 'diamond'){ // golden rotating ring — see ringPoint/ringNormalAt
+      this.ringTheta = new Float32Array(n);
+      this.ringPhi = new Float32Array(n);
       for(let i = 0; i < n; i++){
-        this.facetIdx[i] = i % this.facets.length;
-        let u = rnd(), v = rnd();
-        if(u + v > 1){ u = 1 - u; v = 1 - v; }
-        this.u[i] = u; this.v[i] = v;
+        this.ringTheta[i] = (i / n) * Math.PI * 2 + (rnd() - 0.5) * (Math.PI * 2 / n);
+        this.ringPhi[i] = rnd() * Math.PI * 2;
       }
     } else if(name === 'wave'){
       this.lineCount = 5; // more lines than the on-page organism's two
@@ -1284,16 +1739,11 @@ export class FormationPortrait{
     for(let i = 0; i < n; i++){
       let x = 0, y = 0, inten = 0.3;
       if(this.name === 'diamond'){
-        const facet = this.facets[this.facetIdx[i]];
-        const u = this.u[i], v = this.v[i];
-        const lp = {
-          x: facet.v0.x * (1 - u - v) + facet.v1.x * u + facet.v2.x * v,
-          y: facet.v0.y * (1 - u - v) + facet.v1.y * u + facet.v2.y * v,
-          z: facet.v0.z * (1 - u - v) + facet.v1.z * u + facet.v2.z * v,
-        };
+        const theta = this.ringTheta[i], phi = this.ringPhi[i];
+        const lp = ringPoint(theta, phi);
         const angle = t * 0.18;
         const rp = rotate3(lp, angle, 0.5);
-        const rn = rotate3(facet.normal, angle, 0.5);
+        const rn = rotate3(ringNormalAt(theta, phi), angle, 0.5);
         const proj = project3(rp, 2.3);
         const light = Math.max(0, rn.x * 0.3 + rn.y * 0.5 + rn.z * 0.8);
         const vis = smoothstep(-0.25, 0.1, rn.z);
@@ -1375,4 +1825,260 @@ export class StaticGlyphField{
     this.field.setPoints(pts);
     this.field.render();
   }
+}
+
+/* ----------------------------------------------------------------
+   MASCOT — the contact section's closing formation. Pure timing/geometry
+   helpers below; the actual per-particle assembly, idle personality,
+   stray encounters, cursor awareness and click reaction live in
+   AsciiOrganism's 'mascot' case and _updateMascotState(), since he's
+   now performed by the shared organism particle pool rather than a
+   standalone canvas. See
+   docs/superpowers/specs/2026-09-17-ascii-mascot-design.md for the
+   original design rationale — most of the constants below encode a
+   specific reviewed decision, not an arbitrary default. Formation
+   progress itself is no longer a bespoke scroll calculation: it's
+   just `seg.t` (or 1, once settled) from the organism's own
+   constellation->mascot timeline segment, so it's reversible by the
+   same construction as every other formation.
+   ---------------------------------------------------------------- */
+
+// per-part offset into the global progress so the body does not
+// interpolate in lockstep — head resolves first, the left side lags
+// the right on purpose (not a mirrored pair).
+export const MASCOT_STAGGER = { head: 0, torso: 0.05, armR: 0.08, legR: 0.10, armL: 0.14, legL: 0.18 };
+
+/** This part's own progress, derived from the global progress + its stagger offset. */
+export function mascotPartProgress(p, stagger){
+  const denom = 1 - stagger;
+  const raw = denom <= 0 ? 1 : (p - stagger) / denom;
+  return smoothstep(0, 1, Math.max(0, Math.min(1, raw)));
+}
+
+// flicker dropout band, in terms of a part's OWN partP — a flagged point
+// in this band multiplies its intensity by an on/off flicker rather than
+// rendering solid, reading as "hasn't caught yet" rather than a bug.
+const MASCOT_FLICKER_LO = 0.35;
+const MASCOT_FLICKER_HI = 0.55;
+
+/** 1 = solid, 0.15 = dropped out, for a flagged flicker point at this partP. */
+export function mascotFlickerIntensity(partP, seed){
+  if(partP <= MASCOT_FLICKER_LO || partP >= MASCOT_FLICKER_HI) return 1;
+  const span = MASCOT_FLICKER_HI - MASCOT_FLICKER_LO;
+  const local = (partP - MASCOT_FLICKER_LO) / span; // 0..1 across the band
+  const wave = Math.sin(local * Math.PI * 2 + seed);
+  return wave < -0.2 ? 0.15 : 1;
+}
+
+const MASCOT_GLANCE_MIN_S = 6, MASCOT_GLANCE_MAX_S = 11;
+const MASCOT_GLANCE_IN_S = 0.6, MASCOT_GLANCE_HOLD_S = 0.4, MASCOT_GLANCE_OUT_S = 0.6;
+export const MASCOT_GLANCE_DURATION_S = MASCOT_GLANCE_IN_S + MASCOT_GLANCE_HOLD_S + MASCOT_GLANCE_OUT_S;
+
+/** Random wait (seconds) until the next idle glance, given a 0..1 rnd() draw. */
+export function mascotNextGlanceWait(rnd){
+  return MASCOT_GLANCE_MIN_S + rnd() * (MASCOT_GLANCE_MAX_S - MASCOT_GLANCE_MIN_S);
+}
+
+/** Glance offset amount (0..1) at `elapsed` seconds since a glance was triggered. */
+export function mascotGlanceAmount(elapsed){
+  if(elapsed < 0) return 0;
+  if(elapsed < MASCOT_GLANCE_IN_S) return smoothstep(0, 1, elapsed / MASCOT_GLANCE_IN_S);
+  if(elapsed < MASCOT_GLANCE_IN_S + MASCOT_GLANCE_HOLD_S) return 1;
+  const outElapsed = elapsed - MASCOT_GLANCE_IN_S - MASCOT_GLANCE_HOLD_S;
+  if(outElapsed < MASCOT_GLANCE_OUT_S) return 1 - smoothstep(0, 1, outElapsed / MASCOT_GLANCE_OUT_S);
+  return 0; // glance finished — caller schedules the next one
+}
+
+const MASCOT_ENCOUNTER_MIN_S = 15, MASCOT_ENCOUNTER_MAX_S = 30;
+export const MASCOT_ENCOUNTER_TYPES = ['watch', 'nudge', 'catch'];
+const MASCOT_ENCOUNTER_APPROACH_S = 1.0;
+const MASCOT_ENCOUNTER_HOLD_S = { watch: 1.5, nudge: 0.2, catch: 1.75 };
+const MASCOT_ENCOUNTER_RELEASE_S = 1.0;
+
+/** Random wait (seconds) until the next stray encounter. */
+export function mascotNextEncounterWait(rnd){
+  return MASCOT_ENCOUNTER_MIN_S + rnd() * (MASCOT_ENCOUNTER_MAX_S - MASCOT_ENCOUNTER_MIN_S);
+}
+/** Total duration (seconds) of one encounter of this type. */
+export function mascotEncounterDuration(type){
+  return MASCOT_ENCOUNTER_APPROACH_S + MASCOT_ENCOUNTER_HOLD_S[type] + MASCOT_ENCOUNTER_RELEASE_S;
+}
+/** Phase and progress (0..1 within that phase) of an encounter of `type`
+ *  at `elapsed` seconds since it started. */
+export function mascotEncounterPhase(type, elapsed){
+  const holdS = MASCOT_ENCOUNTER_HOLD_S[type];
+  if(elapsed < 0) return { phase: 'done', amount: 0 };
+  if(elapsed < MASCOT_ENCOUNTER_APPROACH_S){
+    return { phase: 'approach', amount: smoothstep(0, 1, elapsed / MASCOT_ENCOUNTER_APPROACH_S) };
+  }
+  const holdElapsed = elapsed - MASCOT_ENCOUNTER_APPROACH_S;
+  if(holdElapsed < holdS) return { phase: 'hold', amount: 1 };
+  const releaseElapsed = holdElapsed - holdS;
+  if(releaseElapsed < MASCOT_ENCOUNTER_RELEASE_S){
+    return { phase: 'release', amount: 1 - smoothstep(0, 1, releaseElapsed / MASCOT_ENCOUNTER_RELEASE_S) };
+  }
+  return { phase: 'done', amount: 0 };
+}
+
+export const MASCOT_NOTICE_RADIUS_PX = 260;
+
+/** Continuous 0..1 cursor attention — never thresholded, never used for brightness. */
+export function mascotCursorAttention(distPx, radiusPx = MASCOT_NOTICE_RADIUS_PX){
+  const raw = 1 - Math.max(0, Math.min(1, distPx / radiusPx));
+  return smoothstep(0, 1, raw);
+}
+
+export const MASCOT_ALERT_HOLD_S = 3.5;
+export const MASCOT_ALERT_IN_S = 0.3, MASCOT_ALERT_OUT_S = 0.6;
+
+/** Alert (post-click) amount 0..1 at `elapsed` seconds since (re)trigger. */
+export function mascotAlertAmount(elapsed){
+  if(elapsed < 0) return 0;
+  if(elapsed < MASCOT_ALERT_IN_S) return smoothstep(0, 1, elapsed / MASCOT_ALERT_IN_S);
+  if(elapsed < MASCOT_ALERT_IN_S + MASCOT_ALERT_HOLD_S) return 1;
+  const outElapsed = elapsed - MASCOT_ALERT_IN_S - MASCOT_ALERT_HOLD_S;
+  if(outElapsed < MASCOT_ALERT_OUT_S) return 1 - smoothstep(0, 1, outElapsed / MASCOT_ALERT_OUT_S);
+  return 0;
+}
+
+export const MASCOT_IDLE_DELAY_S = 8;
+export const MASCOT_IDLE_JACK_DELAY_S = MASCOT_IDLE_DELAY_S;
+export const MASCOT_IDLE_JACK_REPS = 3;
+export const MASCOT_IDLE_JACK_REP_S = 1.05;
+export const MASCOT_IDLE_JACK_DURATION_S = MASCOT_IDLE_JACK_REPS * MASCOT_IDLE_JACK_REP_S;
+export const MASCOT_IDLE_ROUTINES = [
+  'jumping-jacks',
+  'tiny-wave',
+  'head-inspection',
+  'balance-wobble',
+];
+
+/** Temporary keyboard preview mapping: 1 wave, 2 inspect, 3 balance. */
+export function mascotShortcutRoutineIndex(value){
+  const number = Number(value);
+  return Number.isInteger(number) && number >= 1 && number <= 3 ? number : -1;
+}
+
+const MASCOT_IDLE_ROUTINE_DURATIONS = [MASCOT_IDLE_JACK_DURATION_S, 2.8, 3.6, 3.5];
+
+export function mascotIdleRoutineDuration(index){
+  return MASCOT_IDLE_ROUTINE_DURATIONS[index % MASCOT_IDLE_ROUTINES.length];
+}
+
+/** Current named idle pose and its eased 0..1 action amount. */
+export function mascotIdleRoutinePose(idleElapsed, index){
+  const name = MASCOT_IDLE_ROUTINES[index % MASCOT_IDLE_ROUTINES.length];
+  const duration = mascotIdleRoutineDuration(index);
+  const localT = idleElapsed - MASCOT_IDLE_DELAY_S;
+  if(localT < 0 || localT >= duration) return { name, amount: 0, localT: 0 };
+  if(name === 'jumping-jacks'){
+    return { name, amount: mascotJumpingJackAmount(idleElapsed), localT: localT / duration };
+  }
+  const edge = Math.min(1, localT / 0.45, (duration - localT) / 0.45);
+  return { name, amount: smoothstep(0, 1, Math.max(0, edge)), localT: localT / duration };
+}
+
+/** 0..1 open-pose amount for a three-repetition idle jumping-jack routine. */
+export function mascotJumpingJackAmount(idleElapsed){
+  const routineT = idleElapsed - MASCOT_IDLE_JACK_DELAY_S;
+  if(routineT < 0 || routineT >= MASCOT_IDLE_JACK_DURATION_S) return 0;
+  const repT = (routineT % MASCOT_IDLE_JACK_REP_S) / MASCOT_IDLE_JACK_REP_S;
+  // Smooth closed -> open -> closed motion for every repetition.
+  return Math.sin(Math.PI * repT) ** 2;
+}
+
+/** Rotate a limb point around its joint, then translate the whole limb. */
+export function mascotRigidLimbPoint(x, y, pivotX, pivotY, angle, tx = 0, ty = 0){
+  const dx = x - pivotX, dy = y - pivotY;
+  return {
+    x: pivotX + dx * Math.cos(angle) - dy * Math.sin(angle) + tx,
+    y: pivotY + dx * Math.sin(angle) + dy * Math.cos(angle) + ty,
+  };
+}
+
+// Dense block silhouette, local unit space (~[-1,1] box), y-down like
+// the rest of this file. The solid lime head is drawn separately; these
+// points fill the reference's black body blocks with overlapping hash
+// characters: a broad torso, detached arm columns, and parallel legs.
+//
+// Y is shifted +0.32 from the original standalone spec's coordinates
+// so local y=0 (the anchor pivot, i.e. the border line under the
+// contact heading) sits at the figure's own vertical CENTER rather
+// than his waist. This matters because the anchor is clamped to
+// [0.1, 0.9] of the viewport by the shared zone system (see
+// _timelineSegment) — once you've scrolled well past the anchor
+// marker (true for most of the scroll through the rest of the contact
+// section), it pins near the TOP of the viewport, same as every other
+// formation's own anchor does once its trigger element is above the
+// fold. A figure centered on its anchor gets clipped evenly top/bottom
+// in that state instead of losing its head off the top of the screen
+// entirely (a real bug hit during live verification — the un-shifted
+// waist-as-origin coordinates put his head ~160px above the viewport
+// whenever the anchor was pinned near the top).
+function mascotGrid(part, xs, ys){
+  const points = [];
+  ys.forEach((y) => xs.forEach((x) => points.push({ part, x, y })));
+  return points;
+}
+
+const MASCOT_TORSO_X = [-0.10, 0, 0.10];
+const MASCOT_TORSO_Y = [-0.12, -0.05, 0.02, 0.09, 0.16, 0.23, 0.30, 0.37, 0.44];
+const MASCOT_ARM_Y = [-0.06, 0.01, 0.08, 0.15, 0.22, 0.29, 0.36, 0.43];
+const MASCOT_LEG_Y = [0.56, 0.64, 0.72, 0.80, 0.88];
+
+export const MASCOT_BODY_POINTS = [
+  ...mascotGrid('torso', MASCOT_TORSO_X, MASCOT_TORSO_Y),
+  ...mascotGrid('armL', [-0.27], MASCOT_ARM_Y),
+  ...mascotGrid('armR', [0.27], MASCOT_ARM_Y),
+  ...mascotGrid('legL', [-0.10], MASCOT_LEG_Y),
+  ...mascotGrid('legR', [0.10], MASCOT_LEG_Y),
+];
+
+MASCOT_BODY_POINTS.find((pt) => pt.part === 'armL' && pt.y === 0.43).flicker = true;
+MASCOT_BODY_POINTS.find((pt) => pt.part === 'legL' && pt.y === 0.72).flicker = true;
+MASCOT_BODY_POINTS.find((pt) => pt.part === 'armR' && pt.y === 0.43).isHand = true;
+MASCOT_BODY_POINTS.find((pt) => pt.part === 'legR' && pt.y === 0.88).isFoot = true;
+
+// fixed reference points (right hand / right foot / a head-height spot
+// in front of him) that stray encounters target — see
+// AsciiOrganism._updateMascotState below.
+export const MASCOT_HAND_R = { x: 0.27, y: 0.43 };
+export const MASCOT_FOOT_R = { x: 0.10, y: 0.88 };
+export const MASCOT_WATCH_PT = { x: 0, y: -0.43 };
+
+// Fixed on-screen SIZE, independent of viewport (unlike every other
+// formation, which scales with minDim) — matches the original
+// standalone canvas's own fixed CSS box (72x96 desktop / 56x76
+// mobile), computed dynamically per frame in
+// AsciiOrganism._updateMascotState since the local-space multiplier
+// needed to hit an exact pixel height changes with the CURRENT
+// viewport's minDim. Height-based (width follows from the geometry's
+// own aspect ratio) since height is the dominant/most visible
+// dimension. Tune these first if he ever needs to read bigger/smaller.
+export const MASCOT_TARGET_HEIGHT_PX = 96;
+export const MASCOT_TARGET_HEIGHT_MOBILE_PX = 76;
+
+// constant upward shift (viewport px, independent of scroll/anchor
+// position) applied to his whole on-screen position — set by explicit
+// request after the first live look.
+export const MASCOT_Y_OFFSET_PX = -66;
+
+/** Ambient stray particles: fixed home position, wander motion, and
+ *  settle weight (how close a given stray tucks in once formed). */
+export function mascotBuildStrays(rnd, count = 25){
+  const strays = [];
+  for(let i = 0; i < count; i++){
+    const angle = rnd() * Math.PI * 2;
+    const radius = 1.0 + rnd() * 0.7;
+    strays.push({
+      homeX: Math.cos(angle) * radius,
+      homeY: Math.sin(angle) * radius,
+      phase: rnd() * Math.PI * 2,
+      speed: 0.15 + rnd() * 0.2,
+      amp: 0.08 + rnd() * 0.1,
+      settle: rnd() < 0.3 ? 0.6 + rnd() * 0.4 : rnd() * 0.15,
+      jitterSeed: rnd() * Math.PI * 2,
+    });
+  }
+  return strays;
 }

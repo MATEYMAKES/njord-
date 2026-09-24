@@ -515,6 +515,46 @@ export class GenerativeAudio{
     return this._pulseWaveform;
   }
 
+  /* One-shot robotic beep — a short, clean square-wave blip whose pitch
+     is drawn fresh each hit from the site's own shared scale (degreeHz,
+     same quantization every generative voice uses), so a run of
+     keystrokes reads as chattering R2D2-style beeps at different pitches
+     rather than one repeated tone. Routed through the master bus so it
+     inherits the shared filter/reverb/limiter chain and is silent
+     whenever sound is toggled off. Triggered externally, once per typed
+     character, by the mascot conversation's own typewriter effect (see
+     mascot-convo.js) — not part of the scheduled/weighted voice system,
+     just a plain fire-and-forget hit. */
+  playKeyTick(){
+    if(!this.enabled || !this.ctx) return;
+    const ctx = this.ctx;
+    const now = ctx.currentTime;
+    const rnd = this.rnd;
+
+    const beep = ctx.createOscillator();
+    beep.type = 'square';
+    // a wide degree/octave spread so consecutive beeps clearly differ in
+    // pitch, still snapped to the same scale every other voice uses
+    const degree = Math.floor(rnd() * SCALE.length * 3);
+    beep.frequency.setValueAtTime(degreeHz(degree, 2), now);
+
+    // dulls the raw square wave's harsh upper harmonics into something
+    // rounder — a "beep," not a buzzer
+    const beepFilter = ctx.createBiquadFilter();
+    beepFilter.type = 'lowpass';
+    beepFilter.frequency.value = 3200;
+    beepFilter.Q.value = 0.5;
+
+    const beepGain = ctx.createGain();
+    beepGain.gain.setValueAtTime(0.0001, now);
+    beepGain.gain.linearRampToValueAtTime(0.18 + rnd() * 0.05, now + 0.003);
+    beepGain.gain.setValueAtTime(beepGain.gain.value, now + 0.018);
+    beepGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.045);
+    beep.connect(beepFilter).connect(beepGain).connect(this.master);
+    beep.start(now);
+    beep.stop(now + 0.05);
+  }
+
   _build(){
     const ctx = this.ctx;
     this._targetVolume = 0.32;
