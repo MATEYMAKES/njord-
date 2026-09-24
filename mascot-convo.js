@@ -436,8 +436,24 @@ export function initMascotConvo(container, opts = {}){
   function updatePosition(frame){
     if(!frame) return;
     const gapX = 22, gapY = 10;
-    const anchorBottomY = frame.y - frame.height / 2 - gapY;
-    container.style.transform = `translate(${frame.x - frame.width / 2 - gapX}px, ${anchorBottomY}px) translate(-100%, -100%)`;
+    const GUTTER = 16;
+    const vw = window.innerWidth, vh = window.innerHeight;
+    // The panel grows up-and-left from the mascot (translate(-100%,-100%)
+    // below anchors it by its OWN bottom-right corner) — on a narrow
+    // phone, if he's currently sitting anywhere near the left edge, that
+    // growth-direction can push the panel's left edge past x=0 entirely,
+    // off-screen and unreachable (this is what made the opening question
+    // and "kam një projekt" button run off the left side on mobile).
+    // Clamping the corner itself, using the panel's own real rendered
+    // size, keeps the whole panel on-screen regardless of where along
+    // the mascot's anchor range he happens to be.
+    const panelW = container.offsetWidth || 0;
+    const panelH = container.offsetHeight || 0;
+    let rightEdge = frame.x - frame.width / 2 - gapX;
+    rightEdge = Math.max(GUTTER + panelW, Math.min(vw - GUTTER, rightEdge));
+    let bottomEdge = frame.y - frame.height / 2 - gapY;
+    bottomEdge = Math.max(GUTTER + panelH, Math.min(vh - GUTTER, bottomEdge));
+    container.style.transform = `translate(${rightEdge}px, ${bottomEdge}px) translate(-100%, -100%)`;
     // The contact section's top border is a hard ceiling. The panel can
     // widen, but it cannot grow upward through that line; longer stages
     // scroll internally instead. Subtract the fixed top controls and the
@@ -447,7 +463,7 @@ export function initMascotConvo(container, opts = {}){
     const contactTop = container.closest('.contact')?.getBoundingClientRect().top ?? 16;
     const panelGap = panel ? parseFloat(getComputedStyle(panel).rowGap) || 16 : 16;
     const chromeHeight = (topBar?.getBoundingClientRect().height || 0) + panelGap;
-    const availableStageHeight = anchorBottomY - Math.max(16, contactTop) - chromeHeight;
+    const availableStageHeight = bottomEdge - Math.max(16, contactTop) - chromeHeight;
     stage.style.maxHeight = `${Math.max(80, availableStageHeight)}px`;
   }
 

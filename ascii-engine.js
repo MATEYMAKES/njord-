@@ -672,8 +672,24 @@ export class AsciiOrganism{
       // (y < 0) once scrolled all the way down. Other formations keep
       // their own separate viewport safe-band clamp.
       const rawAnchorY = (r.top + r.height / 2) / vh;
+      // On mobile the mascot conversation panel grows UP from him (see
+      // updatePosition() in mascot-convo.js), so however much headroom
+      // sits above his anchor point directly caps how much of his own
+      // dialogue can show before the panel has to scroll internally.
+      // NOTE: this floor is a MINIMUM, not a resting position — pushing
+      // it up too far (a first attempt used 0.74) DETACHES him from the
+      // real anchor line once raw scroll position rises above it, so he
+      // ends up hovering at some arbitrary fixed screen fraction instead
+      // of standing on the actual line between the heading and the email
+      // (the .contact-row border-top, where .mascot-anchor sits — see
+      // below). The real fix for "give him room + keep him on the line"
+      // is the extra padding-bottom on .contact-head (style.css), which
+      // buys room by moving the line itself further down the document,
+      // not by clamping him away from it. Keep this floor small — just
+      // enough to stop the head clipping off the top of the viewport.
+      const mascotFloor = 0.20;
       const anchorY = z.name === 'mascot'
-        ? Math.max(0.20, rawAnchorY)
+        ? Math.max(mascotFloor, rawAnchorY)
         : Math.max(0.1, Math.min(0.9, rawAnchorY));
       if(z.name === 'mascot') this._mascotAnchor = { x: anchorX, y: anchorY };
       if(z.ranged){
@@ -1148,7 +1164,8 @@ export class AsciiOrganism{
     // transition; it only joins the character's motion once the body is
     // completely resolved.
     const baseAnchor = this._mascotAnchor || { x: seg.anchorX, y: seg.anchorY };
-    const anchorPxX = baseAnchor.x * this.w, anchorPxY = baseAnchor.y * this.h + MASCOT_Y_OFFSET_PX;
+    const mascotYOffset = this.isMobile ? MASCOT_Y_OFFSET_MOBILE_PX : MASCOT_Y_OFFSET_PX;
+    const anchorPxX = baseAnchor.x * this.w, anchorPxY = baseAnchor.y * this.h + mascotYOffset;
     const pointerPxX = this.pointerX * this.w, pointerPxY = this.pointerY * this.h;
     const dist = Math.hypot(pointerPxX - anchorPxX, pointerPxY - anchorPxY);
     const attention = mascotCursorAttention(dist);
@@ -1201,11 +1218,11 @@ export class AsciiOrganism{
     const minDim = Math.min(this.w, this.h) || 1;
     const targetH = this.isMobile ? MASCOT_TARGET_HEIGHT_MOBILE_PX : MASCOT_TARGET_HEIGHT_PX;
     this._mascotScale = targetH / (1.4 * minDim * 0.5);
-    // same conversion for the constant MASCOT_Y_OFFSET_PX upward shift,
-    // expressed as a local-space delta so it survives the outer blend's
-    // own minDim-dependent scaling and comes out as a true constant
-    // pixel offset regardless of viewport.
-    this._mascotYOffsetLocal = MASCOT_Y_OFFSET_PX / (minDim * 0.5);
+    // same conversion for the constant upward shift above, expressed as
+    // a local-space delta so it survives the outer blend's own
+    // minDim-dependent scaling and comes out as a true constant pixel
+    // offset regardless of viewport.
+    this._mascotYOffsetLocal = mascotYOffset / (minDim * 0.5);
 
     // publish his current on-screen bounding box (viewport px) so
     // main.js can position the real hit-target button over him —
@@ -2062,6 +2079,14 @@ export const MASCOT_TARGET_HEIGHT_MOBILE_PX = 76;
 // position) applied to his whole on-screen position — set by explicit
 // request after the first live look.
 export const MASCOT_Y_OFFSET_PX = -66;
+// Mobile-only counterpart: -66 straddles the anchor line (head above it,
+// legs still short of it, by design on desktop). Per explicit request his
+// feet should actually rest ON that specific line on mobile instead — the
+// exact math is -0.70 * mobile pxPerUnit (MASCOT_TARGET_HEIGHT_MOBILE_PX
+// / 1.4, the bounding box's own half-height) = -38, which centers the
+// whole figure on the line; nudged a few px past that (toward 0) so his
+// feet land just past it rather than a hair short.
+export const MASCOT_Y_OFFSET_MOBILE_PX = -48;
 
 /** Ambient stray particles: fixed home position, wander motion, and
  *  settle weight (how close a given stray tucks in once formed). */

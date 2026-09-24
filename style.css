@@ -43,7 +43,21 @@
 
   --ease-out: cubic-bezier(.16,.84,.32,1);
   --ease-in-out: cubic-bezier(.65,0,.35,1);
-  color-scheme: light;
+  /* declares BOTH schemes as genuinely supported (not just "light"), the
+     strongest signal to Chromium-based browsers (Edge, Opera, Brave) that
+     this page already handles dark mode itself — the specific thing that
+     disables their own separate "force dark" / "force darken web pages"
+     feature. Without it, that feature can still kick in and heuristically
+     recolor the page's own light-mode CSS colors on top of what's
+     rendered, which the ascii-organism canvas can't follow (it draws in
+     colors read from these variables in JS, not something the browser's
+     forced-dark pass can see or repaint) — producing exactly the
+     wrong-contrast/garbled look reported on Edge/Opera. See also the
+     matching <meta name="color-scheme"> in the dev-server wrapper
+     (_dev_server.py) and index.html's own <head>, needed because this
+     external stylesheet loads asynchronously and the meta tag is the one
+     signal available synchronously at initial parse time. */
+  color-scheme: light dark;
 }
 
 @media (prefers-color-scheme: dark){
@@ -87,29 +101,28 @@
    responding to width instead of going flat again. */
 @media (max-width: 640px){
   :root{
-    --fs-hero: clamp(4rem, 16vw, 10.5rem);
-    --fs-display: clamp(2.6rem, 9vw, 4.2rem);
-    --fs-h2: clamp(1.7rem, 6vw, 2rem);
-    --fs-lead: clamp(1.2rem, 4.5vw, 1.35rem);
-    --fs-body: 1.125rem;
-    /* first pass (13px/15px) was confirmed on an actual iPhone screenshot
-       to still be too small — nav, eyebrows, tags, and the bottom toggle
-       bar were all still reading as tiny. This is a much bigger jump, not
-       a fine-tune: --fs-micro is nearly 50% bigger than its ORIGINAL
-       (pre-fix) 11px, not just bigger than the first attempt's 13px. */
-    --fs-small: 1.0625rem;
-    --fs-micro: 1rem;
+    --fs-hero: clamp(4.4rem, 18vw, 10.5rem);
+    --fs-display: clamp(3rem, 10.5vw, 4.2rem);
+    --fs-h2: clamp(2rem, 7vw, 2.2rem);
+    --fs-lead: clamp(1.35rem, 5vw, 1.5rem);
+    --fs-body: 1.25rem;
+    /* another size pass up from the previous mobile minimums: bigger
+       still reads as airy as long as the section padding/gaps around it
+       stay generous (unchanged here) — "roomy" comes from whitespace,
+       not small type. */
+    --fs-small: 1.1875rem;
+    --fs-micro: 1.0625rem;
   }
   /* The root tokens above only reach anything wired to var(--fs-*) — these
      seven headings/labels each hardcode their own clamp() instead and have
      the identical bottoms-out-at-minimum problem, so they need their own
      mobile values too, not just a bigger minimum inherited from above. */
-  .hero-descriptor{ font-size: clamp(1.1rem, 4.5vw, 1.3rem); }
-  .work-row__title{ font-size: clamp(2rem, 9vw, 3.4rem); }
-  .contact-head h2{ font-size: clamp(2.6rem, 12vw, 5rem); }
-  .contact-email{ font-size: clamp(1.7rem, 8vw, 2.6rem); }
-  .project-modal__title{ font-size: clamp(3.4rem, 17vw, 7rem); }
-  .project-modal__tag{ font-size: clamp(1.25rem, 5vw, 1.5rem); }
+  .hero-descriptor{ font-size: clamp(1.25rem, 5vw, 1.45rem); }
+  .work-row__title{ font-size: clamp(2.3rem, 10.5vw, 3.4rem); }
+  .contact-head h2{ font-size: clamp(2.9rem, 13.5vw, 5rem); }
+  .contact-email{ font-size: clamp(1.9rem, 9vw, 2.6rem); }
+  .project-modal__title{ font-size: clamp(3.8rem, 19vw, 7rem); }
+  .project-modal__tag{ font-size: clamp(1.4rem, 5.6vw, 1.6rem); }
 }
 
 /* ---------------------------------------------------------------
@@ -199,6 +212,14 @@ main{
   display: flex;
   align-items: center;
   gap: .6em;
+  /* the eyebrow's own text is a bare text node, which inside a flex
+     container becomes an anonymous flex item — those default to an
+     automatic minimum width equal to their full UNWRAPPED content width
+     (flexbox's min-width:auto), so a long enough label (or Albanian
+     translation) can overflow the viewport at mobile widths instead of
+     wrapping like ordinary block text would. overflow-wrap is inherited,
+     so this lets that anonymous box actually shrink/wrap. */
+  overflow-wrap: anywhere;
 }
 .eyebrow::before{
   content: "";
@@ -770,8 +791,33 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
   white-space: nowrap;
 }
 @media (max-width: 720px){
-  .roadmap-nodes{ min-height: 340vh; }
-  .roadmap-node{ max-width: 28ch; }
+  /* shortened along with the node copy itself (i18n.js) — the old
+     length needed 340vh of scroll to let long paragraphs finish typing
+     before the next node; much shorter one-liners don't need nearly
+     as much runway */
+  /* trimmed again — even after the first cut (340vh->260vh) to match
+     the shortened node copy, the section still scrolled well past where
+     the last node finished typing, leaving a stretch of dead empty space
+     before Studio began */
+  .roadmap-nodes{ min-height: 200vh; }
+  /* .roadmap-node is absolutely positioned with no left+right pair, so it
+     shrink-to-fits its own content up to max-width regardless of its
+     containing block's actual width — a plain ch value doesn't know how
+     wide the viewport actually is. At mobile font sizes, 28ch worked out
+     to ~430px, comfortably WIDER than a 390px phone screen, so node text
+     ran off both edges instead of wrapping. Capping with vw as well
+     guarantees it never exceeds the viewport no matter how the ch/font-size
+     math works out. */
+  .roadmap-node{ max-width: min(28ch, 84vw); }
+  .roadmap-node__num{ font-size: clamp(1.6rem, 5.5vw, 2rem); }
+  .roadmap-node__heading{ font-size: clamp(1.85rem, 7vw, 2.4rem); }
+  .roadmap-node__support{ font-size: clamp(1.2rem, 4vw, 1.25rem); }
+  /* the intro copy right under "What we do." was reading as long and
+     heavy on phones even after trimming its actual word count (i18n.js)
+     — dropping it back down (rather than letting it inherit the bumped-up
+     --fs-small like every other section-note) keeps it a quiet aside
+     under the big heading instead of competing with it */
+  #services .section-note{ font-size: .9375rem; max-width: 26ch; }
 }
 @media (prefers-reduced-motion: reduce){
   .roadmap-node{ opacity: 1; transition: none; }
@@ -800,6 +846,11 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
   letter-spacing: .04em;
   color: var(--ink);
   display: flex; gap: .8em; align-items: baseline;
+  /* same anonymous-flex-item overflow as .eyebrow above — this is the
+     one actually causing the Studio section's text to run off the
+     screen on mobile: longer lines (esp. the Albanian translations)
+     have no wrap points respected inside a flex row by default. */
+  overflow-wrap: anywhere;
 }
 .studio-principles li::before{
   content: "";
@@ -827,6 +878,12 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
   max-width: 18ch;
   letter-spacing: -0.01em;
 }
+@media (max-width: 640px){
+  /* explicit request: give the section real room below the title before
+     the row/mascot begins, rather than relying only on his own resting
+     position (mascotFloor in ascii-engine.js) to create that space */
+  .contact-head{ padding-bottom: 200px; }
+}
 .contact-row{
   position: relative;
   display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end;
@@ -843,6 +900,12 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
   display: inline-flex;
   align-items: center;
   gap: .5em;
+  /* same anonymous-flex-item overflow as .eyebrow/.studio-principles li
+     — the address itself has no spaces to wrap at, so at the bigger
+     mobile font size it could run past the viewport edge instead of
+     breaking; overflow-wrap:anywhere allows a mid-word break as a
+     last resort rather than overflowing. */
+  overflow-wrap: anywhere;
 }
 .contact-email .status{
   font-family: var(--f-mono);
@@ -860,6 +923,18 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
   color: var(--ink-soft);
   text-align: right;
 }
+@media (max-width: 640px){
+  /* .contact-row's own flex-wrap left these two stacking in an odd
+     halfway state at phone widths: the email alone was wide enough to
+     fill the row (forcing a wrap) but the meta paragraph then landed as
+     a lone item on its own flex line, which sizes to its own content —
+     making its `text-align:right` a no-op (nothing to align against)
+     and leaving it stuck flush-left, out of step with the address
+     above it. Forcing a real column stack with matching left alignment
+     reads as one deliberate block instead of a layout accident. */
+  .contact-row{ flex-direction: column; align-items: flex-start; gap: 1.25rem; }
+  .contact-meta{ text-align: left; }
+}
 .site-footer{
   position: relative;
   display: flex; justify-content: space-between; align-items: center;
@@ -872,6 +947,15 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
   letter-spacing: .08em;
   text-transform: uppercase;
   color: var(--ink-faint);
+}
+@media (max-width: 640px){
+  /* the sound/lang toggles are fixed to the viewport's bottom corners
+     (see .sound-toggle/.lang-toggle) — once the page is scrolled all the
+     way down, that's exactly where the footer's own last line of text
+     otherwise sits too. Reserving real room below the footer (its own
+     height, plus the safe-area inset those toggles already account for)
+     stops them ever landing on top of it. */
+  .site-footer{ padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px)); }
 }
 /* MASCOT — a real point marker sitting exactly on .contact-row's own
    top border line: its rect (near-zero size) is what AsciiOrganism's
@@ -927,6 +1011,14 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
   transition: opacity .5s var(--ease-out);
 }
 .mascot-hint.is-visible{ opacity: 1; }
+@media (max-width: 640px){
+  /* positioned via translate(-100%,0%) from his head (main.js) — on a
+     narrow phone, a long nowrap "click here"-style string could still
+     push its own left edge past the viewport if he happens to be near
+     the left side when it appears. Letting it wrap removes the one
+     thing (a hard nowrap width) that made that possible. */
+  .mascot-hint{ white-space: normal; max-width: min(200px, 62vw); }
+}
 .mascot-hint__arrow{
   display: inline-block;
   font-size: 1.2em;
@@ -958,7 +1050,9 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
   position: fixed;
   top: 0; left: 0;
   z-index: 500;
-  width: min(720px, calc(100vw - 32px));
+  /* matches the page's own gutter on both sides, same as every other
+     mobile-clamped width on the site, instead of its own hardcoded 32px */
+  width: min(720px, calc(100vw - 2 * var(--gutter)));
 }
 .mascot-convo__panel{
   display: grid; gap: .65rem;
@@ -1081,6 +1175,18 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
 }
 @media (max-width: 640px){
   .mascot-convo__contact-row{ grid-template-columns: 1fr; }
+  .mascot-convo__prompt p{ font-size: clamp(1.25rem, 5.5vw, 1.4rem); }
+  .mascot-convo__stage input,
+  .mascot-convo__stage textarea{ font-size: 1.2rem; }
+  .mascot-convo__field--important{ font-size: 1.35rem; }
+  /* the desktop cap (48vh/380px) was tuned for a wide sidebar-style
+     panel next to him — paired with the bigger mobile type above and
+     less horizontal room to spread choices across, stages ran out of
+     vertical space and had to scroll internally mid-sentence. Combined
+     with pushing his own resting position further down the viewport
+     (see the mobile mascotFloor in ascii-engine.js's _timelineSegment),
+     there's real headroom to actually use here now. */
+  .mascot-convo__stage{ max-height: min(62vh, 520px); }
 }
 .mascot-convo__foot{ display: flex; align-items: center; gap: .8rem; flex-wrap: wrap; }
 .mascot-convo__primary{
