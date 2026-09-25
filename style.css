@@ -799,7 +799,15 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
      the shortened node copy, the section still scrolled well past where
      the last node finished typing, leaving a stretch of dead empty space
      before Studio began */
-  .roadmap-nodes{ min-height: 200vh; }
+  /* raised back up (200vh->300vh): node y-centers are evenly spaced
+     across this height (5 nodes), so shrinking it also shrinks the
+     fixed gap between adjacent nodes' centers. At 200vh that gap
+     (~325px on a 812px-tall phone) was smaller than a fully-typed
+     node's own rendered height (~430px, num+heading+multi-line
+     support at mobile font sizes), so consecutive nodes visually
+     overlapped once both were on screen. 300vh gives each node
+     comfortable room without reopening the earlier dead-space problem. */
+  .roadmap-nodes{ min-height: 300vh; }
   /* .roadmap-node is absolutely positioned with no left+right pair, so it
      shrink-to-fits its own content up to max-width regardless of its
      containing block's actual width — a plain ch value doesn't know how
