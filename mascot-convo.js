@@ -435,6 +435,11 @@ export function initMascotConvo(container, opts = {}){
   // grows up-and-left from that point regardless of content length.
   function updatePosition(frame){
     if(!frame) return;
+    // Below 720px the panel is a full-screen fixed layer (style.css), not
+    // a box that floats next to him — skip the anchor math entirely so it
+    // isn't wasted work, and so nothing here can leave a stray inline
+    // transform/max-height fighting that layout.
+    if(window.innerWidth < 720) return;
     const gapX = 22, gapY = 10;
     const GUTTER = 16;
     const vw = window.innerWidth, vh = window.innerHeight;

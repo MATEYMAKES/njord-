@@ -1062,6 +1062,44 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
      mobile-clamped width on the site, instead of its own hardcoded 32px */
   width: min(720px, calc(100vw - 2 * var(--gutter)));
 }
+/* On phones the floating-panel-next-to-him treatment doesn't have room to
+   work — it takes over as a full screen instead, closer to a dedicated
+   page than a bubble. JS's per-frame updatePosition() skips this element
+   entirely below the same 720px threshold (see mascot-convo.js), so
+   nothing fights this layout; the two !important rules below only guard
+   against any inline style briefly set before that width check runs. */
+@media (max-width: 720px){
+  .mascot-convo{
+    inset: 0;
+    width: 100%;
+    height: 100dvh;
+    z-index: 900;
+    transform: none !important;
+    background: var(--paper);
+    display: flex;
+    padding: max(1.1rem, env(safe-area-inset-top)) var(--gutter) max(1.1rem, env(safe-area-inset-bottom));
+    box-sizing: border-box;
+  }
+  .mascot-convo[hidden]{ display: none; }
+  .mascot-convo__panel{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 1rem;
+  }
+  .mascot-convo__top{ flex: 0 0 auto; }
+  .mascot-convo__stage{
+    flex: 1 1 auto;
+    max-height: none !important;
+    overflow-y: auto;
+  }
+  /* An × reads as dismissing a popup; full-screen this now reads as its
+     own screen, so the same close control becomes a plain back-arrow —
+     same click handler (close()), just a different affordance for a
+     different context. */
+  .mascot-convo__close{ font-size: 0; padding: .5em; }
+  .mascot-convo__close::before{ content: '←'; font-size: 1.5rem; }
+}
 .mascot-convo__panel{
   display: grid; gap: .65rem;
   opacity: 0;

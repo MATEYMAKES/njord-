@@ -386,7 +386,8 @@ export class AsciiOrganism{
     this.scrollTurbulence = 0;
     this.lastScrollY = window.scrollY || 0;
 
-    this._ro = new ResizeObserver(() => this.resize());
+    this._lastResizeW = 0; this._lastResizeH = 0;
+    this._ro = new ResizeObserver(() => this._maybeResize());
     this._ro.observe(canvas);
     this.resize();
     this._frame = this._frame.bind(this);
@@ -451,6 +452,21 @@ export class AsciiOrganism{
     this.lastPointerX = this.pointerX; this.lastPointerY = this.pointerY;
     this.pointerX = nx; this.pointerY = ny;
   }
+  // iOS/Android Safari & Chrome show/hide their address bar as you scroll,
+  // which changes the layout viewport's height (and so this canvas's
+  // clientHeight, via the ResizeObserver below) by up to ~100-150px without
+  // any real resize happening. Reacting to that every time reallocates the
+  // canvas backing store AND shifts every formation's target (they're all
+  // computed relative to this.w/this.h), which reads as a visible jitter
+  // mid-scroll on a real phone (not reproducible via desktop DevTools
+  // device emulation, since that doesn't simulate a live browser-chrome
+  // resize). Only actually resize on a real width change or a height
+  // change bigger than a toolbar's own height.
+  _maybeResize(){
+    const w = this.canvas.clientWidth || 1, h = this.canvas.clientHeight || 1;
+    if(Math.abs(w - this._lastResizeW) < 1 && Math.abs(h - this._lastResizeH) < 120) return;
+    this.resize();
+  }
   resize(){
     const w = this.canvas.clientWidth || 1, h = this.canvas.clientHeight || 1;
     // capping at 1x on mobile (vs. 2x elsewhere) quarters the raster area
@@ -462,6 +478,7 @@ export class AsciiOrganism{
     this.canvas.height = Math.round(h * dpr);
     this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     this.w = w; this.h = h;
+    this._lastResizeW = w; this._lastResizeH = h;
   }
   destroy(){
     this.stop();
@@ -1692,10 +1709,18 @@ export class FormationPortrait{
     }
 
     this.time = rnd() * 10;
-    this._ro = new ResizeObserver(() => this.resize());
+    this._lastResizeW = 0; this._lastResizeH = 0;
+    this._ro = new ResizeObserver(() => this._maybeResize());
     this._ro.observe(canvas);
     this.resize();
     this._frame = this._frame.bind(this);
+  }
+  // see AsciiOrganism's own _maybeResize for why this guard exists (mobile
+  // browser-chrome show/hide jitter)
+  _maybeResize(){
+    const w = this.canvas.clientWidth || 1, h = this.canvas.clientHeight || 1;
+    if(Math.abs(w - this._lastResizeW) < 1 && Math.abs(h - this._lastResizeH) < 120) return;
+    this.resize();
   }
   resize(){
     const w = this.canvas.clientWidth || 1, h = this.canvas.clientHeight || 1;
@@ -1704,6 +1729,7 @@ export class FormationPortrait{
     this.canvas.height = Math.round(h * dpr);
     this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     this.w = w; this.h = h;
+    this._lastResizeW = w; this._lastResizeH = h;
   }
   start(){ if(this.reduced){ this._frame(0.05); return; } ticker.add(this._frame); }
   stop(){ if(!this.reduced) ticker.remove(this._frame); }
