@@ -32,6 +32,7 @@
   </button>
   <nav id="main-nav" class="main-nav" aria-label="Primary">
     <ul>
+      <li><a class="magnetic" href="#identity"><span data-i18n="nav.identity">Identity</span><span class="fill"></span></a></li>
       <li><a class="magnetic" href="#work"><span data-i18n="nav.work">Work</span><span class="fill"></span></a></li>
       <li><a class="magnetic" href="#studio"><span data-i18n="nav.studio">Studio</span><span class="fill"></span></a></li>
       <li><a class="magnetic" href="#services"><span data-i18n="nav.services">Services</span><span class="fill"></span></a></li>
@@ -51,6 +52,163 @@
     <div class="hero-foot">
       <p class="hero-descriptor" data-i18n-html="hero.descriptor">We take <strong>primitive digital material</strong> — characters, grids, code — and engineer it into interfaces, identities, and experiences.</p>
       <span class="scroll-cue"><span class="track" aria-hidden="true"></span><span data-i18n="hero.scroll">Scroll</span></span>
+    </div>
+  </section>
+
+  <section id="identity" class="identity-seq" aria-label="Identity — how NJORD builds a brand">
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <symbol id="aera-mono" viewBox="0 0 100 100">
+        <path d="M50 6 L88 94 M50 6 L12 94 M30 64 L70 64" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="square"/>
+        <circle cx="50" cy="6" r="2.6" fill="currentColor"/>
+      </symbol>
+    </svg>
+
+    <div class="identity-view" id="identity-view">
+      <span class="identity-index" aria-hidden="true">01 / IDENTITY</span>
+
+      <!-- 1. INTRO — a single point, still entirely NJORD -->
+      <div class="id-layer id-intro" data-layer="intro">
+        <p class="id-intro__line" data-i18n="identity.intro.line1">Një biznes nuk fillon me logo.</p>
+        <p class="id-intro__line" data-i18n="identity.intro.line2">Fillon me një ide.</p>
+        <svg class="id-intro__mark" viewBox="0 0 100 100" aria-hidden="true">
+          <line class="id-intro__stroke" id="id-mark-v" x1="50" y1="20" x2="50" y2="80"/>
+          <line class="id-intro__stroke" id="id-mark-h" x1="20" y1="50" x2="80" y2="50"/>
+          <circle class="id-intro__dot" cx="50" cy="50" r="3"/>
+        </svg>
+      </div>
+
+      <!-- 2. NAMING — still NJORD mono, resolves into the serif lock -->
+      <div class="id-layer id-naming" data-layer="naming">
+        <span class="id-naming__word" id="id-naming-word">AER_</span>
+        <span class="id-layer__label" id="id-naming-label" data-i18n="identity.label.naming">NAMING</span>
+      </div>
+
+      <!-- 3. LOGO — real construction: baseline/cap-height/optical center,
+           wordmark letters resolve individually, monogram is derived from it -->
+      <div class="id-layer id-logo" data-layer="logo">
+        <svg class="id-logo__svg" id="id-logo-svg" viewBox="0 0 640 260" aria-hidden="true">
+          <g class="id-logo__guides" id="id-logo-guides">
+            <line x1="60" y1="70" x2="580" y2="70" />
+            <text x="590" y="74" class="id-logo__guide-note">CAP</text>
+            <line x1="60" y1="180" x2="580" y2="180" />
+            <text x="590" y="184" class="id-logo__guide-note">BASE</text>
+            <line x1="320" y1="30" x2="320" y2="220" stroke-dasharray="2 5"/>
+            <text x="326" y="24" class="id-logo__guide-note">OPTICAL CENTER</text>
+            <path d="M176 190 L176 60 M186 190 L186 60" class="id-logo__kern" />
+            <text x="164" y="238" class="id-logo__guide-note">KERN −8</text>
+          </g>
+          <g class="id-logo__letters" id="id-logo-letters">
+            <text x="140" y="180" class="id-logo__letter" data-letter="A">A</text>
+            <text x="252" y="180" class="id-logo__letter" data-letter="E">E</text>
+            <text x="358" y="180" class="id-logo__letter" data-letter="R">R</text>
+            <text x="458" y="180" class="id-logo__letter" data-letter="A2">A</text>
+          </g>
+          <g class="id-logo__mono" id="id-logo-mono">
+            <use href="#aera-mono" x="290" y="196" width="60" height="60" />
+          </g>
+        </svg>
+        <span class="id-layer__label" data-i18n="identity.label.logo">LOGO SYSTEM</span>
+      </div>
+
+      <!-- 4. TYPOGRAPHY — an experience, not a specimen chart -->
+      <div class="id-layer id-type" data-layer="type">
+        <div class="id-type__stage" id="id-type-stage">
+          <span class="id-type__word id-type__word--ghost" data-word="0">A</span>
+          <span class="id-type__word id-type__word--display" data-word="1">AERA</span>
+          <span class="id-type__word id-type__word--editorial" data-word="2">ÉTHER</span>
+          <span class="id-type__word id-type__word--display" data-word="3">PARFUM</span>
+          <span class="id-type__word id-type__word--tiny" data-word="4">01</span>
+        </div>
+        <div class="id-type__hierarchy">
+          <span data-tier="display">DISPLAY</span>
+          <span data-tier="editorial">EDITORIAL</span>
+          <span data-tier="body">BODY</span>
+          <span data-tier="detail">DETAIL</span>
+        </div>
+      </div>
+
+      <!-- 5. COLOR — the environment itself changes hands -->
+      <div class="id-layer id-color" data-layer="color">
+        <div class="id-color__wipe" id="id-color-wipe">
+          <span class="id-color__panel" data-role="secondary"></span>
+          <span class="id-color__panel" data-role="primary"></span>
+          <span class="id-color__panel" data-role="accent"></span>
+        </div>
+        <div class="id-color__chips" id="id-color-chips">
+          <span><i style="--sw:#5B1622"></i>BURGUNDY — #5B1622</span>
+          <span><i style="--sw:#F1E7D6"></i>CREAM — #F1E7D6</span>
+          <span><i style="--sw:#ADA9A0"></i>SILVER — #ADA9A0</span>
+        </div>
+      </div>
+
+      <!-- 6 / 9. ASSEMBLY — real, art-directed applications, one system -->
+      <div class="id-layer id-assembly" data-layer="assembly">
+        <span class="id-assembly__giant" aria-hidden="true">AERA</span>
+
+        <div class="id-mock id-mock--card" data-mock="card" data-depth="1.3">
+          <div class="id-card__face id-card__face--front">
+            <svg class="id-card__mono" viewBox="0 0 100 100"><use href="#aera-mono"/></svg>
+            <span class="id-card__word">AERA</span>
+            <span class="id-card__sub">PARFUM DE MAISON</span>
+          </div>
+          <div class="id-card__face id-card__face--back"></div>
+        </div>
+
+        <div class="id-mock id-mock--poster" data-mock="poster" data-depth="0.55">
+          <span class="id-poster__crop">É</span>
+          <span class="id-poster__vert">AERA — EAU DE PARFUM</span>
+          <svg class="id-poster__mono" viewBox="0 0 100 100"><use href="#aera-mono"/></svg>
+        </div>
+
+        <div class="id-mock id-mock--packaging" data-mock="packaging" data-depth="1.05">
+          <div class="id-bottle" aria-hidden="true">
+            <div class="id-bottle__cap"></div>
+            <div class="id-bottle__neck"></div>
+            <div class="id-bottle__body">
+              <span class="id-bottle__label">
+                <svg class="id-bottle__mono" viewBox="0 0 100 100"><use href="#aera-mono"/></svg>
+                AERA
+              </span>
+            </div>
+          </div>
+          <div class="id-box" aria-hidden="true"><span>AERA · EAU DE PARFUM · 50ML</span></div>
+        </div>
+
+        <div class="id-mock id-mock--social" data-mock="social" data-depth="1.6">
+          <span class="id-social__word">AERA</span>
+          <span class="id-social__rule"></span>
+          <span class="id-social__tag">NEW — ÉTHER EDITION</span>
+        </div>
+
+        <div class="id-mock id-mock--mobile" data-mock="mobile" data-depth="1.8">
+          <div class="id-mobile__notch"></div>
+          <span class="id-mobile__word">AERA</span>
+          <div class="id-mobile__hero"></div>
+          <div class="id-mobile__cta">DISCOVER ÉTHER</div>
+        </div>
+
+        <div class="id-mock id-mock--website" data-mock="website" data-depth="0.32">
+          <div class="id-web__bar"><span></span><span></span><span></span></div>
+          <div class="id-web__nav"><span class="id-web__brand">AERA</span><span class="id-web__links">ÉTHER · MAISON · CONTACT</span></div>
+          <div class="id-web__hero">
+            <span class="id-web__headline">ÉTHER</span>
+            <span class="id-web__sub">The new fragrance, out now</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 11. MESSAGE — its own moment, nothing behind it -->
+      <div class="id-layer id-message" data-layer="message">
+        <p class="id-message__line" data-i18n="identity.message.line1">Nuk dizajnojmë vetëm një logo.</p>
+        <p class="id-message__line" data-i18n="identity.message.line2">Ndërtojmë identitetin e plotë të brendit.</p>
+        <p class="id-message__sub">LOGO / TIPOGRAFI / NGJYRA / GJUHË VIZUALE / DIGITAL / PRINT</p>
+        <p class="id-message__tag">NJORD CONCEPT / 001 — AERA</p>
+      </div>
+
+      <!-- 12. TRANSITION — website grows into the next section -->
+      <div class="id-layer id-next" data-layer="next">
+        <span class="id-next__num">02 / WEBSITE</span>
+      </div>
     </div>
   </section>
 

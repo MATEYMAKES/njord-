@@ -9,6 +9,7 @@ import {
 import { GenerativeAudio } from './audio-engine-a2.js'; // A2 (lighter) — A1 kept intact in audio-engine.js
 import { t, getLang, setLang, applyStaticTranslations, onLangChange } from './i18n.js';
 import { initMascotConvo } from './mascot-convo.js';
+import { initIdentity } from './identity.js';
 
 applyStaticTranslations(getLang());
 
@@ -253,10 +254,17 @@ if(roadmapNodesEl && organism){
     // frame rather than carrying any state of its own.
     const TYPE_START_FRAC = 0.8; // rect.top/vh when typing begins — just past halfway up from the bottom edge
     const TYPE_END_FRAC = 0.35;  // rect.top/vh when typing completes — settled in the upper-middle, well clear of the bottom
+    // Cached per-node so a scroll frame that doesn't actually change a
+    // node's revealed character count skips the DOM writes entirely —
+    // this ran unconditionally on every rAF tick while scrolling through
+    // the whole (200vh) services section, forcing a reflow/repaint five
+    // times a frame even when nothing visibly changed, which read as
+    // jittery/stuttery scrolling on mobile.
+    const roadmapLastChars = nodeEls.map(() => ({ head: -1, sup: -1 }));
     function updateRoadmapTyping(){
       roadmapTicking = false;
       const vh = window.innerHeight || 1;
-      nodeEls.forEach((el) => {
+      nodeEls.forEach((el, i) => {
         const rect = el.getBoundingClientRect();
         const raw = (TYPE_START_FRAC * vh - rect.top) / ((TYPE_START_FRAC - TYPE_END_FRAC) * vh);
         const progress = Math.max(0, Math.min(1, raw));
@@ -265,12 +273,21 @@ if(roadmapNodesEl && organism){
 
         const heading = el.dataset.heading || '';
         const support = el.dataset.support || '';
-        const headEl = el.querySelector('.roadmap-node__heading');
-        const supEl = el.querySelector('.roadmap-node__support');
-        const cursorEl = el.querySelector('.roadmap-node__cursor');
-        if(headEl) headEl.textContent = heading.slice(0, Math.round(heading.length * headingProgress));
-        if(supEl) supEl.textContent = support.slice(0, Math.round(support.length * supportProgress));
+        const headChars = Math.round(heading.length * headingProgress);
+        const supChars = Math.round(support.length * supportProgress);
+        const last = roadmapLastChars[i];
+        if(headChars !== last.head){
+          const headEl = el.querySelector('.roadmap-node__heading');
+          if(headEl) headEl.textContent = heading.slice(0, headChars);
+          last.head = headChars;
+        }
+        if(supChars !== last.sup){
+          const supEl = el.querySelector('.roadmap-node__support');
+          if(supEl) supEl.textContent = support.slice(0, supChars);
+          last.sup = supChars;
+        }
         el.classList.toggle('is-visible', progress > 0);
+        const cursorEl = el.querySelector('.roadmap-node__cursor');
         if(cursorEl) cursorEl.classList.toggle('is-on-support', headingProgress >= 1 && supportProgress < 1);
       });
     }
@@ -370,6 +387,8 @@ if(workRowBodies.length > 1){
     workRowResizeTimer = setTimeout(equalizeWorkRows, 150);
   });
 }
+
+initIdentity();
 
 /* ---------------------------------------------------------------
    Project portal — the page loads in as a circle expanding from the

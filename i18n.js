@@ -13,6 +13,7 @@ const STORAGE_KEY = 'njord-lang';
 const DEFAULT_LANG = 'sq';
 
 const translations = {
+  'nav.identity': { en: 'Identity', sq: 'Identiteti' },
   'nav.work': { en: 'Work', sq: 'Punët' },
   'nav.studio': { en: 'Studio', sq: 'Studio' },
   'nav.services': { en: 'Services', sq: 'Shërbimet' },
@@ -33,6 +34,15 @@ const translations = {
     sq: 'Dizajnojmë dhe zhvillojmë webfaqe, ndërtojmë identitete vizuale dhe krijojmë brende që dallohen — prej idesë së parë deri te produkti final.',
   },
   'hero.scroll': { en: 'Scroll', sq: 'Zbrit' },
+
+  'identity.intro.line1': { en: 'A business doesn’t start with a logo.', sq: 'Një biznes nuk fillon me logo.' },
+  'identity.intro.line2': { en: 'It starts with an idea.', sq: 'Fillon me një ide.' },
+  'identity.label.naming': { en: 'NAMING', sq: 'EMRI' },
+  'identity.label.logo': { en: 'LOGO SYSTEM', sq: 'SISTEMI I LOGOS' },
+  'identity.label.type': { en: 'TYPOGRAPHY SYSTEM', sq: 'SISTEMI I SHKRONJAVE' },
+  'identity.label.color': { en: 'COLOR SYSTEM', sq: 'SISTEMI I NGJYRAVE' },
+  'identity.message.line1': { en: 'We don’t just design a logo.', sq: 'Nuk dizajnojmë vetëm një logo.' },
+  'identity.message.line2': { en: 'We build the whole identity of the brand.', sq: 'Ndërtojmë identitetin e plotë të brendit.' },
 
   'work.eyebrow': { en: 'Selected Work — 03 Projects', sq: 'Punë të Zgjedhura — 03 Projekte' },
   'work.h2': { en: 'Three worlds, three languages.', sq: 'Tre botë, tre gjuhë.' },
