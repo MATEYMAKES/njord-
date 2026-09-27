@@ -19,10 +19,13 @@
 
   /* --- project accent tokens (used only inside modal/preview scopes) --- */
   /* each project page's background is the same color as its own ASCII
-     visual. Aurelia's diamond-blue is light enough for dark text; Pulse's
-     burgundy and Meridian's deep blue are dark enough to need light text
-     instead — recomputed per background, not assumed. */
-  --aurelia-bg: #3D7FF0; --aurelia-ink: #0B0F1A; --aurelia-accent: #0B0F1A;
+     visual. Aurelia's own formation is now the golden rotating ring
+     (ascii-engine.js 'diamond' case, ACCENTS.diamond = [212,175,55]),
+     so its page background follows that same gold rather than the old
+     diamond-blue — still light enough for dark text. Pulse's burgundy
+     and Meridian's deep blue are dark enough to need light text instead
+     — recomputed per background, not assumed. */
+  --aurelia-bg: #D4AF37; --aurelia-ink: #1A1204; --aurelia-accent: #1A1204;
   --pulse-bg: #7A1B33; --pulse-ink: #F6ECE8; --pulse-accent: #F6ECE8;
   --meridian-bg: #1F4C78; --meridian-ink: #E9F1F8; --meridian-accent: #E9F1F8;
 
@@ -184,6 +187,13 @@ img,canvas{ display: block; max-width: 100%; }
   height: 100%;
   z-index: 1;
   pointer-events: none;
+}
+@media (max-width: 720px){
+  /* On phone widths the organism shares the same narrow column as every
+     section's text (desktop has room to keep them in separate zones of
+     the viewport) — damp it to a faint backdrop so copy stays legible
+     instead of visually competing with it. */
+  #ascii-organism{ opacity: 0.4; }
 }
 main{
   position: relative;
@@ -606,7 +616,7 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
 }
 
 /* ---------------------------------------------------------------
-   Work — index rows
+   Work — index rows (work.html only)
    --------------------------------------------------------------- */
 .work-index{ padding-top: 0; }
 .work-row{
@@ -619,6 +629,10 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
   border-top: 1px solid var(--line);
   cursor: pointer;
   overflow: hidden;
+  /* index.html's work-preview rows deep-link here (work.html#aurelia
+     etc.) — without this the fixed .site-header covers the row's own
+     top edge on arrival. */
+  scroll-margin-top: 120px;
 }
 .work-row:last-child{ border-bottom: 1px solid var(--line); }
 .work-row + .work-row{ margin-top: clamp(6rem, 16vw, 14rem); }
@@ -724,6 +738,122 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
      border-bottom line, mobile only — tuned live by feel, not a fixed
      measurement; adjust this one number directly if it's ever off */
   .work-row:last-child{ padding-bottom: 161px; }
+}
+
+/* ---------------------------------------------------------------
+   Work preview — index.html only. A lighter, plain-<a> stand-in for
+   work.html's full .work-row (no ASCII index-glyph canvas, no
+   click-to-open modal — this page doesn't have #project-modal). Each
+   row deep-links to the matching row on work.html (which now carries
+   a matching id, see work.html). Replaces what used to be a single
+   slim CTA strip so Work reads as a real section on the main page,
+   not a button — the full three-project index lives on work.html.
+   --------------------------------------------------------------- */
+.work-preview-row{
+  position: relative;
+  display: grid;
+  grid-template-columns: 64px 1fr auto;
+  align-items: center;
+  gap: clamp(1rem, 3vw, 3rem);
+  padding-block: clamp(1.4rem, 3.5vw, 2.4rem);
+  border-top: 1px solid var(--line);
+  color: var(--ink);
+  text-decoration: none;
+}
+.work-preview-row:last-of-type{ border-bottom: 1px solid var(--line); }
+.work-preview-row__index{
+  font-family: var(--f-mono);
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--ink-faint);
+  letter-spacing: .02em;
+}
+.work-preview-row__body{ display: block; min-width: 0; }
+.work-preview-row__title{
+  display: block;
+  font-size: clamp(1.6rem, 3.6vw, 2.6rem);
+  font-weight: 350;
+  letter-spacing: -0.01em;
+  transition: transform .4s var(--ease-out);
+}
+.work-preview-row:hover .work-preview-row__title,
+.work-preview-row:focus-visible .work-preview-row__title{ transform: translateX(.2em); }
+.work-preview-row__desc{
+  display: block;
+  font-family: var(--f-mono);
+  font-size: var(--fs-small);
+  color: var(--ink-soft);
+  margin-top: .4em;
+  max-width: 46ch;
+}
+.work-preview-row__tags{
+  display: flex; flex-wrap: wrap; gap: .5em 1em; margin-top: .7em;
+}
+.work-preview-row__tags span{
+  font-family: var(--f-mono);
+  font-size: var(--fs-micro);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  border: 1px solid var(--line-strong);
+  padding: .3em .6em;
+}
+.work-preview-row__meta{
+  font-family: var(--f-mono);
+  font-size: var(--fs-small);
+  color: var(--ink-faint);
+  text-align: right;
+  display: flex; flex-direction: column; align-items: flex-end; gap: .5em;
+}
+.work-preview-row__enter{
+  font-family: var(--f-mono);
+  font-size: var(--fs-micro);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink);
+  display: inline-flex; align-items: center; gap: .5em;
+}
+.work-preview-row__enter .arrow{ transition: transform .3s var(--ease-out); }
+.work-preview-row:hover .work-preview-row__enter .arrow,
+.work-preview-row:focus-visible .work-preview-row__enter .arrow{ transform: translateX(4px); }
+
+.work-preview-more{
+  display: flex;
+  align-items: center;
+  gap: clamp(1.5rem, 5vw, 4rem);
+  height: clamp(70px, 12vw, 120px);
+  width: 100%;
+  margin-top: clamp(1rem, 3vw, 2rem);
+  font-family: var(--f-mono);
+  font-size: var(--fs-small);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+  transition: color .25s var(--ease-out);
+}
+.work-preview-more:hover, .work-preview-more:focus-visible{ color: var(--signal-text); }
+.work-preview-more__label{ flex: none; }
+.work-preview-more__line{
+  position: relative;
+  flex: 1 1 auto;
+  height: 1px;
+  background: currentColor;
+  margin-right: clamp(2rem, 8vw, 6rem);
+}
+.work-preview-more__line::after{
+  content: "";
+  position: absolute;
+  right: 0; top: 50%;
+  width: 12px; height: 12px;
+  border-top: 1px solid currentColor;
+  border-right: 1px solid currentColor;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+@media (max-width: 720px){
+  .work-preview-row{ grid-template-columns: 40px 1fr; }
+  .work-preview-row__meta{ grid-column: 1 / -1; flex-direction: row; justify-content: space-between; align-items: center; margin-top: .8em; }
 }
 
 /* ---------------------------------------------------------------
@@ -1235,6 +1365,19 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
   color: var(--ink);
   will-change: clip-path;
 }
+/* Real bug fixed: this class's own `display: flex` is author CSS, which
+   always beats the browser's default `[hidden]{ display:none }` rule
+   regardless of specificity (author-normal > user-agent-normal in the
+   cascade) — so `modal.hidden = true` (closeProject's cleanup, main.js)
+   was silently doing nothing. That meant the close sequence's final,
+   synchronous style clears (clipPath/opacity/transition all reset in the
+   same task) computed to: clip-path snapping instantly back to "no clip"
+   (full screen) while opacity was still 1, THEN a fresh .5s fade-out
+   starting from there — the page flashing back to fully visible right at
+   the end of the close animation before actually disappearing. Giving
+   `[hidden]` real specificity here makes it win, so the element is
+   removed from rendering entirely in that same task — nothing to flash. */
+.project-modal[hidden]{ display: none; }
 .project-modal.is-open{
   opacity: 1; visibility: visible; transform: none;
   transition: opacity .5s var(--ease-out), transform .5s var(--ease-out);
@@ -1389,3 +1532,207 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
 }
 
 body.modal-open{ overflow: hidden; }
+
+/* ================================================================
+   Identity — a plain in-flow section (not a pinned sequence). The two
+   heading words sit far apart on purpose: "Krijojmë" left, "identitet."
+   right, with a real >=300px vertical gap between them — enough scroll
+   distance that the organism's shapeless 'chaos' formation genuinely
+   gets room to read as directionless before 'infinity' (anchored right
+   at the second word) resolves under "identitet." (see main.js
+   setZones and ascii-engine.js's 'chaos'/'infinity' cases).
+   ================================================================ */
+.identity-anchor{ display: block; width: 0; height: 0; }
+.identity-word-row{
+  margin-top: clamp(2rem, 6vw, 4rem);
+  display: flex;
+}
+.identity-word-row--1{ justify-content: flex-start; }
+.identity-word-row--2{
+  justify-content: flex-end;
+  margin-top: 300px;
+  text-align: right;
+}
+.identity-word{
+  font-size: clamp(3.1rem, 8.2vw, 7.3rem);
+  font-weight: 340;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  opacity: 0;
+  transform: translateY(.35em);
+  transition: opacity .6s var(--ease-out), transform .6s var(--ease-out);
+}
+.identity-word.is-visible{ opacity: 1; transform: none; }
+.identity-copy{
+  margin-top: calc(clamp(2rem, 6vw, 4rem) - 100px);
+  margin-bottom: clamp(2rem, 6vw, 4rem);
+  max-width: 50ch;
+  font-family: var(--f-mono);
+  font-size: var(--fs-small);
+  color: var(--ink-soft);
+  line-height: 1.65;
+}
+.identity-copy p{
+  opacity: 0;
+  transform: translateY(.6em);
+  transition: opacity .6s var(--ease-out), transform .6s var(--ease-out);
+}
+.identity-copy p.is-visible{ opacity: 1; transform: none; }
+
+@media (max-width: 720px){
+  /* The 300px desktop gap (tuned to give the 'chaos'/'infinity' formations
+     room to read) is a fixed pixel value that eats a disproportionate slice
+     of a phone's viewport height as pure whitespace. Scale it down. */
+  .identity-word-row--2{ margin-top: clamp(120px, 34vw, 220px); }
+  /* Desktop pulls .identity-copy up (negative margin) to sit close under
+     the second word, tuned against the 300px gap above. On mobile that
+     same calc goes negative (~-68px at 390px wide) and drags the copy
+     paragraph up onto the heading instead of below it. Override with a
+     small positive gap instead of inheriting the desktop pull-up. */
+  .identity-copy{ margin-top: 1.5rem; }
+}
+
+/* ================================================================
+   Web Development — the ASCII organism's 'globe' formation (the same
+   rotating-sphere formation as the hero) fills the empty middle of
+   this section, anchored to a marker positioned left-of-center so it
+   has room to read between the heading (top-right) and the copy
+   (bottom-right).
+   ================================================================ */
+.webdev{ position: relative; }
+.webdev-anchor{ position: absolute; top: 50%; left: 38%; width: 0; height: 0; }
+.webdev-inner{
+  position: relative;
+  min-height: 82vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 3rem;
+}
+.webdev-head{
+  align-self: stretch;
+  width: 100%;
+}
+.webdev-copy{
+  max-width: 46ch;
+  text-align: right;
+}
+.webdev-title-row{
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  width: 100%;
+}
+.webdev-title{
+  font-size: clamp(3.8rem, 10vw, 9rem);
+  font-weight: 340;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+.webdev-copy p{
+  font-family: var(--f-mono);
+  font-size: var(--fs-small);
+  color: var(--ink-soft);
+  line-height: 1.65;
+}
+
+@media (max-width: 720px){
+  .webdev-inner{ min-height: 60vh; align-items: flex-start; }
+  .webdev-copy{ text-align: left; max-width: none; }
+  .webdev-anchor{ left: 50%; }
+  .webdev-title-row{ flex-direction: column; gap: 0; }
+}
+
+/* ================================================================
+   Hosting & Siguri — "Hosting" top-left, "Siguri." bottom-right, the
+   ASCII organism's 'network-large' formation (same drifting-nodes
+   idea/behavior as Meridian's own 'network', just scaled up to read
+   as a large-scale artwork here) filling the middle alongside the
+   explanation copy, anchored dead center between the two titles.
+   ================================================================ */
+.hosting{ position: relative; }
+.hosting-anchor{ position: absolute; top: 50%; left: 50%; width: 0; height: 0; }
+.hosting-inner{
+  position: relative;
+  min-height: 82vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2rem;
+}
+.hosting-top{ align-self: flex-start; }
+.hosting-bottom{ align-self: flex-end; text-align: right; }
+.hosting-title{
+  /* same size/weight/family as section 01's identity-word */
+  font-size: clamp(3.1rem, 8.2vw, 7.3rem);
+  font-weight: 340;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+.hosting-copy{
+  align-self: center;
+  max-width: 44ch;
+  text-align: center;
+}
+.hosting-copy p{
+  font-family: var(--f-mono);
+  font-size: var(--fs-small);
+  color: var(--ink-soft);
+  line-height: 1.65;
+}
+
+@media (max-width: 720px){
+  .hosting-inner{ min-height: 60vh; }
+  .hosting-bottom{ align-self: flex-start; text-align: left; }
+  .hosting-copy{ align-self: flex-start; text-align: left; max-width: none; }
+  .hosting-anchor{ left: 50%; }
+}
+
+/* ================================================================
+   Maintenance — the ASCII organism's 'lock' formation (a spinning
+   loading-circle: a ring of particles with one bright arc sweeping
+   around and trailing off) fills the section as a full-bleed backdrop
+   behind the title/copy column.
+   ================================================================ */
+.maintenance{ position: relative; overflow: hidden; }
+.maintenance-anchor{ position: absolute; top: 50%; left: 50%; width: 0; height: 0; }
+.maintenance-inner{ position: relative; min-height: 70vh; }
+.maintenance-title{
+  /* same size/weight/family as section 01's identity-word */
+  font-size: clamp(3.1rem, 8.2vw, 7.3rem);
+  font-weight: 340;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  margin-top: .5rem;
+}
+.maintenance-copy{
+  margin-top: clamp(2rem, 5vw, 3.5rem);
+  max-width: 44ch;
+}
+.maintenance-copy p{
+  font-family: var(--f-mono);
+  font-size: var(--fs-small);
+  color: var(--ink-soft);
+  line-height: 1.65;
+}
+
+/* ================================================================
+   Services meta row — shared across all four service sections
+   (identity/webdev/hosting/maintenance). A restrained small-caps
+   summary sitting right under each section's own body copy.
+   ================================================================ */
+.service-provides{
+  margin-top: 1em;
+  font-family: var(--f-mono);
+  font-size: var(--fs-micro);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* work.html only: extra breathing room above the project list, since
+   this page opens directly on it with no hero above. */
+.work-page .work-index{ padding-top: 200px; }

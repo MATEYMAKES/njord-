@@ -182,6 +182,11 @@ function smoothstep(edge0, edge1, x){
   return t * t * (3 - 2 * t);
 }
 function lerp(a, b, t){ return a + (b - a) * t; }
+// Deterministic pseudo-random in [0,1) from an arbitrary number — used by
+// the services formations (structure/undercurrent/steady) to pick which
+// cycle/slot does something without needing a dedicated PRNG instance per
+// particle; same trick as GLSL's classic sin-based hash.
+function hash(n){ const s = Math.sin(n * 12.9898) * 43758.5453; return s - Math.floor(s); }
 // Catmull-Rom spline through 4 control points — used by the roadmap
 // formation's path so it reads as genuinely curved rather than a
 // piecewise-straight line between jittered points.
@@ -725,22 +730,18 @@ export class AsciiOrganism{
         points.push({ name: z.name, docY: scrollY + r.top + r.height / 2, anchorX, anchorY });
       }
     });
-    let playheadY = scrollY + vh / 2;
-    // While the mascot conversation is open, hold him fully-formed
-    // through a large dead-zone of upward scroll before letting the
-    // usual scroll-to-formation mapping resume — done by clamping the
-    // EFFECTIVE playhead so it lags behind the real one by up to
-    // MASCOT_HOLD_VH viewport-heights once the visitor starts scrolling
-    // back up out of him, rather than unforming at the first pixel of
-    // scroll the way every other formation transition does.
-    if(this._mascotHoldOpen && points.length){
-      const mascotPoint = points[points.length - 1];
-      if(mascotPoint.name === 'mascot' && playheadY < mascotPoint.docY){
-        const MASCOT_HOLD_VH = 1.15;
-        const deficit = mascotPoint.docY - playheadY;
-        playheadY = mascotPoint.docY - Math.max(0, deficit - vh * MASCOT_HOLD_VH);
-      }
+    // While the mascot conversation is open, he must stay fully formed
+    // and on screen NO MATTER how far the visitor scrolls — a dead-zone
+    // clamp (a prior version of this) still let him unform once scroll
+    // exceeded it, which read as "he disappeared while I was still
+    // talking to him." Short-circuiting the whole scroll->formation
+    // mapping is the only way to make that a hard guarantee rather than
+    // a bigger buffer that can still run out.
+    if(this._mascotHoldOpen){
+      const a = this._mascotAnchor || { x: 0.9, y: 0.6 };
+      return { a: 'mascot', b: 'mascot', t: 0, anchorX: a.x, anchorY: a.y };
     }
+    const playheadY = scrollY + vh / 2;
 
     if(points.length === 1 || playheadY <= points[0].docY){
       const p = points[0];
@@ -755,10 +756,15 @@ export class AsciiOrganism{
         const raw = (playheadY - A.docY) / Math.max(1, B.docY - A.docY);
         // There is slightly less than half a viewport of document below
         // the final marker, so the playhead can stop a few pixels short
-        // of it even at maximum scroll. Resolve the closing formation
-        // before that unreachable endpoint and keep it firmly locked
-        // until the user scrolls back above this final approach band.
-        if(B === last && B.name === 'mascot' && raw >= 0.88){
+        // of it even at maximum scroll — and how far short depends on the
+        // total page length above, which shifts whenever content earlier
+        // on the page changes (confirmed: with the current page length,
+        // raw only ever reaches ~0.875 at max scroll, previously just
+        // under the old 0.88 lock — the mascot was visibly never
+        // finishing). Lock well before that unreachable max, with real
+        // margin, rather than chasing the exact reachable value again
+        // next time the page's length changes.
+        if(B === last && B.name === 'mascot' && raw >= 0.75){
           return { a: B.name, b: B.name, t: 0, anchorX: B.anchorX, anchorY: B.anchorY };
         }
         const t = smoothstep(0, 1, raw);
@@ -786,6 +792,45 @@ export class AsciiOrganism{
         return {
           x: proj.x * 0.78, y: proj.y * 0.78,
           i: (this.earthLand[i] ? 0.22 + light * 0.78 : (0.08 + light * 0.42) * 0.75) * (0.15 + 0.85 * vis),
+          c: 0,
+        };
+      }
+      case 'chaos': {
+        const seed = this.jitterSeed[i];
+        const freqX = 0.05 + 0.09 * (0.5 + 0.5 * Math.sin(seed * 3.7));
+        const freqY = 0.04 + 0.08 * (0.5 + 0.5 * Math.cos(seed * 2.3));
+        const x = Math.sin(t * freqX + seed) * 1.9 + Math.sin(t * freqX * 2.3 + seed * 1.7) * 0.6;
+        const y = Math.cos(t * freqY + seed * 1.3) * 1.6 + Math.cos(t * freqY * 1.8 + seed * 0.6) * 0.5;
+        return {
+          x, y,
+          i: 0.45 + 0.22 * Math.sin(t * 0.7 + seed * 4.1),
+          c: 0,
+        };
+      }
+      case 'infinity': {
+        const seed = this.jitterSeed[i];
+        const SCALE = 2.35;
+        const lemniscate = (u) => {
+          const d = 1 + Math.sin(u) * Math.sin(u);
+          return [SCALE * Math.cos(u) / d, SCALE * Math.sin(u) * Math.cos(u) / d];
+        };
+        const [lx, ly] = lemniscate(seed);
+        const [lx2, ly2] = lemniscate(seed + 0.01);
+        let tx = lx2 - lx, ty = ly2 - ly;
+        const tlen = Math.hypot(tx, ty) || 1;
+        tx /= tlen; ty /= tlen;
+        const px = -ty, py = tx;
+        const lane = Math.sin(seed * 13.7);
+        const width = 0.22 + 0.12 * Math.sin(seed * 2.3 + 1.4);
+        const foldX = lx + px * lane * width;
+        const foldY = ly + py * lane * width;
+        const angle = t * 0.05;
+        const ca = Math.cos(angle), sa = Math.sin(angle);
+        const edgeFalloff = 0.55 + 0.45 * (1 - Math.abs(lane));
+        return {
+          x: foldX * ca - foldY * sa,
+          y: (foldX * sa + foldY * ca) * 1.1,
+          i: (0.5 + 0.2 * Math.sin(t * 0.6 + seed * 3.0)) * edgeFalloff,
           c: 0,
         };
       }
@@ -835,27 +880,55 @@ export class AsciiOrganism{
           c: 1,
         };
       }
-      case 'network': {
+      // 'network' (Meridian's own project color, at its original compact
+      // size) and 'network-large' (Hosting & Siguri's — same node/edge
+      // behavior, scaled up so it reads as a large-scale artwork covering
+      // at least ~70% of the viewport's horizontal space) are the SAME
+      // artwork idea at two different sizes, not two formations — both
+      // route through this one helper so a future tweak to the underlying
+      // behavior (density, drift, edge logic) only needs to happen once.
+      // The scale is applied uniformly to x/y so node spacing and edge
+      // angles stay proportionally correct, just bigger/smaller.
+      // Node-to-node proximity (nearestNode/nearestNode2, computed in
+      // _frame from the raw unscaled nodePosX/Y) is unaffected by it.
+      case 'network':
+      case 'network-large': {
+        const NET_SCALE = name === 'network-large' ? 2.3 : 1;
         const role = this.networkRole[i];
         if(role === 1){
           const k = this.networkNode[i];
-          return { x: this.nodePosX[k], y: this.nodePosY[k], i: 0.85, c: 0.4 };
+          return { x: this.nodePosX[k] * NET_SCALE, y: this.nodePosY[k] * NET_SCALE, i: 0.85, c: 0.4 };
         }
         if(role === 2){
           const a = i % this.nodeCount;
           const b = (i % 2 === 0) ? this.nearestNode[a] : this.nearestNode2[a];
           const et = ((i * 37) % 100) / 100;
           return {
-            x: lerp(this.nodePosX[a], this.nodePosX[b], et),
-            y: lerp(this.nodePosY[a], this.nodePosY[b], et),
+            x: lerp(this.nodePosX[a], this.nodePosX[b], et) * NET_SCALE,
+            y: lerp(this.nodePosY[a], this.nodePosY[b], et) * NET_SCALE,
             i: 0.3 + 0.12 * Math.sin(t * 1.4 + i), c: 0.4,
           };
         }
         const k = i % this.nodeCount;
         return {
-          x: this.nodePosX[k] + Math.sin(t * 0.4 + this.jitterSeed[i]) * 0.22,
-          y: this.nodePosY[k] + Math.cos(t * 0.35 + this.jitterSeed[i]) * 0.22,
+          x: (this.nodePosX[k] + Math.sin(t * 0.4 + this.jitterSeed[i]) * 0.22) * NET_SCALE,
+          y: (this.nodePosY[k] + Math.cos(t * 0.35 + this.jitterSeed[i]) * 0.22) * NET_SCALE,
           i: 0.12 + 0.08 * Math.sin(t + this.jitterSeed[i]), c: 0.4,
+        };
+      }
+      case 'lock': {
+        const angle = this.jitterSeed[i];
+        const R = 0.62;
+        const spin = t * 1.3;
+        const twoPi = Math.PI * 2;
+        let diff = (angle - spin) % twoPi;
+        if (diff < 0) diff += twoPi;
+        const trail = Math.max(0, 1 - diff / (Math.PI * 0.55));
+        return {
+          x: Math.cos(angle) * R,
+          y: Math.sin(angle) * R,
+          i: 0.1 + trail * 0.75,
+          c: 0,
         };
       }
       case 'roadmap': {
@@ -1377,8 +1450,8 @@ export class AsciiOrganism{
     // own acid-signal-green, not a bug like the yellow-flash one above: this
     // is the one formation actually meant to carry the site's own identity
     // color, since it represents NJORD describing itself rather than a client
-    const ACCENTS = { diamond: [212, 175, 55], wave: [122, 27, 51], network: [31, 76, 120], globe: [203, 255, 61], constellation: [203, 255, 61], roadmap: [203, 255, 61], mascot: [203, 255, 61] };
-    const FORM_C = { globe: 0, diamond: 1, wave: 1, network: 0.4, constellation: 0.55, roadmap: 0.5, mascot: 1 };
+    const ACCENTS = { diamond: [212, 175, 55], wave: [122, 27, 51], network: [31, 76, 120], 'network-large': [31, 76, 120], globe: [203, 255, 61], constellation: [203, 255, 61], roadmap: [203, 255, 61], mascot: [203, 255, 61] };
+    const FORM_C = { globe: 0, diamond: 1, wave: 1, network: 0.4, 'network-large': 0.4, constellation: 0.55, roadmap: 0.5, mascot: 1 };
     const cwA = (FORM_C[seg.a] ?? 0) * (1 - seg.t);
     const cwB = (FORM_C[seg.b] ?? 0) * seg.t;
     const cwSum = cwA + cwB;
@@ -1583,9 +1656,18 @@ export class AsciiOrganism{
     // what read as choppy.
     const revealT = this._burstDir > 0 ? p : 1 - p;
     const revealEased = 1 - Math.pow(1 - revealT, 3);
+    // The color flood only ever runs on the way IN (burst) — it's there to
+    // mask the click, like a flash of acknowledgment as the project page
+    // takes over. On the way OUT (unburst) the canvas is full-viewport and
+    // sits behind the whole page, not just behind the modal's own shrinking
+    // clip-path circle, so flooding it here reads as the entire page
+    // suddenly flashing solid accent color for a split second as the
+    // modal reveals it underneath — a real "explosion of color" bug, not
+    // an intentional effect. Closing should just show the particles
+    // quietly re-forming, so unburst skips the flood entirely.
     const floodAlpha = this._burstDir > 0
       ? Math.min(1, revealEased * 1.3)        // burst: color floods in, masking the click
-      : Math.max(0, 1 - revealEased * 1.15);  // unburst: color fades out, matching the collapse
+      : 0;                                    // unburst: no flood — particles alone re-form
     const particleAlpha = this._burstDir > 0
       ? Math.max(0, 1 - revealEased * 1.15)   // burst: particles fade out as the flood takes over
       : Math.min(1, revealEased * 1.3);       // unburst: particles fade back in as the flood clears

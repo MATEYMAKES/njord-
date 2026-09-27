@@ -9,6 +9,7 @@ import {
 import { GenerativeAudio } from './audio-engine-a2.js'; // A2 (lighter) — A1 kept intact in audio-engine.js
 import { t, getLang, setLang, applyStaticTranslations, onLangChange } from './i18n.js';
 import { initMascotConvo } from './mascot-convo.js';
+import { initIdentity } from './identity.js';
 
 applyStaticTranslations(getLang());
 
@@ -58,8 +59,22 @@ if(isFinePointer){
 /* ---------------------------------------------------------------
    The ASCII organism — one persistent particle population for the
    whole page. It never respawns; it only ever retargets, cycling
-   through GLOBE → DIAMOND → WAVE → NETWORK → ROADMAP → CONSTELLATION
-   → MASCOT as the visitor scrolls past each anchor below. CONSTELLATION
+   through GLOBE → CHAOS → INFINITY → NETWORK → DIAMOND → WAVE →
+   NETWORK → ROADMAP → CONSTELLATION → MASCOT as the visitor scrolls
+   past each anchor below. CHAOS and INFINITY are both inside the
+   identity section, anchored to two markers with real vertical
+   distance between them (identity-anchor-chaos near its top, -infinity
+   near its bottom) so the two states genuinely resolve across the
+   section's own scroll distance rather than swapping instantly: CHAOS
+   (no coherent form, since there's no identity yet) gives the first
+   word ("Krijojmë") room to read against an aimless cloud, then it
+   resolves into INFINITY (a lemniscate — the identity taking shape)
+   by the time the second word ("identitet.") is legible. NETWORK is
+   registered twice on purpose — once for the Web Development section
+   right after identity (the same connected-node formation reused as
+   "a system of connected pages," anchored to webdev-anchor-network in
+   the empty middle of that layout) and again, unrelated, for Meridian
+   further down. CONSTELLATION
    (the studio section) used to be its own small standalone decorative
    canvas next to the studio copy, and MASCOT used to be a standalone
    inhabitant with his own tiny particle pool in the footer — both are
@@ -75,11 +90,22 @@ if(organismCanvas){
   organism = new AsciiOrganism(organismCanvas, { getInkColor: inkColor });
   organism.setZones([
     { name: 'globe', el: hero },
-    { name: 'diamond', el: document.querySelector('.work-row[data-project="aurelia"]') },
-    { name: 'wave', el: document.querySelector('.work-row[data-project="pulse"]') },
-    { name: 'network', el: document.querySelector('.work-row[data-project="meridian"]') },
-    { name: 'roadmap', el: document.getElementById('services'), ranged: true },
-    { name: 'constellation', el: document.getElementById('studio') },
+    { name: 'chaos', el: document.getElementById('identity-anchor-chaos') },
+    { name: 'infinity', el: document.getElementById('identity-anchor-infinity') },
+    { name: 'globe', el: document.getElementById('webdev-anchor-network') },
+    { name: 'network-large', el: document.getElementById('hosting-anchor-lock') },
+    { name: 'lock', el: document.getElementById('maintenance-anchor-lines') },
+    // .work-row is work.html's full index; .work-preview-row is the
+    // lighter stand-in on index.html's own Work section — whichever
+    // exists on the current page is what gets picked up here, so both
+    // pages' project rows get their matching formation anchored to them.
+    { name: 'diamond', el: document.querySelector('.work-row[data-project="aurelia"], .work-preview-row[data-project="aurelia"]') },
+    { name: 'wave', el: document.querySelector('.work-row[data-project="pulse"], .work-preview-row[data-project="pulse"]') },
+    { name: 'network', el: document.querySelector('.work-row[data-project="meridian"], .work-preview-row[data-project="meridian"]') },
+    // 'roadmap'/#services and 'constellation'/#studio are currently
+    // hidden (see index.html) — their zones are deliberately not
+    // registered while that's true, since a hidden element's layout
+    // rect isn't meaningful as a scroll anchor.
     { name: 'mascot', el: document.getElementById('mascot-anchor') },
   ].filter((z) => z.el));
 
@@ -181,6 +207,17 @@ if(hero){
   };
   window.addEventListener('scroll', onHeroScroll, { passive: true });
   onHeroScroll();
+} else {
+  // Pages with no #hero (currently just work.html) can never satisfy the
+  // scroll-progress check above, so `is-past-hero` — which is what makes
+  // the small header wordmark visible (.logo-mark stays opacity:0 until
+  // then, since on index.html the giant hero wordmark already covers
+  // that role at the top) — was permanently false. The header's own
+  // "NJORD" link back to index.html was already there and already wired
+  // up, just invisible the whole time. A page that opens straight into
+  // its content, with no hero to scroll past, is already "past" it from
+  // the first frame.
+  document.body.classList.add('is-past-hero');
 }
 
 /* ---------------------------------------------------------------
@@ -197,7 +234,8 @@ function serviceRoadmapCopy(num){
 }
 
 const roadmapNodesEl = document.getElementById('roadmap-nodes');
-if(roadmapNodesEl && organism){
+const servicesSection = document.getElementById('services');
+if(roadmapNodesEl && organism && servicesSection && !servicesSection.hidden){
   const nodeEls = Array.from(roadmapNodesEl.querySelectorAll('.roadmap-node'));
 
   function positionRoadmapNodes(){
@@ -294,7 +332,7 @@ if(roadmapNodesEl && organism){
    so the modal — including one already open — can be re-rendered on
    a language switch without needing its own duplicated data here. */
 const PROJECTS = {
-  aurelia: { title: 'Aurelia', year: '2025', burstColor: '#3D7FF0', modalClass: 'project-modal--aurelia' },
+  aurelia: { title: 'Aurelia', year: '2025', burstColor: '#D4AF37', modalClass: 'project-modal--aurelia' },
   pulse: { title: 'Pulse', year: '2024', burstColor: '#7A1B33', modalClass: 'project-modal--pulse' },
   meridian: { title: 'Meridian', year: '2025', burstColor: '#1F4C78', modalClass: 'project-modal--meridian' },
 };
@@ -334,6 +372,52 @@ document.querySelectorAll('.work-row').forEach((row) => {
   });
 });
 
+// index.html's own Work section previews the three projects with a
+// lighter row (.work-preview-row, a real <a href="work.html#...">) —
+// clicking one now opens the same full project experience directly,
+// in place, instead of forcing a trip to work.html first. The href
+// stays as a genuine fallback (no-JS, or a modifier-key click still
+// opens work.html's own anchored row in a new tab as normal).
+document.querySelectorAll('.work-preview-row').forEach((row) => {
+  const key = row.dataset.project;
+  row.addEventListener('click', (e) => {
+    if(e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+    openProject(key, row, e.clientX, e.clientY);
+  });
+});
+
+// Any real navigation to work.html — the "Shiko më shumë" link, or a
+// modifier-click on a .work-preview-row falling through to its own href
+// above — is a genuine page load, which otherwise always lands back at
+// the top of index.html when work.html's own NJORD logo sends you home,
+// losing your place in the Work section. sessionStorage survives that
+// round trip (same tab): save scroll position on the way out, restore it
+// (once) on the way back. Scoped to index.html only via the .work-page
+// body class work.html carries (see style.css/work.html) — this file is
+// shared between both pages, and work.html's own load should never
+// consume a value meant for index.html.
+const RETURN_SCROLL_KEY = 'njord-return-scroll';
+if(!document.body.classList.contains('work-page')){
+  document.querySelectorAll('a[href^="work.html"]').forEach((a) => {
+    a.addEventListener('click', () => {
+      try { sessionStorage.setItem(RETURN_SCROLL_KEY, String(window.scrollY)); } catch(err) {}
+    });
+  });
+  try {
+    const saved = sessionStorage.getItem(RETURN_SCROLL_KEY);
+    if(saved !== null){
+      sessionStorage.removeItem(RETURN_SCROLL_KEY);
+      const y = Number(saved);
+      window.scrollTo(0, y);
+      // Late layout shifts (webfonts, equalizeWorkRows' own retries above)
+      // can nudge section positions after the first paint — one more pass
+      // once everything's settled keeps the restored position accurate.
+      window.addEventListener('load', () => window.scrollTo(0, y));
+    }
+  } catch(err) {}
+}
+
 /* Each row's natural height depends entirely on how many lines its
    description wraps to, which varies with content length AND with
    which language is active — not something that can be reliably
@@ -370,6 +454,8 @@ if(workRowBodies.length > 1){
     workRowResizeTimer = setTimeout(equalizeWorkRows, 150);
   });
 }
+
+initIdentity();
 
 /* ---------------------------------------------------------------
    Project portal — the page loads in as a circle expanding from the
@@ -422,7 +508,21 @@ function animatePageReveal(modalEl, cx, cy, mode){
       modalEl.style.clipPath = full;
     });
   } else {
-    modalEl.style.transition = `clip-path ${PORTAL_MS}ms var(--ease-out)`;
+    // Closing reuses the same clip-path mechanic in reverse, but NOT the
+    // same easing curve. --ease-out (cubic-bezier(.16,.84,.32,1)) front-
+    // loads almost all of its motion into the first fraction of the
+    // duration — fine for an OPENING circle growing outward (most of the
+    // screen filling in fast reads as responsive), but for a SHRINKING
+    // circle it means the radius collapses to a sliver almost immediately,
+    // so nearly the entire page (this project's own solid accent-color
+    // background) gets swapped for the calm page underneath within the
+    // first ~100ms — a real "explosion of color" flash, not a smooth
+    // reveal, and more visible the more saturated a project's own color
+    // is (confirmed worse after Aurelia's blue became a much louder
+    // gold). --ease-in-out eases into the shrink gradually instead, so
+    // the reveal reads as a continuous collapse toward the click point
+    // rather than a sudden wash.
+    modalEl.style.transition = `clip-path ${PORTAL_MS}ms var(--ease-in-out)`;
     modalEl.style.clipPath = collapsed;
   }
 }
@@ -540,7 +640,10 @@ document.querySelectorAll('.project-modal__brand').forEach((b) => {
   });
 });
 
-const ctaButton = modal.querySelector('.project-modal__cta');
+// `modal` (and everything below keyed off it) only exists on work.html
+// now — the project pages moved there, off the main single-page site —
+// so all of this is guarded rather than assumed present.
+const ctaButton = modal ? modal.querySelector('.project-modal__cta') : null;
 if(ctaButton){
   ctaButton.addEventListener('click', () => {
     const note = modal.querySelector('.project-modal__cta-note');
@@ -550,7 +653,7 @@ if(ctaButton){
   });
 }
 
-const siteLink = modal.querySelector('.project-modal__sitelink');
+const siteLink = modal ? modal.querySelector('.project-modal__sitelink') : null;
 if(siteLink){
   siteLink.addEventListener('click', (e) => {
     e.preventDefault();

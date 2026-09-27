@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="sq">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Punët — NJORD</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23CBFF3D'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=JetBrains+Mono:wght@400;500;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,450&family=Bebas+Neue&family=Archivo:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="work-page">
+
+<a class="skip-link" href="#main" data-i18n="skip.link">Skip to content</a>
+
+<canvas id="ascii-organism" aria-hidden="true"></canvas>
+
+<div class="reg-marks" aria-hidden="true">
+  <span class="tl"></span><span class="tr"></span><span class="bl"></span><span class="br"></span>
+</div>
+
+<button id="sound-toggle" class="sound-toggle" type="button" aria-pressed="false" data-i18n-aria="sound.ariaLabel">
+  <span class="sound-toggle__dot" aria-hidden="true"></span>
+  <span class="sound-toggle__icon" aria-hidden="true">&#9834;</span>
+  <span class="sound-toggle__label" data-i18n="sound.off">Sound off</span>
+</button>
+
+<button id="lang-toggle" class="lang-toggle" type="button" aria-label="Toggle language / Ndrysho gjuhën">
+  <span class="lang-toggle__opt" data-lang="en">EN</span>
+  <span class="lang-toggle__sep" aria-hidden="true">/</span>
+  <span class="lang-toggle__opt" data-lang="sq">SHQP</span>
+</button>
+
+<header class="site-header">
+  <a href="index.html" class="logo-mark" data-i18n-aria="logo.ariaLabel">NJORD</a>
+  <button id="nav-toggle" class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-nav" data-i18n-aria="nav.toggleAria">
+    <span class="nav-toggle__bar"></span>
+    <span class="nav-toggle__bar"></span>
+    <span class="nav-toggle__bar"></span>
+  </button>
+  <nav id="main-nav" class="main-nav" aria-label="Primary">
+    <ul>
+      <li><a class="magnetic" href="index.html#identity"><span data-i18n="nav.identity">Identity</span><span class="fill"></span></a></li>
+      <li><a class="magnetic" href="index.html#work"><span data-i18n="nav.work">Work</span><span class="fill"></span></a></li>
+      <li><a class="magnetic" href="index.html#studio"><span data-i18n="nav.studio">Studio</span><span class="fill"></span></a></li>
+      <li><a class="magnetic" href="index.html#services"><span data-i18n="nav.services">Services</span><span class="fill"></span></a></li>
+      <li><a class="magnetic" href="index.html#contact"><span data-i18n="nav.contact">Contact</span><span class="fill"></span></a></li>
+    </ul>
+  </nav>
+  <div class="nav-scrim" aria-hidden="true"></div>
+</header>
+
+<main id="main">
+
+  <section id="work" class="section work-index">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow" data-i18n="work.eyebrow">Selected Work — 03 Projects</p>
+          <h2 data-i18n="work.h2">Three worlds, three languages.</h2>
+        </div>
+        <p class="section-note" data-i18n="work.note">Each project below runs on its own visual system. NJORD is the index — not the identity — behind any of them.</p>
+      </div>
+
+      <div class="work-row" id="aurelia" data-project="aurelia" data-index="01" tabindex="0" role="button" aria-haspopup="dialog" data-i18n-aria="work.aurelia.aria">
+        <div class="work-row__index" aria-hidden="true"><canvas></canvas><span class="work-row__index-num">01</span></div>
+        <div class="work-row__body">
+          <h3 class="work-row__title">Aurelia</h3>
+          <p class="work-row__desc" data-i18n="work.aurelia.desc">An editorial approach to jewelry retail: slow motion, warm materials, quiet confidence.</p>
+          <ul class="work-row__tags">
+            <li data-i18n="work.aurelia.tag1">Brand Identity</li><li data-i18n="work.aurelia.tag2">E-Commerce</li><li data-i18n="work.aurelia.tag3">Art Direction</li>
+          </ul>
+        </div>
+        <div class="work-row__meta">
+          <span>2025</span>
+          <span class="work-row__enter"><span data-i18n="work.enter">Enter</span> <span class="arrow">→</span></span>
+        </div>
+      </div>
+
+      <div class="work-row" id="pulse" data-project="pulse" data-index="02" tabindex="0" role="button" aria-haspopup="dialog" data-i18n-aria="work.pulse.aria">
+        <div class="work-row__index" aria-hidden="true"><canvas></canvas><span class="work-row__index-num">02</span></div>
+        <div class="work-row__body">
+          <h3 class="work-row__title">Pulse</h3>
+          <p class="work-row__desc" data-i18n="work.pulse.desc">A loud, kinetic identity for a music festival that never sits still.</p>
+          <ul class="work-row__tags">
+            <li data-i18n="work.pulse.tag1">Web Design</li><li data-i18n="work.pulse.tag2">Motion</li><li data-i18n="work.pulse.tag3">Brand System</li>
+          </ul>
+        </div>
+        <div class="work-row__meta">
+          <span>2024</span>
+          <span class="work-row__enter"><span data-i18n="work.enter">Enter</span> <span class="arrow">→</span></span>
+        </div>
+      </div>
+
+      <div class="work-row" id="meridian" data-project="meridian" data-index="03" tabindex="0" role="button" aria-haspopup="dialog" data-i18n-aria="work.meridian.aria">
+        <div class="work-row__index" aria-hidden="true"><canvas></canvas><span class="work-row__index-num">03</span></div>
+        <div class="work-row__body">
+          <h3 class="work-row__title">Meridian</h3>
+          <p class="work-row__desc" data-i18n="work.meridian.desc">Precision-first interface design for a financial platform built on trust and data.</p>
+          <ul class="work-row__tags">
+            <li data-i18n="work.meridian.tag1">Product Design</li><li data-i18n="work.meridian.tag2">UI System</li><li data-i18n="work.meridian.tag3">Data Viz</li>
+          </ul>
+        </div>
+        <div class="work-row__meta">
+          <span>2025</span>
+          <span class="work-row__enter"><span data-i18n="work.enter">Enter</span> <span class="arrow">→</span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div id="project-modal" class="project-modal" role="dialog" aria-modal="true" data-i18n-aria="modal.ariaLabel" hidden>
+  <div class="project-modal__bg" aria-hidden="true">
+    <canvas id="aurelia-visual" data-panel="aurelia"></canvas>
+    <canvas id="pulse-visual" data-panel="pulse" hidden></canvas>
+    <canvas id="meridian-visual" data-panel="meridian" hidden></canvas>
+  </div>
+  <div class="project-modal__bar">
+    <button class="project-modal__brand" type="button" data-i18n-aria="modal.brandAria">NJORD</button>
+  </div>
+  <div class="project-modal__body">
+    <div>
+      <p class="project-modal__eyebrow"></p>
+      <h2 class="project-modal__title"></h2>
+      <p class="project-modal__tag"></p>
+      <p class="project-modal__desc"></p>
+      <dl class="project-modal__meta">
+        <div><dt style="display:inline" data-i18n="modal.discipline">Discipline — </dt><dd style="display:inline" data-meta="discipline"></dd></div>
+        <div><dt style="display:inline" data-i18n="modal.year">Year — </dt><dd style="display:inline" data-meta="year"></dd></div>
+        <div><dt style="display:inline" data-i18n="modal.deliverables">Deliverables — </dt><dd style="display:inline" data-meta="deliverables"></dd></div>
+      </dl>
+    </div>
+  </div>
+  <div class="project-modal__highlights">
+    <div><span class="project-modal__highlight-num">01</span><p data-highlight="0"></p></div>
+    <div><span class="project-modal__highlight-num">02</span><p data-highlight="1"></p></div>
+    <div><span class="project-modal__highlight-num">03</span><p data-highlight="2"></p></div>
+  </div>
+  <div class="project-modal__cta-row">
+    <button class="project-modal__cta magnetic" type="button"><span data-i18n="modal.cta">View full case study</span> <span aria-hidden="true">→</span></button>
+    <span class="project-modal__cta-note" aria-live="polite"></span>
+  </div>
+  <div class="project-modal__sitelink-wrap">
+    <a class="project-modal__sitelink magnetic" href="#"><span data-i18n="modal.sitelink">Visit live site</span> <span aria-hidden="true">↗</span></a>
+    <span class="project-modal__sitelink-note" aria-live="polite"></span>
+  </div>
+</div>
+
+<script type="module" src="main.js"></script>
+</body>
+</html>
