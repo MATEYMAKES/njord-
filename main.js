@@ -17,30 +17,11 @@ const reduced = prefersReducedMotion();
 const inkColor = () => getComputedStyle(document.documentElement).getPropertyValue('--ink').trim();
 
 /* ---------------------------------------------------------------
-   Custom cursor + magnetism (pointer devices only)
+   Magnetism (pointer devices only)
    --------------------------------------------------------------- */
 const isFinePointer = window.matchMedia('(pointer: fine)').matches;
 
 if(isFinePointer){
-  const dot = document.createElement('div');
-  dot.className = 'cursor-dot';
-  dot.setAttribute('aria-hidden', 'true');
-  document.body.appendChild(dot);
-  let cx = -100, cy = -100;
-  window.addEventListener('pointermove', (e) => {
-    cx = e.clientX; cy = e.clientY;
-    dot.style.transform = `translate3d(${cx}px, ${cy}px, 0)`;
-  }, { passive: true });
-
-  document.addEventListener('pointerover', (e) => {
-    if(e.target.closest('a, button, .magnetic, .work-row')) dot.classList.add('is-hover');
-  });
-  document.addEventListener('pointerout', (e) => {
-    if(e.target.closest('a, button, .magnetic, .work-row')) dot.classList.remove('is-hover');
-  });
-  window.addEventListener('pointerdown', () => dot.classList.add('is-down'));
-  window.addEventListener('pointerup', () => dot.classList.remove('is-down'));
-
   if(!reduced){
     document.querySelectorAll('.magnetic').forEach((el) => {
       let raf = null;

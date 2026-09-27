@@ -39,8 +39,8 @@ const translations = {
   'identity.word1': { en: 'We create', sq: 'Krijojmë' },
   'identity.word2': { en: 'identity.', sq: 'identitet.' },
   'identity.body': {
-    en: "In today's world, it's essential for a business to have a concrete identity — in advertising, on its website, on social media, and everywhere else. At NJORD we have our own team of graphic designers to create your logo, and set the fonts and colors for your page. We put it all together in a set of brand guidelines — a document that defines exactly how your identity is used everywhere it appears, so your business looks consistent and recognizable across every material.",
-    sq: 'Në botën moderne, është thelbësore që çdo biznes të ketë një identitet konkret — në reklama, në faqen e internetit, në rrjetet sociale dhe kudo tjetër. Në NJORD kemi ekipin tonë të dizajnerëve grafikë, që krijojnë logon, zgjedhin fontet dhe ngjyrat për faqen tuaj. I bashkojmë të gjitha këto në një udhëzues të markës (brand guidelines) — një dokument që përcakton saktësisht si përdoret identiteti juaj kudo që të shfaqet, në mënyrë që biznesi juaj të duket i njëjtë dhe i njohshëm në çdo material.',
+    en: 'Every business needs a consistent identity, wherever it appears. We design your logo, fonts and colors, then set it all out in brand guidelines so you stay recognizable everywhere.',
+    sq: 'Çdo biznes ka nevojë për një identitet të qëndrueshëm, kudo që shfaqet. Dizajnojmë logon, fontet dhe ngjyrat, dhe i përmbledhim në udhëzues marke, që të mbeteni të njohshëm kudo.',
   },
   'identity.provides': {
     en: 'Logo — Color palette — Typography — Brand guidelines',
@@ -51,8 +51,8 @@ const translations = {
   'webdev.titleLeft': { en: 'Development', sq: 'Zhvillim' },
   'webdev.titleRight': { en: 'Web.', sq: 'Web.' },
   'webdev.body': {
-    en: "Based on your visual identity, we build a website that's much more than just a page — the only limit is your imagination. Want an e-commerce store? A booking system? Or a website for internal use within your company? Just tell us, and we'll build it.",
-    sq: 'Sipas identitetit tuaj vizual, krijojmë një webfaqe që është shumë më tepër se një faqe e thjeshtë — limiti i vetëm është imagjinata juaj. Doni një webfaqe e-commerce? Sistem rezervimesh? Apo një webfaqe për përdorim të brendshëm në kompaninë tuaj? Thjesht na tregoni, dhe ne do ta krijojmë.',
+    en: "Based on your identity, we build a website that's far more than a simple page — an online store, a booking system, internal tools, whatever you need.",
+    sq: 'Sipas identitetit tuaj, ndërtojmë një webfaqe që është shumë më tepër se një faqe e thjeshtë — dyqan online, sistem rezervimesh, mjete të brendshme, çka të nevojitet.',
   },
   'webdev.provides': {
     en: 'UI/UX design — Front-end build — Back-end systems — Responsive layout',
@@ -63,8 +63,8 @@ const translations = {
   'hosting.titleLeft': { en: 'Hosting', sq: 'Hosting' },
   'hosting.titleRight': { en: 'Security.', sq: 'Siguri.' },
   'hosting.body': {
-    en: 'We put your website online and host it on servers within Kosovo, ensuring the best possible speed, while making sure it stays secure at every moment of the day.',
-    sq: 'E vendosim webfaqen tuaj online dhe e hostojmë në servera brenda Kosovës, duke siguruar shpejtësinë më të mirë dhe duke u kujdesur që të mbetet e sigurt në çdo moment të ditës.',
+    en: 'We host your website on servers within Kosovo for the best possible speed, while keeping it secure around the clock.',
+    sq: 'E hostojmë webfaqen tuaj në servera brenda Kosovës për shpejtësinë më të mirë, duke e mbajtur të sigurt në çdo moment.',
   },
   'hosting.provides': {
     en: 'Local servers — Uptime monitoring — SSL & backups — Threat protection',
@@ -173,8 +173,8 @@ const translations = {
   'contact.h2': { en: "Let's build something that doesn't look like anything else.", sq: 'Le të ndërtojmë diçka që nuk i ngjan asgjë tjetër.' },
   'contact.copied': { en: 'Copied', sq: 'U kopjua' },
   'contact.meta': {
-    en: 'Based remotely, worldwide.<br>Currently booking Q1 2026.',
-    sq: 'Me bazë në distancë, kudo në botë.<br>Aktualisht duke rezervuar T1 2026.',
+    en: 'Based remotely, worldwide.<br>Currently booking Q1 2026.<br>Replies within 24 hours.',
+    sq: 'Me bazë në distancë, kudo në botë.<br>Aktualisht duke rezervuar T1 2026.<br>Përgjigjemi brenda 24 orësh.',
   },
   'mascot.ariaLabel': {
     en: "A small figure formed from the page's own characters",

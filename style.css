@@ -188,13 +188,11 @@ img,canvas{ display: block; max-width: 100%; }
   z-index: 1;
   pointer-events: none;
 }
-@media (max-width: 720px){
-  /* On phone widths the organism shares the same narrow column as every
-     section's text (desktop has room to keep them in separate zones of
-     the viewport) — damp it to a faint backdrop so copy stays legible
-     instead of visually competing with it. */
-  #ascii-organism{ opacity: 0.4; }
-}
+/* The phone-width dim used to live here as a blanket #ascii-organism
+   opacity, but that also dimmed the mascot formation, which has no text
+   competing with it and should read at full strength. It's now baked
+   into AsciiOrganism's own per-particle alpha (see `mobileDim` in
+   ascii-engine.js's _render), fading out as mascotPresence fades in. */
 main{
   position: relative;
   z-index: 2;
@@ -373,30 +371,6 @@ main{
      the left, in its own corner rather than stacked with anything. */
   .lang-toggle{ left: var(--gutter); right: auto; }
 }
-
-/* ---------------------------------------------------------------
-   Custom cursor
-   --------------------------------------------------------------- */
-.cursor-dot{
-  position: fixed;
-  top: 0; left: 0;
-  width: 10px; height: 10px;
-  margin: -5px 0 0 -5px;
-  border-radius: 50%;
-  background: var(--ink);
-  mix-blend-mode: difference;
-  pointer-events: none;
-  z-index: 999;
-  transform: translate3d(-100px,-100px,0) scale(1);
-  transition: width .25s var(--ease-out), height .25s var(--ease-out), margin .25s var(--ease-out), background-color .25s;
-  will-change: transform;
-}
-.cursor-dot.is-hover{
-  width: 46px; height: 46px; margin: -23px 0 0 -23px;
-  background: var(--signal);
-}
-.cursor-dot.is-down{ background: var(--signal); }
-@media (pointer: coarse){ .cursor-dot{ display: none; } }
 
 /* ---------------------------------------------------------------
    Header / nav
@@ -1047,27 +1021,15 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
   transition: opacity .3s;
 }
 .contact-email.is-copied .status{ opacity: 1; }
-.contact-meta{
-  font-family: var(--f-mono);
-  font-size: var(--fs-small);
-  color: var(--ink-soft);
-  text-align: right;
-}
 @media (max-width: 640px){
-  /* .contact-row's own flex-wrap left these two stacking in an odd
-     halfway state at phone widths: the email alone was wide enough to
-     fill the row (forcing a wrap) but the meta paragraph then landed as
-     a lone item on its own flex line, which sizes to its own content —
-     making its `text-align:right` a no-op (nothing to align against)
-     and leaving it stuck flush-left, out of step with the address
-     above it. Forcing a real column stack with matching left alignment
-     reads as one deliberate block instead of a layout accident. */
+  /* the email alone can be wide enough to fill the row at phone widths,
+     forcing a wrap; a real column stack reads as one deliberate block
+     instead of a layout accident. */
   .contact-row{ flex-direction: column; align-items: flex-start; gap: 1.25rem; }
-  .contact-meta{ text-align: left; }
 }
 .site-footer{
   position: relative;
-  display: flex; justify-content: space-between; align-items: center;
+  display: flex; justify-content: space-between; align-items: flex-end;
   gap: 1rem; flex-wrap: wrap;
   padding-top: clamp(2rem, 5vw, 3.5rem);
   margin-top: clamp(2rem, 5vw, 3.5rem);
@@ -1078,6 +1040,15 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
   text-transform: uppercase;
   color: var(--ink-faint);
 }
+.site-footer__left{ display: flex; gap: 1rem; flex-wrap: wrap; }
+.site-footer .contact-meta{
+  font-family: var(--f-mono);
+  font-size: var(--fs-small);
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--ink-soft);
+  text-align: right;
+}
 @media (max-width: 640px){
   /* the sound/lang toggles are fixed to the viewport's bottom corners
      (see .sound-toggle/.lang-toggle) — once the page is scrolled all the
@@ -1085,7 +1056,8 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
      otherwise sits too. Reserving real room below the footer (its own
      height, plus the safe-area inset those toggles already account for)
      stops them ever landing on top of it. */
-  .site-footer{ padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px)); }
+  .site-footer{ padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px)); flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+  .site-footer .contact-meta{ text-align: left; }
 }
 /* MASCOT — a real point marker sitting exactly on .contact-row's own
    top border line: its rect (near-zero size) is what AsciiOrganism's

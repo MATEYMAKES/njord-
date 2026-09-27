@@ -1450,7 +1450,7 @@ export class AsciiOrganism{
     // own acid-signal-green, not a bug like the yellow-flash one above: this
     // is the one formation actually meant to carry the site's own identity
     // color, since it represents NJORD describing itself rather than a client
-    const ACCENTS = { diamond: [212, 175, 55], wave: [122, 27, 51], network: [31, 76, 120], 'network-large': [31, 76, 120], globe: [203, 255, 61], constellation: [203, 255, 61], roadmap: [203, 255, 61], mascot: [203, 255, 61] };
+    const ACCENTS = { diamond: [212, 175, 55], wave: [122, 27, 51], network: [31, 76, 120], 'network-large': [0, 0, 0], globe: [203, 255, 61], constellation: [203, 255, 61], roadmap: [203, 255, 61], mascot: [203, 255, 61] };
     const FORM_C = { globe: 0, diamond: 1, wave: 1, network: 0.4, 'network-large': 0.4, constellation: 0.55, roadmap: 0.5, mascot: 1 };
     const cwA = (FORM_C[seg.a] ?? 0) * (1 - seg.t);
     const cwB = (FORM_C[seg.b] ?? 0) * seg.t;
@@ -1556,6 +1556,12 @@ export class AsciiOrganism{
       else if(seg.b === 'mascot') mascotPresence = seg.t;
       else if(seg.a === 'mascot') mascotPresence = 1 - seg.t;
     }
+    // On phone widths the canvas as a whole used to be dimmed via CSS
+    // (#ascii-organism{opacity:.4}) so copy stayed legible over it — but
+    // that dimmed the mascot too, who has no text competing with him and
+    // should read at full strength. Baking the dim into per-particle alpha
+    // instead lets it fade out exactly as mascotPresence fades in.
+    const mobileDim = this.isMobile ? lerp(0.4, 1, mascotPresence) : 1;
     let lastMixKey = -1, lastFill = '';
     for(let i = 0; i < n; i++){
       const inten = this.intensity[i];
@@ -1573,7 +1579,7 @@ export class AsciiOrganism{
         const b = Math.round(lerp(inkRGB[2], ab, mix));
         lastFill = `rgb(${r},${g},${b})`;
       }
-      ctx.globalAlpha = Math.min(1, inten + 0.1);
+      ctx.globalAlpha = Math.min(1, inten + 0.1) * mobileDim;
       ctx.fillStyle = lastFill;
       const mascotBodyParticle = mascotPresence > 0.35 && this.mascotKind[i] === 0;
       ctx.font = mascotBodyParticle ? mascotBodyFont : organismFont;
