@@ -13,6 +13,7 @@
    ================================================================ */
 import { prefersReducedMotion } from './ascii-engine.js';
 import { t, getLang } from './i18n.js';
+import { PRICES, ALWAYS_WITH_WEBSITE, sumItems, visitorRange, formatEuro } from './pricing.js';
 
 const INTEREST_OPTIONS = [
   { value: 'website', labelKey: 'convo.s3.opt1' },
@@ -21,6 +22,89 @@ const INTEREST_OPTIONS = [
   { value: 'something-else', labelKey: 'convo.s3.opt4' },
   { value: 'not-sure', labelKey: 'convo.s3.opt5' },
 ];
+
+// ---- instant estimate ------------------------------------------------
+// Scope questions that only appear when they apply (see `when` on the
+// steps below). Written for someone who has never thought about how a
+// website is built: every option describes what the BUSINESS wants to
+// do, never the technology, and most carry a small grey line of
+// examples (`hintKey`). Each option maps to price-list keys in
+// pricing.js — the technical translation happens here, not in the
+// visitor's head.
+const BRAND_SCOPE_OPTIONS = [
+  { value: 'logo', labelKey: 'convo.brand.opt1', hintKey: 'convo.brand.hint1', items: ['logo'] },
+  { value: 'logo-identity', labelKey: 'convo.brand.opt2', hintKey: 'convo.brand.hint2', items: ['logoIdentity'] },
+  { value: 'full-identity', labelKey: 'convo.brand.opt3', hintKey: 'convo.brand.hint3', items: ['fullIdentity'] },
+  { value: 'full-guidelines', labelKey: 'convo.brand.opt4', hintKey: 'convo.brand.hint4', items: ['fullIdentity', 'brandGuidelines'] },
+  { value: 'not-sure', labelKey: 'convo.brand.opt5', hintKey: 'convo.brand.hint5', items: [] },
+];
+
+const SITE_TYPE_OPTIONS = [
+  { value: 'landing', labelKey: 'convo.site.opt1', hintKey: 'convo.site.hint1', items: ['landingPage'], features: 'site' },
+  { value: 'site-small', labelKey: 'convo.site.opt2', hintKey: 'convo.site.hint2', items: ['site3to5'], features: 'site' },
+  { value: 'site-large', labelKey: 'convo.site.opt3', hintKey: 'convo.site.hint3', items: ['site6to10'], features: 'site' },
+  { value: 'store', labelKey: 'convo.site.opt4', hintKey: 'convo.site.hint4', items: ['store'], features: 'store' },
+  // web app and full platform were two options — too close to tell
+  // apart for a non-technical visitor, so it's one, quoted as "from"
+  // the web-app starting price
+  { value: 'custom-system', labelKey: 'convo.site.opt5', hintKey: 'convo.site.hint5', items: ['webApp'], fromOnly: true },
+  { value: 'not-sure', labelKey: 'convo.site.opt6', hintKey: 'convo.site.hint6', items: [] },
+];
+
+// Multi-select extras, phrased as things people can do on the site.
+const FEATURE_OPTIONS = {
+  site: [
+    { value: 'contactForm', labelKey: 'convo.feature.contactForm', items: ['contactForm'] },
+    { value: 'booking', labelKey: 'convo.feature.booking', items: ['booking'] },
+    { value: 'userAccounts', labelKey: 'convo.feature.userAccounts', hintKey: 'convo.feature.userAccounts.hint', items: ['userAccounts'] },
+    { value: 'clientDashboard', labelKey: 'convo.feature.clientDashboard', hintKey: 'convo.feature.clientDashboard.hint', items: ['clientDashboard'] },
+    { value: 'newsletter', labelKey: 'convo.feature.newsletter', items: ['newsletter'] },
+    { value: 'cms', labelKey: 'convo.feature.cms', hintKey: 'convo.feature.cms.hint', items: ['cms'] },
+    // API and CRM merged into one plain-language option, priced as the
+    // CRM line (the higher of the two) so it never under-quotes
+    { value: 'integration', labelKey: 'convo.feature.integration', hintKey: 'convo.feature.integration.hint', items: ['crmIntegration'] },
+    { value: 'analytics', labelKey: 'convo.feature.analytics', items: ['analytics'] },
+    { value: 'animations', labelKey: 'convo.feature.animations', items: ['animations'] },
+  ],
+  store: [
+    { value: 'payments', labelKey: 'convo.feature.payments', items: ['payments'] },
+    { value: 'customerAccounts', labelKey: 'convo.feature.customerAccounts', hintKey: 'convo.feature.customerAccounts.hint', items: ['customerAccounts'] },
+    { value: 'customCheckout', labelKey: 'convo.feature.customCheckout', hintKey: 'convo.feature.customCheckout.hint', items: ['customCheckout'] },
+    { value: 'cms', labelKey: 'convo.feature.cms', hintKey: 'convo.feature.cms.hint', items: ['cms'] },
+    { value: 'newsletter', labelKey: 'convo.feature.newsletter', items: ['newsletter'] },
+    { value: 'analytics', labelKey: 'convo.feature.analytics', items: ['analytics'] },
+    { value: 'animations', labelKey: 'convo.feature.animations', items: ['animations'] },
+  ],
+};
+
+const wantsBrand = (a) => a.interest === 'branding' || a.interest === 'both';
+const wantsSite = (a) => a.interest === 'website' || a.interest === 'both';
+const siteOption = (a) => SITE_TYPE_OPTIONS.find((o) => o.value === a.siteType);
+const brandOption = (a) => BRAND_SCOPE_OPTIONS.find((o) => o.value === a.brandScope);
+const featureSet = (a) => (wantsSite(a) && siteOption(a)?.features) || null;
+const pickedFeatures = (a) => (FEATURE_OPTIONS[featureSet(a)] || []).filter((o) => (a.features || []).includes(o.value));
+
+/** Everything the visitor has picked so far, translated into price-list
+ *  keys, plus whether part of the request is still "not sure". */
+function quoteItems(a){
+  const items = [];
+  let unsure = false;
+  let fromOnly = false;
+  if(wantsBrand(a)){
+    const brand = brandOption(a);
+    if(brand && brand.items.length) items.push(...brand.items); else unsure = true;
+  }
+  if(wantsSite(a)){
+    const site = siteOption(a);
+    if(site && site.items.length){
+      items.push(...site.items);
+      if(site.features) items.push(...ALWAYS_WITH_WEBSITE);
+      if(site.fromOnly) fromOnly = true;
+    } else unsure = true;
+    pickedFeatures(a).forEach((o) => items.push(...o.items));
+  }
+  return { items: items.filter((k) => PRICES[k]), unsure, fromOnly };
+}
 
 const PROBLEM_OPTIONS = [
   { value: 'starting-fresh', labelKey: 'convo.s4.opt1' },
@@ -49,8 +133,14 @@ const STEPS = [
   { key: 'businessName', type: 'text', promptKeys: ['convo.s1.prompt'], required: true },
   { key: 'businessDescription', type: 'textarea', promptKeys: ['convo.s2.prompt'], placeholderKey: 'convo.s2.placeholder', required: true },
   { key: 'interest', type: 'choice', promptKeys: ['convo.s3.prompt'], options: INTEREST_OPTIONS, required: true },
+  { key: 'brandScope', type: 'choice', promptKeys: ['convo.brand.prompt'], options: BRAND_SCOPE_OPTIONS, required: true, when: wantsBrand },
+  { key: 'siteType', type: 'choice', promptKeys: ['convo.site.prompt'], options: SITE_TYPE_OPTIONS, required: true, when: wantsSite },
+  { key: 'features', type: 'multi', promptKeys: ['convo.features.prompt'], helperKey: 'convo.features.helper', when: (a) => !!featureSet(a) },
   { key: 'problem', type: 'choice', promptKeys: ['convo.s4.prompt1', 'convo.s4.prompt2'], options: PROBLEM_OPTIONS, required: true },
   { key: 'audience', type: 'choice', promptKeys: ['convo.s5.prompt'], options: AUDIENCE_OPTIONS, required: true },
+  // the price, shown BEFORE asking who they are — no contact details
+  // required to see it (deliberate: trust first, see HANDOFF.md)
+  { key: 'estimate', type: 'estimate', promptKeys: ['convo.estimate.prompt'], when: (a) => wantsBrand(a) || wantsSite(a) },
   { key: 'contact', type: 'contact', promptKeys: ['convo.s14.prompt1', 'convo.s14.prompt2'], required: true },
   { key: 'additionalNotes', type: 'textarea', promptKeys: ['convo.s15.prompt'], optional: true },
 ];
@@ -59,6 +149,11 @@ const STEPS = [
  *  @param opts.accessKey Web3Forms access key (see main.js) — this is
  *  now the only way to reach the studio, the old standalone contact
  *  form was removed. */
+/** The steps that apply to this visitor's answers so far, in order. */
+function activeSteps(answers){
+  return STEPS.filter((s) => !s.when || s.when(answers));
+}
+
 export function initMascotConvo(container, opts = {}){
   const stage = container.querySelector('.mascot-convo__stage');
   const backBtn = container.querySelector('.mascot-convo__back');
@@ -121,11 +216,12 @@ export function initMascotConvo(container, opts = {}){
   function updateChrome(){
     backBtn.hidden = !(phase === 'flow' && stepIndex > 0) && phase !== 'end';
     container.querySelector('.mascot-convo__progress').hidden = phase !== 'flow' && phase !== 'end';
-    if(phase === 'flow') setProgress(stepIndex / STEPS.length);
+    if(phase === 'flow') setProgress(stepIndex / activeSteps(answers).length);
     else if(phase === 'end' || phase === 'sent') setProgress(1);
   }
 
-  function clearStage(){ stage.replaceChildren(); }
+  // each new question starts scrolled to its top, so the question itself is visible
+  function clearStage(){ stage.replaceChildren(); stage.scrollTop = 0; }
 
   function focusFirst(){
     const target = stage.querySelector('input, textarea, button.mascot-convo__choice, button.mascot-convo__primary');
@@ -167,7 +263,7 @@ export function initMascotConvo(container, opts = {}){
   }
 
   function fieldHasValue(){
-    const step = STEPS[stepIndex];
+    const step = activeSteps(answers)[stepIndex];
     if(step.type === 'contact'){
       const name = stage.querySelector('[name=convoName]');
       const email = stage.querySelector('[name=convoEmail]');
@@ -179,7 +275,7 @@ export function initMascotConvo(container, opts = {}){
   }
 
   function collectStepAnswer(){
-    const step = STEPS[stepIndex];
+    const step = activeSteps(answers)[stepIndex];
     if(step.type === 'text' || step.type === 'textarea'){
       const field = currentField();
       answers[step.key] = field ? field.value.trim() : '';
@@ -192,7 +288,7 @@ export function initMascotConvo(container, opts = {}){
   }
 
   function advanceStep(){
-    if(stepIndex + 1 >= STEPS.length) renderEnd();
+    if(stepIndex + 1 >= activeSteps(answers).length) renderEnd();
     else { stepIndex += 1; renderStep(); }
   }
 
@@ -203,7 +299,7 @@ export function initMascotConvo(container, opts = {}){
 
   function goBack(){
     if(phase === 'flow' && stepIndex === 0){ renderIntro(); return; }
-    if(phase === 'end'){ stepIndex = STEPS.length - 1; renderStep(); return; }
+    if(phase === 'end'){ stepIndex = activeSteps(answers).length - 1; renderStep(); return; }
     if(phase === 'flow'){ stepIndex -= 1; renderStep(); }
   }
 
@@ -222,7 +318,7 @@ export function initMascotConvo(container, opts = {}){
   function refreshPrimaryState(){
     const primary = stage.querySelector('.mascot-convo__primary');
     if(!primary) return;
-    const step = STEPS[stepIndex];
+    const step = activeSteps(answers)[stepIndex];
     primary.disabled = !!step.required && !fieldHasValue();
   }
 
@@ -252,11 +348,77 @@ export function initMascotConvo(container, opts = {}){
     return foot;
   }
 
+  function currentEstimate(){
+    const { items, unsure, fromOnly } = quoteItems(answers);
+    if(!items.length) return null;
+    const total = sumItems(items);
+    return { items, total, range: visitorRange(total), unsure, fromOnly };
+  }
+
+  function rangeText(est, lang = getLang()){
+    const { range } = est;
+    if(est.fromOnly) return `${t('convo.estimate.from', lang)} ${formatEuro(range.lo, lang)}`;
+    return `${formatEuro(range.lo, lang)} – ${formatEuro(range.hi, lang)}${range.plus ? '+' : ''}`;
+  }
+
+  function renderEstimate(step){
+    const est = currentEstimate();
+    if(!est){
+      stage.appendChild(renderPrompt(['convo.estimate.none']));
+    } else {
+      stage.appendChild(renderPrompt(step.promptKeys));
+      const box = document.createElement('div');
+      box.className = 'mascot-convo__estimate';
+      const label = document.createElement('span');
+      label.className = 'mascot-convo__estimate-label';
+      label.textContent = t('convo.estimate.label');
+      const value = document.createElement('strong');
+      value.className = 'mascot-convo__estimate-value';
+      value.textContent = rangeText(est);
+      box.append(label, value);
+      stage.appendChild(box);
+      const note = document.createElement('p');
+      note.className = 'mascot-convo__helper';
+      note.textContent = [
+        est.unsure ? t('convo.estimate.partial') : '',
+        est.fromOnly ? t('convo.estimate.fromNote') : '',
+        t('convo.estimate.note'),
+      ].filter(Boolean).join(' ');
+      stage.appendChild(note);
+    }
+    const foot = document.createElement('div');
+    foot.className = 'mascot-convo__foot';
+    const primary = document.createElement('button');
+    primary.type = 'button';
+    primary.className = 'mascot-convo__primary';
+    primary.textContent = t('convo.estimate.continue');
+    primary.addEventListener('click', advanceStep);
+    foot.appendChild(primary);
+    stage.appendChild(foot);
+    focusFirst();
+  }
+
+  // Option label + optional small grey line of examples underneath.
+  function fillChoiceLabel(btn, opt){
+    btn.replaceChildren();
+    const label = document.createElement('span');
+    label.className = 'mascot-convo__choice-label';
+    label.textContent = t(opt.labelKey);
+    btn.appendChild(label);
+    if(opt.hintKey){
+      const hint = document.createElement('span');
+      hint.className = 'mascot-convo__choice-hint';
+      hint.textContent = t(opt.hintKey);
+      btn.appendChild(hint);
+    }
+  }
+
   function renderStep(){
     phase = 'flow';
     updateChrome();
     clearStage();
-    const step = STEPS[stepIndex];
+    const step = activeSteps(answers)[stepIndex];
+    if(step.type === 'estimate'){ renderEstimate(step); return; }
     stage.appendChild(renderPrompt(step.promptKeys));
     if(step.helperKey){
       const helper = document.createElement('p');
@@ -277,8 +439,31 @@ export function initMascotConvo(container, opts = {}){
         btn.type = 'button';
         btn.className = 'mascot-convo__choice';
         if(answers[step.key] === opt.value) btn.classList.add('is-selected');
-        btn.textContent = t(opt.labelKey);
+        fillChoiceLabel(btn, opt);
         btn.addEventListener('click', () => { answers[step.key] = opt.value; goNext(); });
+        choices.appendChild(btn);
+      });
+      stage.appendChild(choices);
+    } else if(step.type === 'multi'){
+      const picked = new Set(answers[step.key] || []);
+      const choices = document.createElement('div');
+      choices.className = 'mascot-convo__choices';
+      (FEATURE_OPTIONS[featureSet(answers)] || []).forEach((opt) => {
+        const key = opt.value;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'mascot-convo__choice mascot-convo__choice--toggle';
+        fillChoiceLabel(btn, opt);
+        const sync = () => {
+          btn.classList.toggle('is-selected', picked.has(key));
+          btn.setAttribute('aria-pressed', String(picked.has(key)));
+        };
+        sync();
+        btn.addEventListener('click', () => {
+          if(picked.has(key)) picked.delete(key); else picked.add(key);
+          answers[step.key] = Array.from(picked);
+          sync();
+        });
         choices.appendChild(btn);
       });
       stage.appendChild(choices);
@@ -358,10 +543,19 @@ export function initMascotConvo(container, opts = {}){
   }
 
   function buildPayload(){
+    const est = currentEstimate();
+    const fmt = (pair) => `€${pair[0]}–€${pair[1]}`;
     return {
       businessName: answers.businessName || '',
       businessDescription: answers.businessDescription || '',
       interest: answers.interest || '',
+      brandScope: wantsBrand(answers) ? (answers.brandScope || '') : '',
+      siteType: wantsSite(answers) ? (answers.siteType || '') : '',
+      features: pickedFeatures(answers).map((o) => o.value).join(', '),
+      estimateShown: est ? rangeText(est, 'en') + (est.unsure ? ' (partial — part of the request was "not sure")' : '') : 'none (needs a closer look)',
+      estimateStarter: est ? fmt(est.total.starter) + (est.total.plus ? '+' : '') : '',
+      estimateMainstream: est ? fmt(est.total.mainstream) + (est.total.plus ? '+' : '') : '',
+      estimateItems: est ? est.items.join(', ') : '',
       problem: answers.problem || '',
       audience: answers.audience || '',
       contactName: answers.contactName || '',
@@ -378,6 +572,13 @@ export function initMascotConvo(container, opts = {}){
       `Business/project: ${p.businessName}`,
       `What they do: ${p.businessDescription}`,
       `Came for: ${p.interest}`,
+      `Branding scope: ${p.brandScope || '—'}`,
+      `Website type: ${p.siteType || '—'}`,
+      `Extras: ${p.features || '—'}`,
+      `Estimate shown to visitor: ${p.estimateShown}`,
+      `  Starter tier: ${p.estimateStarter || '—'}`,
+      `  Mainstream tier: ${p.estimateMainstream || '—'}`,
+      `  Priced items: ${p.estimateItems || '—'}`,
       `Problem/goal: ${p.problem}`,
       `Audience: ${p.audience}`,
       `Additional notes: ${p.additionalNotes || '—'}`,
@@ -463,7 +664,17 @@ export function initMascotConvo(container, opts = {}){
     const contactTop = container.closest('.contact')?.getBoundingClientRect().top ?? 16;
     const panelGap = panel ? parseFloat(getComputedStyle(panel).rowGap) || 16 : 16;
     const chromeHeight = (topBar?.getBoundingClientRect().height || 0) + panelGap;
-    const availableStageHeight = bottomEdge - Math.max(16, contactTop) - chromeHeight;
+    // ...and so is the fixed site header: on phones the panel used to
+    // slide up underneath the NJORD wordmark / menu button.
+    // (the logo / menu button, not the whole header box — on desktop that
+    // box also contains the tall vertical nav, which fades out while the
+    // conversation is open)
+    const headerBottom = Math.max(16, ...['.logo-mark', '.nav-toggle']
+      .map((sel) => document.querySelector(sel))
+      .filter((el) => el && el.offsetParent !== null)
+      .map((el) => el.getBoundingClientRect().bottom));
+    const ceiling = Math.max(16, headerBottom + 8, contactTop);
+    const availableStageHeight = bottomEdge - ceiling - chromeHeight;
     stage.style.maxHeight = `${Math.max(80, availableStageHeight)}px`;
   }
 

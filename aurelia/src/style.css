@@ -1,0 +1,740 @@
+:root {
+  color-scheme: light;
+  --hero-progress: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #ffffff;
+  color: #1a1512;
+  font-family: 'Georgia', 'Times New Roman', serif;
+}
+
+#hero-wrapper {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+#hero-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: pan-y;
+}
+
+/* ---------- Shared fade/dissolve system ----------
+   A single --hero-progress custom property (updated once per frame by
+   HeroScene) drives every UI element's fade. Per-element --fade-start /
+   --fade-span (set inline) control when each one dissolves, so the
+   composition can retreat piece by piece instead of vanishing at once. */
+
+.hero-fade {
+  --fo: clamp(0, calc((var(--hero-progress) - var(--fade-start, 0.2)) / var(--fade-span, 0.2)), 1);
+  opacity: calc(1 - var(--fo));
+  translate: 0 calc(var(--fo) * -14px);
+}
+
+.char {
+  display: inline-block;
+  --dissolve: clamp(
+    0,
+    calc((var(--hero-progress) - var(--fade-start, 0.2) - var(--i, 0) * var(--stagger, 0.01)) / var(--fade-span, 0.15)),
+    1
+  );
+  opacity: calc(1 - var(--dissolve));
+  transform: scale(calc(1 - 0.5 * var(--dissolve))) translateY(calc(var(--dissolve) * -10px));
+}
+
+/* ---------- Top navigation (untouched by the transformation) ---------- */
+
+.hero-nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.6rem 2.4rem;
+  padding-top: calc(1.6rem + env(safe-area-inset-top, 0px));
+  font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #1a1512;
+}
+
+.hero-nav-brand {
+  font-weight: 500;
+  letter-spacing: 0.28em;
+}
+
+.hero-nav-links {
+  display: flex;
+  gap: 2.4rem;
+}
+
+.hero-nav-links a {
+  color: inherit;
+  text-decoration: none;
+  font-weight: 400;
+  opacity: 0.75;
+  transition: opacity 0.2s ease;
+}
+
+.hero-nav-links a:hover {
+  opacity: 1;
+}
+
+.hero-nav-actions {
+  display: flex;
+  gap: 1.6rem;
+  font-weight: 400;
+  opacity: 0.75;
+}
+
+@media (max-width: 767px) {
+  .hero-nav-links {
+    display: none;
+  }
+}
+
+/* ---------- Center composition ---------- */
+
+.hero-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -58%);
+  z-index: 3;
+  text-align: center;
+  pointer-events: none;
+}
+
+.hero-headline {
+  --fade-start: 0.24;
+  --fade-span: 0.2;
+  --stagger: 0.012;
+  margin: 0;
+  font-weight: 400;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  letter-spacing: 0.02em;
+  color: #1a1512;
+}
+
+.hero-headline em {
+  font-style: italic;
+}
+
+.hero-rule {
+  --fo: clamp(0, calc((var(--hero-progress) - 0.03) / 0.14), 1);
+  display: block;
+  width: calc(32px + var(--fo) * 120px);
+  height: 1px;
+  margin: 1.6rem auto 1.6rem;
+  background: rgba(26, 21, 18, 0.35);
+  opacity: calc(1 - var(--fo));
+}
+
+.hero-subtitle {
+  margin: 0;
+  font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 0.66rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(26, 21, 18, 0.55);
+}
+
+.hero-scroll-cue {
+  margin-top: 2.6rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.hero-scroll-line {
+  width: 1px;
+  height: 34px;
+  background: rgba(26, 21, 18, 0.3);
+}
+
+.hero-scroll-label {
+  --fade-start: 0.02;
+  --fade-span: 0.12;
+  --stagger: 0.008;
+  font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  line-height: 1.6;
+  color: rgba(26, 21, 18, 0.45);
+}
+
+/* ---------- Left collection index ---------- */
+
+.hero-collections {
+  position: absolute;
+  left: 2.4rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  pointer-events: none;
+}
+
+.hero-collections ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
+.hero-collections ul::before {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  background: rgba(26, 21, 18, 0.15);
+}
+
+.hero-collections li {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.55rem 0;
+  font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: rgba(26, 21, 18, 0.28);
+}
+
+.hero-collections li.is-active {
+  color: #1a1512;
+}
+
+.hero-collections .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1px solid rgba(26, 21, 18, 0.3);
+  background: transparent;
+  flex-shrink: 0;
+}
+
+.hero-collections li.is-active .dot {
+  background: #1a1512;
+  border-color: #1a1512;
+}
+
+@media (max-width: 900px) {
+  .hero-collections {
+    display: none;
+  }
+}
+
+/* ---------- Right editorial statement ---------- */
+
+.hero-statement {
+  position: absolute;
+  right: 3.4rem;
+  top: 58%;
+  z-index: 3;
+  max-width: 11rem;
+  text-align: right;
+  pointer-events: none;
+}
+
+.hero-statement p {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: rgba(26, 21, 18, 0.6);
+}
+
+.hero-statement em {
+  font-style: italic;
+}
+
+.hero-statement-leader {
+  position: absolute;
+  top: 0.5em;
+  left: -2.4rem;
+  width: 1.7rem;
+  height: 1px;
+  background: rgba(26, 21, 18, 0.3);
+}
+
+.hero-statement-leader::after {
+  content: '';
+  position: absolute;
+  left: -3px;
+  top: -3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 1px solid rgba(26, 21, 18, 0.45);
+}
+
+@media (max-width: 900px) {
+  .hero-statement {
+    display: none;
+  }
+}
+
+/* ---------- Bottom left concept labels ---------- */
+
+.hero-bottom-left {
+  position: absolute;
+  left: 2.4rem;
+  bottom: calc(1.8rem + env(safe-area-inset-bottom, 0px));
+  z-index: 3;
+  display: flex;
+  gap: 1.4rem;
+  font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(26, 21, 18, 0.4);
+  pointer-events: none;
+}
+
+@media (max-width: 767px) {
+  .hero-bottom-left {
+    display: none;
+  }
+}
+
+/* ---------- Bottom right framing note ---------- */
+
+.hero-bottom-right {
+  position: absolute;
+  right: 2.4rem;
+  bottom: calc(1.8rem + env(safe-area-inset-bottom, 0px));
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  pointer-events: none;
+}
+
+.hero-crosshair {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: rgba(26, 21, 18, 0.45);
+  stroke-width: 1;
+}
+
+.hero-bottom-right span {
+  font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1.5;
+  color: rgba(26, 21, 18, 0.4);
+}
+
+@media (max-width: 767px) {
+  .hero-bottom-right span {
+    display: none;
+  }
+}
+
+/* ---------- Post-formation object information ----------
+   Hidden until HeroScene adds .is-formed (ring fully solid, scroll settled
+   near the end); then each piece reveals in sequence via staggered
+   transition-delay, never all at once. */
+
+.hero-object-info {
+  position: absolute;
+  left: clamp(2rem, 7vw, 5rem);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  display: flex;
+  align-items: stretch;
+  gap: 1.4rem;
+  pointer-events: none;
+  /* Declared here (not just inside .is-carousel/.is-inspecting) so the fade
+     is symmetric: removing those classes transitions back in exactly the
+     same way it transitioned out, instead of popping back instantly. */
+  transition: opacity 0.4s ease;
+}
+
+.hero-object-info .spine {
+  width: 1px;
+  height: 150px;
+  background: rgba(26, 21, 18, 0.25);
+  transform-origin: top;
+  transform: scaleY(0);
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hero-object-info.is-formed .spine {
+  transform: scaleY(1);
+  transition-delay: 0.3s;
+}
+
+.hero-object-info .lines {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.1rem;
+  font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.hero-object-info .line {
+  margin: 0;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.hero-object-info .index {
+  font-size: 0.64rem;
+  letter-spacing: 0.18em;
+  color: rgba(26, 21, 18, 0.5);
+}
+
+.hero-object-info .name {
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  line-height: 1.6;
+  color: #1a1512;
+}
+
+.hero-object-info .name .sub {
+  display: block;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  color: rgba(26, 21, 18, 0.45);
+}
+
+.hero-object-info .specs {
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  line-height: 1.9;
+  color: rgba(26, 21, 18, 0.55);
+}
+
+.hero-object-info .hr {
+  width: 22px;
+  height: 1px;
+  background: rgba(26, 21, 18, 0.3);
+}
+
+.hero-object-info .price {
+  font-family: 'Georgia', serif;
+  font-size: 0.9rem;
+  color: #1a1512;
+}
+
+.hero-object-info .explore {
+  appearance: none;
+  border: none;
+  background: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #1a1512;
+  cursor: pointer;
+  pointer-events: auto;
+  text-align: left;
+  transition: opacity 0.6s ease, transform 0.6s ease, letter-spacing 0.2s ease;
+}
+
+.hero-object-info .explore:hover {
+  letter-spacing: 0.22em;
+}
+
+.hero-object-info.is-formed .index {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.9s;
+}
+
+.hero-object-info.is-formed .name {
+  opacity: 1;
+  transform: none;
+  transition-delay: 1.05s;
+}
+
+.hero-object-info.is-formed .specs {
+  opacity: 1;
+  transform: none;
+  transition-delay: 1.25s;
+}
+
+.hero-object-info.is-formed .hr {
+  opacity: 1;
+  transform: none;
+  transition-delay: 1.5s;
+}
+
+.hero-object-info.is-formed .price {
+  opacity: 1;
+  transform: none;
+  transition-delay: 1.65s;
+}
+
+.hero-object-info.is-formed .explore {
+  opacity: 1;
+  transform: none;
+  transition-delay: 1.85s;
+}
+
+#hero-wrapper.is-inspecting #hero-object-info,
+#hero-wrapper.is-carousel #hero-object-info {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+@media (max-width: 900px) {
+  .hero-object-info {
+    display: none;
+  }
+}
+
+/* ---------- Digital form identifier (bottom right, very quiet) ---------- */
+
+.hero-object-id {
+  position: absolute;
+  right: 2.4rem;
+  bottom: calc(1.8rem + env(safe-area-inset-bottom, 0px));
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  text-align: right;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.hero-object-id .line {
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition-delay: 2s;
+  font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 0.56rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(26, 21, 18, 0.32);
+}
+
+.hero-object-id.is-formed .line {
+  opacity: 1;
+  transform: none;
+}
+
+#hero-wrapper.is-inspecting #hero-object-id,
+#hero-wrapper.is-carousel #hero-object-id {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+/* ---------- Barely-visible coordinate marks ---------- */
+
+.hero-coord-marks .mark {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+  transition-delay: 2.2s;
+}
+
+.hero-coord-marks.is-formed .mark {
+  opacity: 0.07;
+}
+
+.hero-coord-marks {
+  transition: opacity 0.4s ease;
+}
+
+.hero-coord-marks .mark::before,
+.hero-coord-marks .mark::after {
+  content: '';
+  position: absolute;
+  background: #1a1512;
+}
+
+.hero-coord-marks .mark::before {
+  left: 50%;
+  top: 0;
+  width: 1px;
+  height: 100%;
+}
+
+.hero-coord-marks .mark::after {
+  top: 50%;
+  left: 0;
+  height: 1px;
+  width: 100%;
+}
+
+.hero-coord-marks .mark-tl {
+  top: 22%;
+  left: 61%;
+}
+
+.hero-coord-marks .mark-br {
+  bottom: 20%;
+  left: 76%;
+}
+
+#hero-wrapper.is-inspecting .hero-coord-marks,
+#hero-wrapper.is-carousel .hero-coord-marks {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+/* ---------- Inspection-mode annotations ---------- */
+
+.hero-annotations {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.hero-annotation {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.hero-annotations.is-visible .hero-annotation {
+  opacity: 1;
+}
+
+.hero-annotation .dot {
+  position: absolute;
+  left: -2px;
+  top: -2px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #1a1512;
+}
+
+.hero-annotation .lead {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 1px;
+  background: rgba(26, 21, 18, 0.4);
+  transform-origin: 0 50%;
+  /* width and rotation are set per-frame in HeroScene from the real
+     world-to-screen projection, pointing outward from the ring's center. */
+}
+
+.hero-annotation .label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  white-space: nowrap;
+  font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 0.74rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  line-height: 1.5;
+  color: rgba(26, 21, 18, 0.7);
+  /* position set per-frame; left/right text-align flips near screen edges. */
+}
+
+#after-collections {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(26, 21, 18, 0.55);
+}
+
+/* ---------- Collections section ----------
+   Pinned, discrete-step 4-collection carousel. Half the viewport height,
+   bordered top and bottom, no canvas/particles — pure DOM/CSS, driven by
+   CollectionsSection. All panel/indicator motion is written as inline
+   styles every frame — no CSS transitions here, since the eased value
+   driving them is already smoothed per-frame. */
+
+#collections-wrapper {
+  position: relative;
+  width: 100vw;
+  height: 50vh;
+  overflow: hidden;
+  background: #ffffff;
+  border-top: 1px solid rgba(26, 21, 18, 0.2);
+  border-bottom: 1px solid rgba(26, 21, 18, 0.2);
+}
+
+.collections-panels {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.collections-panel {
+  position: absolute;
+  text-align: center;
+  font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.collections-panel .name {
+  margin: 0 0 0.8rem;
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(4rem, 10vw, 7.5rem);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: #cbb896;
+}
+
+.collections-panel .tagline {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  color: #1a1512;
+}
+
+.collections-nav {
+  position: absolute;
+  right: clamp(2rem, 6vw, 4rem);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 14px;
+  pointer-events: none;
+}
+
+.collections-nav-line {
+  display: block;
+  height: 1.5px;
+  background: rgba(26, 21, 18, 0.25);
+}

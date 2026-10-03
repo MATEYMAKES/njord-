@@ -3,14 +3,53 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NJORD</title>
+<title>NJORD — Studio për webfaqe dhe brende në Prishtinë, Kosovë</title>
+<meta name="description" content="NJORD është studio web dhe branding në Prishtinë. Dizajnojmë webfaqe, logo dhe identitete vizuale, i hostojmë në serverë në Kosovë dhe kujdesemi për mirëmbajtjen. Web & branding studio in Prishtinë, Kosovo.">
+<link rel="canonical" href="https://njord.live/">
+<meta name="theme-color" content="#F4F2EA">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NJORD">
+<meta property="og:locale" content="sq_AL">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:url" content="https://njord.live/">
+<meta property="og:title" content="NJORD — Studio web & brendi në Prishtinë">
+<meta property="og:description" content="Webfaqe, brende dhe hosting në Kosovë — prej idesë së parë deri te lansimi dhe më tej.">
+<meta property="og:image" content="https://njord.live/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="NJORD — Studio web & brendi, Prishtinë">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="NJORD — Studio web & brendi në Prishtinë">
+<meta name="twitter:description" content="Webfaqe, brende dhe hosting në Kosovë — prej idesë së parë deri te lansimi dhe më tej.">
+<meta name="twitter:image" content="https://njord.live/og-image.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "NJORD",
+  "alternateName": "NJORD Studio",
+  "description": "Web and branding studio in Prishtinë, Kosovo: website design and development, logo and brand identity, hosting on servers in Kosovo, and ongoing maintenance.",
+  "url": "https://njord.live/",
+  "image": "https://njord.live/og-image.png",
+  "email": "contact@njord.live",
+  "telephone": "+38348422465",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Prishtinë",
+    "addressCountry": "XK"
+  },
+  "areaServed": "Kosovo",
+  "availableLanguage": ["sq", "en"],
+  "knowsAbout": ["Web design", "Web development", "Branding", "Logo design", "Web hosting", "Website maintenance"]
+}
+</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23CBFF3D'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=JetBrains+Mono:wght@400;500;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,450&family=Bebas+Neue&family=Archivo:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<a class="skip-link" href="#main" data-i18n="skip.link">Skip to content</a>
+<a class="skip-link" href="#main" data-i18n="skip.link">Kalo te përmbajtja</a>
 
 <canvas id="ascii-organism" aria-hidden="true"></canvas>
 
@@ -21,7 +60,7 @@
 <button id="sound-toggle" class="sound-toggle" type="button" aria-pressed="false" data-i18n-aria="sound.ariaLabel">
   <span class="sound-toggle__dot" aria-hidden="true"></span>
   <span class="sound-toggle__icon" aria-hidden="true">&#9834;</span>
-  <span class="sound-toggle__label" data-i18n="sound.off">Sound off</span>
+  <span class="sound-toggle__label" data-i18n="sound.off">Tingulli fikur</span>
 </button>
 
 <button id="lang-toggle" class="lang-toggle" type="button" aria-label="Toggle language / Ndrysho gjuhën">
@@ -39,11 +78,11 @@
   </button>
   <nav id="main-nav" class="main-nav" aria-label="Primary">
     <ul>
-      <li><a class="magnetic" href="#identity"><span data-i18n="nav.identity">Identity</span><span class="fill"></span></a></li>
-      <li><a class="magnetic" href="#work"><span data-i18n="nav.work">Work</span><span class="fill"></span></a></li>
+      <li><a class="magnetic" href="#identity"><span data-i18n="nav.services">Shërbimet</span><span class="fill"></span></a></li>
+      <li><a class="magnetic" href="#work"><span data-i18n="nav.work">Punët</span><span class="fill"></span></a></li>
       <li><a class="magnetic" href="#studio"><span data-i18n="nav.studio">Studio</span><span class="fill"></span></a></li>
-      <li><a class="magnetic" href="#services"><span data-i18n="nav.services">Services</span><span class="fill"></span></a></li>
-      <li><a class="magnetic" href="#contact"><span data-i18n="nav.contact">Contact</span><span class="fill"></span></a></li>
+      <li><a class="magnetic" href="#contact"><span data-i18n="nav.contact">Kontakt</span><span class="fill"></span></a></li>
+      <li class="main-nav__cta-item"><a class="nav-cta" href="#contact" data-start-project><span data-i18n="nav.start">Merr një ofertë</span> <span aria-hidden="true">&rarr;</span></a></li>
     </ul>
   </nav>
   <div class="nav-scrim" aria-hidden="true"></div>
@@ -53,12 +92,15 @@
 
   <section id="hero" class="hero">
     <div class="hero-inner">
-      <p class="hero-eyebrow" data-i18n="hero.eyebrow">Web & Branding Studio</p>
+      <p class="hero-eyebrow" data-i18n="hero.eyebrow">Studio Web &amp; Brendi</p>
       <h1 class="hero-word">NJORD</h1>
     </div>
     <div class="hero-foot">
-      <p class="hero-descriptor" data-i18n-html="hero.descriptor">We take <strong>primitive digital material</strong> — characters, grids, code — and engineer it into interfaces, identities, and experiences.</p>
-      <span class="scroll-cue"><span class="track" aria-hidden="true"></span><span data-i18n="hero.scroll">Scroll</span></span>
+      <div class="hero-lead">
+        <p class="hero-descriptor" data-i18n-html="hero.descriptor">Dizajnojmë dhe zhvillojmë webfaqe, ndërtojmë identitete vizuale dhe krijojmë brende që dallohen — për bizneset në Kosovë, prej idesë së parë deri te lansimi.</p>
+        <a class="hero-cta magnetic" href="#contact" data-start-project><span data-i18n="hero.cta">Merr një ofertë</span> <span aria-hidden="true">&rarr;</span></a>
+      </div>
+      <span class="scroll-cue"><span class="track" aria-hidden="true"></span><span data-i18n="hero.scroll">Zbrit</span></span>
     </div>
   </section>
 
@@ -76,7 +118,7 @@
       </div>
 
       <div class="identity-copy">
-        <p data-i18n="identity.body">Në botën moderne, është thelbësore që çdo biznes të ketë një identitet konkret — në reklama, në faqen e internetit, në rrjetet sociale dhe kudo tjetër. Në NJORD kemi ekipin tonë të dizajnerëve grafikë, që krijojnë logon, zgjedhin fontet dhe ngjyrat për faqen tuaj. I bashkojmë të gjitha këto në një udhëzues të markës (brand guidelines) — një dokument që përcakton saktësisht si përdoret identiteti juaj kudo që të shfaqet, në mënyrë që biznesi juaj të duket i njëjtë dhe i njohshëm në çdo material.</p>
+        <p data-i18n="identity.body">Çdo biznes ka nevojë për një identitet të qëndrueshëm, kudo që shfaqet. Dizajnojmë logon, fontet dhe ngjyrat, dhe i përmbledhim në udhëzues marke, që të mbeteni të njohshëm kudo.</p>
         <p class="service-provides" data-i18n="identity.provides">Logo — Paleta e ngjyrave — Tipografia — Udhëzime marke</p>
       </div>
     </div>
@@ -93,7 +135,7 @@
         </div>
       </div>
       <div class="webdev-copy">
-        <p data-i18n="webdev.body">Sipas identitetit tuaj vizual, krijojmë një webfaqe që është shumë më tepër se një faqe e thjeshtë — limiti i vetëm është imagjinata juaj. Doni një webfaqe e-commerce? Sistem rezervimesh? Apo një webfaqe për përdorim të brendshëm në kompaninë tuaj? Thjesht na tregoni, dhe ne do ta krijojmë.</p>
+        <p data-i18n="webdev.body">Sipas identitetit tuaj, ndërtojmë një webfaqe që është shumë më tepër se një faqe e thjeshtë — dyqan online, sistem rezervimesh, mjete të brendshme, çka të nevojitet.</p>
         <p class="service-provides" data-i18n="webdev.provides">Dizajn UI/UX — Zhvillim front-end — Sisteme back-end — Skema responsive</p>
       </div>
     </div>
@@ -107,8 +149,8 @@
         <h2 class="hosting-title" data-i18n="hosting.titleLeft">Hosting</h2>
       </div>
       <div class="hosting-copy">
-        <p data-i18n="hosting.body">E vendosim webfaqen tuaj online dhe e hostojmë në servera brenda Kosovës, duke siguruar shpejtësinë më të mirë dhe duke u kujdesur që të mbetet e sigurt në çdo moment të ditës.</p>
-        <p class="service-provides" data-i18n="hosting.provides">Servera lokalë — Monitorim 24/7 — SSL & backup — Mbrojtje nga kërcënimet</p>
+        <p data-i18n="hosting.body">E hostojmë webfaqen tuaj në servera brenda Kosovës për shpejtësinë më të mirë, duke e mbajtur të sigurt në çdo moment.</p>
+        <p class="service-provides" data-i18n="hosting.provides">Servera lokalë — Monitorim 24/7 — SSL &amp; backup — Mbrojtje nga kërcënimet</p>
       </div>
       <div class="hosting-bottom">
         <h2 class="hosting-title" data-i18n="hosting.titleRight">Siguri.</h2>
@@ -123,7 +165,7 @@
       <h2 class="maintenance-title" data-i18n="maintenance.title">Mirëmbajtja.</h2>
       <div class="maintenance-copy">
         <p data-i18n="maintenance.body">Puna jonë nuk përfundon kur webfaqja publikohet — kujdesemi për të edhe pas lansimit, duke ofruar përditësime, korrigjime, monitorim 24/7 dhe mbështetje.</p>
-        <p class="service-provides" data-i18n="maintenance.provides">Përditësime & korrigjime — Monitorim — Backup — Mbështetje e vazhdueshme</p>
+        <p class="service-provides" data-i18n="maintenance.provides">Përditësime &amp; korrigjime — Monitorim — Backup — Mbështetje e vazhdueshme</p>
       </div>
     </div>
   </section>
@@ -132,10 +174,10 @@
     <div class="wrap">
       <div class="section-head">
         <div>
-          <p class="eyebrow" data-i18n="work.eyebrow">Punë të Zgjedhura — 03 Projekte</p>
+          <p class="eyebrow" data-i18n="work.eyebrow">Projekte Koncept — 03 Projekte</p>
           <h2 data-i18n="work.h2">Tre botë, tre gjuhë.</h2>
         </div>
-        <p class="section-note" data-i18n="work.note">Çdo projekt ndërtohet prej zeros për biznesin që përfaqëson. Pa shabllone, pa zgjidhje të gatshme — secili me dizajn, karakter dhe përvojë të vetën.</p>
+        <p class="section-note" data-i18n="work.note">Projekte koncept që tregojnë si mendojmë dhe çfarë mund të ndërtojmë — secili me dizajn, karakter dhe përvojë të vetën. Punët me klientë shtohen këtu sapo të lansohen.</p>
       </div>
 
       <a class="work-preview-row" href="work.html#aurelia" data-project="aurelia" aria-haspopup="dialog" data-i18n-aria="work.aurelia.aria">
@@ -174,7 +216,7 @@
           <span class="work-preview-row__title">Meridian</span>
           <span class="work-preview-row__desc" data-i18n="work.meridian.desc">Dizajn ndërfaqeje me precizion të lartë për një platformë financiare të ndërtuar mbi besim dhe të dhëna.</span>
           <span class="work-preview-row__tags">
-            <span data-i18n="work.meridian.tag1">Dizajn Produkti</span><span data-i18n="work.meridian.tag2">Sistem UI</span><span data-i18n="work.meridian.tag3">Vizualizim Të Dhënash</span>
+            <span data-i18n="work.meridian.tag1">Dizajn Produkti</span><span data-i18n="work.meridian.tag2">Sistem UI</span><span data-i18n="work.meridian.tag3">Vizualizim të Dhënash</span>
           </span>
         </span>
         <span class="work-preview-row__meta">
@@ -194,10 +236,10 @@
     <div class="wrap">
       <div class="section-head">
         <div>
-          <p class="eyebrow" data-i18n="services.eyebrow">Capabilities</p>
-          <h2 data-i18n="services.h2">What we do.</h2>
+          <p class="eyebrow" data-i18n="services.eyebrow">Aftësitë</p>
+          <h2 data-i18n="services.h2">Çfarë bëjmë.</h2>
         </div>
-        <p class="section-note" data-i18n="services.note">Five disciplines, one process — branding, design, development, hosting and ongoing support, handled end to end rather than handed off between different teams. Scroll to see how it comes together.</p>
+        <p class="section-note" data-i18n="services.note">Pesë disiplina, një proces, nga fillimi deri në fund.</p>
       </div>
       <div class="roadmap-nodes" id="roadmap-nodes">
         <div class="roadmap-node" data-node="0">
@@ -239,24 +281,69 @@
     </div>
   </section>
 
-  <section id="studio" class="section" hidden>
+  <section id="studio" class="section studio">
     <div class="wrap">
       <div class="section-head">
         <div>
           <p class="eyebrow" data-i18n="studio.eyebrow">Studio</p>
-          <h2 data-i18n="studio.h2">Websites and brands, built from scratch.</h2>
+          <h2 data-i18n="studio.h2">Një studio në Prishtinë, prej idesë deri te lansimi.</h2>
         </div>
       </div>
       <div class="studio-copy">
-        <p data-i18n="studio.p1">NJORD is a web and branding studio. We design and develop websites, create visual identities, and build a digital presence that represents your business properly.</p>
-        <p data-i18n="studio.p2">We handle the entire process, from idea to launch — structure, design, development, animation and brand identity. Every project is built specifically for the business, with no templates and no off-the-shelf solutions.</p>
-        <p data-i18n="studio.p3">After launch, we host the website on servers in Kosovo and take care of the technical maintenance, so it stays fast, stable, and trouble-free.</p>
-        <ul class="studio-principles">
-          <li data-i18n="studio.li1">Web Design & Development</li>
-          <li data-i18n="studio.li2">Branding & Visual Identity</li>
-          <li data-i18n="studio.li3">Hosting in Kosovo</li>
-          <li data-i18n="studio.li4">Maintenance & Support</li>
-        </ul>
+        <p data-i18n="studio.p1">NJORD është studio për web dhe branding me bazë në Prishtinë. Dizajnojmë dhe ndërtojmë webfaqe, krijojmë identitete vizuale dhe kujdesemi që gjithçka të funksionojë edhe shumë pas lansimit.</p>
+        <p data-i18n="studio.p2">Brendi, dizajni, zhvillimi, hostingu dhe mbështetja bëhen nga një studio e vetme — pa e kaluar punën ndër ekipe të ndryshme. Çdo projekt ndërtohet për biznesin që përfaqëson, pa shabllone.</p>
+      </div>
+
+      <div class="process" id="process">
+        <p class="eyebrow" data-i18n="process.eyebrow">Si punojmë</p>
+        <ol class="process-steps">
+          <li class="process-step">
+            <span class="process-step__num" aria-hidden="true">01</span>
+            <h3 class="process-step__title" data-i18n="process.s1.title">Biseda</h3>
+            <p class="process-step__body" data-i18n="process.s1.body">Na tregoni për biznesin dhe çfarë ju duhet — përmes bisedës në fund të faqes, email-it apo WhatsApp-it. Përgjigjemi brenda 24 orësh.</p>
+          </li>
+          <li class="process-step">
+            <span class="process-step__num" aria-hidden="true">02</span>
+            <h3 class="process-step__title" data-i18n="process.s2.title">Oferta</h3>
+            <p class="process-step__body" data-i18n="process.s2.body">Ju dërgojmë një ofertë të qartë: çfarë do të ndërtojmë, afatin dhe çmimin — para se të fillojë puna.</p>
+          </li>
+          <li class="process-step">
+            <span class="process-step__num" aria-hidden="true">03</span>
+            <h3 class="process-step__title" data-i18n="process.s3.title">Dizajni &amp; ndërtimi</h3>
+            <p class="process-step__body" data-i18n="process.s3.body">Krijojmë identitetin dhe webfaqen, jua tregojmë punën gjatë rrugës dhe e përmirësojmë sipas komenteve tuaja.</p>
+          </li>
+          <li class="process-step">
+            <span class="process-step__num" aria-hidden="true">04</span>
+            <h3 class="process-step__title" data-i18n="process.s4.title">Lansimi &amp; kujdesi</h3>
+            <p class="process-step__body" data-i18n="process.s4.body">E publikojmë webfaqen në serverë në Kosovë, pastaj e mbajmë të përditësuar, me backup dhe mbështetje.</p>
+          </li>
+        </ol>
+      </div>
+
+      <div class="faq" id="faq">
+        <p class="eyebrow" data-i18n="faq.eyebrow">Pyetje</p>
+        <div class="faq-list">
+          <details class="faq-item">
+            <summary><span data-i18n="faq.q1">Sa kushton një webfaqe?</span><span class="faq-item__icon" aria-hidden="true"></span></summary>
+            <p data-i18n="faq.a1">Varet nga projekti. Përgjigju disa pyetjeve të figurës në fund të faqes dhe ajo të jep një vlerësim të menjëhershëm; çmimin e saktë e merr në ofertën tonë pas bisedës — pa asnjë obligim.</p>
+          </details>
+          <details class="faq-item">
+            <summary><span data-i18n="faq.q2">Sa zgjat?</span><span class="faq-item__icon" aria-hidden="true"></span></summary>
+            <p data-i18n="faq.a2">Një webfaqe e thjeshtë merr më pak kohë se një dyqan online apo sistem rezervimesh. Afatin e saktë e caktojmë bashkë në fillim.</p>
+          </details>
+          <details class="faq-item">
+            <summary><span data-i18n="faq.q3">A mund të marr vetëm logo, ose vetëm webfaqe?</span><span class="faq-item__icon" aria-hidden="true"></span></summary>
+            <p data-i18n="faq.a3">Po. Mund të punojmë në brendin tuaj, në webfaqe, ose në të dyja — shumica e projekteve përfitojnë kur bëhen bashkë.</p>
+          </details>
+          <details class="faq-item">
+            <summary><span data-i18n="faq.q4">Ku hostohet webfaqja ime?</span><span class="faq-item__icon" aria-hidden="true"></span></summary>
+            <p data-i18n="faq.a4">Në serverë brenda Kosovës, me SSL, backup dhe monitorim 24/7.</p>
+          </details>
+          <details class="faq-item">
+            <summary><span data-i18n="faq.q5">Çfarë ndodh pas lansimit?</span><span class="faq-item__icon" aria-hidden="true"></span></summary>
+            <p data-i18n="faq.a5">Puna jonë nuk përfundon me lansimin — vazhdojmë me përditësime, korrigjime, monitorim dhe mbështetje.</p>
+          </details>
+        </div>
       </div>
     </div>
   </section>
@@ -264,20 +351,24 @@
   <section id="contact" class="section contact">
     <div class="wrap contact-inner">
       <div class="contact-head">
-        <p class="eyebrow" data-i18n="contact.eyebrow">Get In Touch</p>
-        <h2 data-i18n="contact.h2">Let's build something that doesn't look like anything else.</h2>
+        <p class="eyebrow" data-i18n="contact.eyebrow">Na Kontaktoni</p>
+        <h2 data-i18n="contact.h2">Le të ndërtojmë diçka që nuk i ngjan asgjë tjetër.</h2>
       </div>
       <div class="contact-row">
         <span id="mascot-anchor" class="mascot-anchor" aria-hidden="true"></span>
         <button id="mascot-hit" class="mascot-hit" type="button" data-i18n-aria="mascot.ariaLabel"></button>
         <div id="mascot-hint" class="mascot-hint" aria-hidden="true">
-          <span class="mascot-hint__label" data-i18n="mascot.hint">click here</span>
+          <span class="mascot-hint__label" data-i18n="mascot.hint">merr një ofertë</span>
           <span class="mascot-hint__arrow">&#8599;</span>
         </div>
         <a id="contact-email" class="contact-email" href="mailto:contact@njord.live" data-address="contact@njord.live">
           contact@njord.live
-          <span class="status" data-i18n="contact.copied">Copied</span>
+          <span class="status" data-i18n="contact.copied">U kopjua</span>
         </a>
+        <ul class="contact-alt">
+          <li><a class="contact-alt__link" href="https://wa.me/38348422465" target="_blank" rel="noopener"><span class="contact-alt__label">WhatsApp</span> <span>+383 48 422 465</span> <span aria-hidden="true">&#8599;</span></a></li>
+          <li><a class="contact-alt__link" href="tel:+38348422465"><span class="contact-alt__label" data-i18n="contact.phone">Telefon</span> <span>+383 48 422 465</span></a></li>
+        </ul>
       </div>
 
       <div id="mascot-convo" class="mascot-convo" hidden>
@@ -294,9 +385,9 @@
       <div class="site-footer">
         <div class="site-footer__left">
           <span>© 2026 NJORD Studio</span>
-          <span data-i18n="footer.tagline">Web & Branding Studio</span>
+          <span data-i18n="footer.tagline">Studio Web &amp; Brendi</span>
         </div>
-        <p class="contact-meta" data-i18n-html="contact.meta">Based remotely, worldwide.<br>Currently booking Q1 2026.<br>Replies within 24 hours.</p>
+        <p class="contact-meta" data-i18n-html="contact.meta">Me bazë në Prishtinë, Kosovë.<br>Aktualisht duke rezervuar T4 2026.<br>Përgjigjemi brenda 24 orësh.</p>
       </div>
     </div>
   </section>
@@ -319,9 +410,9 @@
       <p class="project-modal__tag"></p>
       <p class="project-modal__desc"></p>
       <dl class="project-modal__meta">
-        <div><dt style="display:inline" data-i18n="modal.discipline">Discipline — </dt><dd style="display:inline" data-meta="discipline"></dd></div>
-        <div><dt style="display:inline" data-i18n="modal.year">Year — </dt><dd style="display:inline" data-meta="year"></dd></div>
-        <div><dt style="display:inline" data-i18n="modal.deliverables">Deliverables — </dt><dd style="display:inline" data-meta="deliverables"></dd></div>
+        <div><dt style="display:inline" data-i18n="modal.discipline">Disiplina — </dt><dd style="display:inline" data-meta="discipline"></dd></div>
+        <div><dt style="display:inline" data-i18n="modal.year">Viti — </dt><dd style="display:inline" data-meta="year"></dd></div>
+        <div><dt style="display:inline" data-i18n="modal.deliverables">Rezultatet — </dt><dd style="display:inline" data-meta="deliverables"></dd></div>
       </dl>
     </div>
   </div>
@@ -331,12 +422,8 @@
     <div><span class="project-modal__highlight-num">03</span><p data-highlight="2"></p></div>
   </div>
   <div class="project-modal__cta-row">
-    <button class="project-modal__cta magnetic" type="button"><span data-i18n="modal.cta">View full case study</span> <span aria-hidden="true">→</span></button>
+    <button class="project-modal__cta magnetic" type="button"><span data-i18n="modal.cta">Shiko studimin e plotë të rastit</span> <span aria-hidden="true">→</span></button>
     <span class="project-modal__cta-note" aria-live="polite"></span>
-  </div>
-  <div class="project-modal__sitelink-wrap">
-    <a class="project-modal__sitelink magnetic" href="#"><span data-i18n="modal.sitelink">Visit live site</span> <span aria-hidden="true">↗</span></a>
-    <span class="project-modal__sitelink-note" aria-live="polite"></span>
   </div>
 </div>
 

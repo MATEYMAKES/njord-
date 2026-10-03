@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aurelia</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="hero-wrapper">
+      <canvas id="hero-canvas"></canvas>
+
+      <nav class="hero-nav">
+        <div class="hero-nav-brand">AURELIA</div>
+        <div class="hero-nav-links">
+          <a href="#">Collections</a>
+          <a href="#">Process</a>
+          <a href="#">About</a>
+        </div>
+        <div class="hero-nav-actions">
+          <span>Search</span>
+          <span>Bag (0)</span>
+        </div>
+      </nav>
+
+      <div class="hero-center">
+        <h1 class="hero-headline" data-char-wrap>Formed, <em>not made.</em></h1>
+        <span class="hero-rule"></span>
+        <p class="hero-subtitle hero-fade" style="--fade-start: 0.05; --fade-span: 0.15">Jewelry in Constant Form</p>
+        <div class="hero-scroll-cue">
+          <span class="hero-scroll-line hero-fade" style="--fade-start: 0.02; --fade-span: 0.1"></span>
+          <span class="hero-scroll-label" data-char-wrap>Scroll<br />to Transform</span>
+        </div>
+      </div>
+
+      <div class="hero-collections">
+        <ul>
+          <li class="is-active">
+            <span class="dot is-anchor hero-fade" style="--fade-start: 0; --fade-span: 0.06"></span>
+            <span class="label hero-fade" style="--fade-start: 0.35; --fade-span: 0.3">01&ensp;The Ring</span>
+          </li>
+          <li>
+            <span class="dot is-anchor hero-fade" style="--fade-start: 0; --fade-span: 0.06"></span>
+            <span class="label hero-fade" style="--fade-start: 0.35; --fade-span: 0.3">02&ensp;The Bracelet</span>
+          </li>
+          <li>
+            <span class="dot is-anchor hero-fade" style="--fade-start: 0; --fade-span: 0.06"></span>
+            <span class="label hero-fade" style="--fade-start: 0.35; --fade-span: 0.3">03&ensp;The Earring</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="hero-statement hero-fade" style="--fade-start: 0.2; --fade-span: 0.2">
+        <span class="hero-statement-leader"></span>
+        <p>A study<br />in balance.<br /><em>Shaped by logic,<br />refined by feeling.</em></p>
+      </div>
+
+      <div class="hero-bottom-left hero-fade" style="--fade-start: 0.15; --fade-span: 0.2">
+        <span>Material</span>
+        <span>Movement</span>
+        <span>Meaning</span>
+      </div>
+
+      <div class="hero-bottom-right hero-fade" style="--fade-start: 0.15; --fade-span: 0.2">
+        <svg class="hero-crosshair" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 2v4M12 18v4M2 12h4M18 12h4" />
+          <circle cx="12" cy="12" r="4.5" />
+        </svg>
+        <span>A Closer Look<br />Reveals More</span>
+      </div>
+
+      <!-- Post-formation state: hidden until the ring completes, then plays a
+           staggered reveal via the .is-formed class (see .hero-object-info in style.css). -->
+      <div class="hero-object-info js-formed" id="hero-object-info">
+        <span class="spine"></span>
+        <div class="lines">
+          <p class="line index">01 / 03</p>
+          <p class="line name">THE RING<br /><span class="sub">AURELIA 01</span></p>
+          <p class="line specs">18K GOLD<br />4.2 G<br />2.1 MM</p>
+          <span class="line hr"></span>
+          <p class="line price">&euro;1,240</p>
+          <button class="line explore" id="hero-explore-btn" type="button">EXPLORE OBJECT &rarr;</button>
+        </div>
+      </div>
+
+      <!-- Same left-spine slot, shown once the carousel settles on the bracelet. -->
+      <div class="hero-object-info" id="hero-object-info-bracelet">
+        <span class="spine"></span>
+        <div class="lines">
+          <p class="line index">02 / 03</p>
+          <p class="line name">THE BRACELET<br /><span class="sub">AURELIA 02</span></p>
+          <p class="line specs">18K GOLD<br />12.4 G<br />3 MM</p>
+          <span class="line hr"></span>
+          <p class="line price">&euro;1,890</p>
+          <button class="line explore" id="hero-explore-btn-bracelet" type="button">EXPLORE OBJECT &rarr;</button>
+        </div>
+      </div>
+
+      <!-- Same left-spine slot, shown once the carousel settles on the earrings. -->
+      <div class="hero-object-info" id="hero-object-info-earring">
+        <span class="spine"></span>
+        <div class="lines">
+          <p class="line index">03 / 03</p>
+          <p class="line name">THE EARRING<br /><span class="sub">AURELIA 03</span></p>
+          <p class="line specs">18K GOLD<br />3.6 G<br />6 MM</p>
+          <span class="line hr"></span>
+          <p class="line price">&euro;1,450</p>
+          <button class="line explore" id="hero-explore-btn-earring" type="button">EXPLORE OBJECT &rarr;</button>
+        </div>
+      </div>
+
+      <div class="hero-object-id js-formed" id="hero-object-id">
+        <span class="line">AURELIA / OBJECT 01</span>
+        <span class="line">FORM 8F2&ndash;174&ndash;A</span>
+      </div>
+
+      <div class="hero-coord-marks js-formed" id="hero-coord-marks" aria-hidden="true">
+        <span class="mark mark-tl"></span>
+        <span class="mark mark-br"></span>
+      </div>
+
+      <div class="hero-annotations" id="hero-annotations">
+        <div class="hero-annotation" data-anno="0">
+          <span class="dot"></span><span class="lead"></span><span class="label">18K GOLD<br />SURFACE</span>
+        </div>
+        <div class="hero-annotation" data-anno="1">
+          <span class="dot"></span><span class="lead"></span><span class="label">2.1 MM<br />PROFILE</span>
+        </div>
+        <div class="hero-annotation" data-anno="2">
+          <span class="dot"></span><span class="lead"></span><span class="label">750</span>
+        </div>
+      </div>
+    </div>
+    <section id="collections-wrapper">
+      <div class="collections-panels">
+        <div class="collections-panel">
+          <p class="name">Exclusive</p>
+          <p class="tagline">Rare pieces, singular ownership.</p>
+        </div>
+        <div class="collections-panel">
+          <p class="name">Diamond Line</p>
+          <p class="tagline">Precision-cut, endlessly worn.</p>
+        </div>
+        <div class="collections-panel">
+          <p class="name">Juveler</p>
+          <p class="tagline">Craft passed from hand to hand.</p>
+        </div>
+        <div class="collections-panel">
+          <p class="name">Boutique</p>
+          <p class="tagline">The everyday, made deliberate.</p>
+        </div>
+      </div>
+
+      <div class="collections-nav">
+        <span class="collections-nav-line"></span>
+        <span class="collections-nav-line"></span>
+        <span class="collections-nav-line"></span>
+        <span class="collections-nav-line"></span>
+      </div>
+    </section>
+    <section id="after-collections">
+      <p>The rest of the Aurelia site continues here.</p>
+    </section>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

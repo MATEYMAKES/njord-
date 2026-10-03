@@ -523,7 +523,7 @@ function showModal(key, project, cx, cy){
   currentKey = key;
   const copy = projectCopy(key);
   modal.className = `project-modal ${project.modalClass}`;
-  modal.querySelector('.project-modal__eyebrow').textContent = project.title.toUpperCase();
+  modal.querySelector('.project-modal__eyebrow').textContent = `${t('modal.concept')} — ${project.title}`.toUpperCase();
   modal.querySelector('.project-modal__title').textContent = project.title;
   modal.querySelector('.project-modal__tag').textContent = copy.tagline;
   modal.querySelector('.project-modal__desc').textContent = copy.description;
@@ -742,7 +742,13 @@ if(mascotHit && organism){
     // while the conversation is open, the mascot should hold his fully-
     // formed pose through much more upward scroll than usual before he
     // starts unforming (see AsciiOrganism.setMascotConvoOpen)
-    onOpenChange: (open) => organism.setMascotConvoOpen(open),
+    onOpenChange: (open) => {
+      organism.setMascotConvoOpen(open);
+      // the fixed header nav sits right where the panel grows on desktop
+      // (it covered the estimate and the email field) — step it aside
+      // while he's talking, same idea as fading .contact-head
+      document.body.classList.toggle('convo-open', open);
+    },
   }) : null;
 
   // One-time "click here" nudge — shown until the visitor actually
@@ -780,6 +786,54 @@ if(mascotHit && organism){
     mascotConvo?.open();
     dismissMascotHint();
   });
+
+  /* "Start a project" CTAs (header nav + hero, and work.html's nav via
+     index.html#start-project) — the mascot only exists down in #contact
+     and the conversation floats next to him, so scroll there first, give
+     the organism a moment to resolve into his formation, then open the
+     same conversation the mascot click opens. */
+  const contactSection = document.getElementById('contact');
+  let startPending = false;
+  const startProject = () => {
+    if(!contactSection || startPending) return;
+    startPending = true;
+    const behavior = reduced ? 'auto' : 'smooth';
+    const row = contactSection.querySelector('.contact-row');
+    if(window.innerWidth <= 640 && row){
+      // phones: park the mascot low in the viewport so the conversation
+      // (which grows upward from him) gets most of the screen height
+      const top = row.getBoundingClientRect().top + window.scrollY - window.innerHeight * 0.78;
+      window.scrollTo({ top: Math.max(0, top), behavior });
+    } else {
+      contactSection.scrollIntoView({ behavior, block: 'start' });
+    }
+    let opened = false;
+    const openConvo = () => {
+      if(opened) return;
+      opened = true;
+      window.removeEventListener('scrollend', onScrollEnd);
+      // a beat for the particles to settle into the mascot after scrolling stops
+      setTimeout(() => {
+        startPending = false;
+        organism.triggerMascotReaction();
+        mascotConvo?.open();
+        dismissMascotHint();
+      }, reduced ? 0 : 450);
+    };
+    const onScrollEnd = () => openConvo();
+    window.addEventListener('scrollend', onScrollEnd);
+    setTimeout(openConvo, reduced ? 50 : 1400); // fallback where 'scrollend' isn't supported
+  };
+  document.querySelectorAll('[data-start-project]').forEach((el) => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      startProject();
+    });
+  });
+  if(location.hash === '#start-project'){
+    history.replaceState(null, '', location.pathname + location.search + '#contact');
+    window.addEventListener('load', () => setTimeout(startProject, 300), { once: true });
+  }
   // Temporary animation-review shortcuts. Avoid intercepting number
   // entry in the contact form or any other editable control.
   window.addEventListener('keydown', (e) => {

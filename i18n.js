@@ -18,6 +18,7 @@ const translations = {
   'nav.studio': { en: 'Studio', sq: 'Studio' },
   'nav.services': { en: 'Services', sq: 'Shërbimet' },
   'nav.contact': { en: 'Contact', sq: 'Kontakt' },
+  'nav.start': { en: 'Get a quote', sq: 'Merr një ofertë' },
   'nav.toggleAria': { en: 'Toggle navigation menu', sq: 'Ndrysho menynë e navigimit' },
 
   'skip.link': { en: 'Skip to content', sq: 'Kalo te përmbajtja' },
@@ -30,10 +31,11 @@ const translations = {
 
   'hero.eyebrow': { en: 'Web & Branding Studio', sq: 'Studio Web & Brendi' },
   'hero.descriptor': {
-    en: 'We take <strong>primitive digital material</strong> — characters, grids, code — and engineer it into interfaces, identities, and experiences.',
-    sq: 'Dizajnojmë dhe zhvillojmë webfaqe, ndërtojmë identitete vizuale dhe krijojmë brende që dallohen — prej idesë së parë deri te produkti final.',
+    en: 'Websites and brand identities for businesses in Kosovo — designed, built, hosted and looked after by one studio in Prishtinë.',
+    sq: 'Dizajnojmë dhe zhvillojmë webfaqe, ndërtojmë identitete vizuale dhe krijojmë brende që dallohen — për bizneset në Kosovë, prej idesë së parë deri te lansimi.',
   },
   'hero.scroll': { en: 'Scroll', sq: 'Zbrit' },
+  'hero.cta': { en: 'Get a quote', sq: 'Merr një ofertë' },
 
   'identity.eyebrow': { en: 'Identity', sq: 'Identiteti' },
   'identity.word1': { en: 'We create', sq: 'Krijojmë' },
@@ -83,11 +85,11 @@ const translations = {
   },
 
   'work.cta': { en: 'See more', sq: 'Shiko më shumë' },
-  'work.eyebrow': { en: 'Selected Work — 03 Projects', sq: 'Punë të Zgjedhura — 03 Projekte' },
+  'work.eyebrow': { en: 'Concept Work — 03 Projects', sq: 'Projekte Koncept — 03 Projekte' },
   'work.h2': { en: 'Three worlds, three languages.', sq: 'Tre botë, tre gjuhë.' },
   'work.note': {
-    en: 'Each project below runs on its own visual system. NJORD is the index — not the identity — behind any of them.',
-    sq: 'Çdo projekt ndërtohet prej zeros për biznesin që përfaqëson. Pa shabllone, pa zgjidhje të gatshme — secili me dizajn, karakter dhe përvojë të vetën.',
+    en: 'Concept projects that show how we think and what we can build — each with its own design, character and experience. Client work is added here as it launches.',
+    sq: 'Projekte koncept që tregojnë si mendojmë dhe çfarë mund të ndërtojmë — secili me dizajn, karakter dhe përvojë të vetën. Punët me klientë shtohen këtu sapo të lansohen.',
   },
   'work.enter': { en: 'Enter', sq: 'Hyr' },
 
@@ -151,36 +153,80 @@ const translations = {
   },
 
   'studio.eyebrow': { en: 'Studio', sq: 'Studio' },
-  'studio.h2': { en: 'Websites and brands, built from scratch.', sq: 'Webfaqe dhe brende, të ndërtuara prej zeros.' },
+  'studio.h2': { en: 'One studio in Prishtinë, from idea to launch.', sq: 'Një studio në Prishtinë, prej idesë deri te lansimi.' },
   'studio.p1': {
-    en: 'NJORD is a web and branding studio. We design and develop websites, create visual identities, and build a digital presence that represents your business properly.',
-    sq: 'NJORD është studio për web dhe branding. Dizajnojmë dhe zhvillojmë webfaqe, krijojmë identitete vizuale dhe ndërtojmë një prezencë digjitale që e përfaqëson biznesin si duhet.',
+    en: 'NJORD is a web and branding studio based in Prishtinë. We design and build websites, create visual identities, and make sure everything keeps working long after launch.',
+    sq: 'NJORD është studio për web dhe branding me bazë në Prishtinë. Dizajnojmë dhe ndërtojmë webfaqe, krijojmë identitete vizuale dhe kujdesemi që gjithçka të funksionojë edhe shumë pas lansimit.',
   },
   'studio.p2': {
-    en: 'We handle the entire process, from idea to launch — structure, design, development, animation and brand identity. Every project is built specifically for the business, with no templates and no off-the-shelf solutions.',
-    sq: 'Merremi me krejt procesin, prej idesë deri te lansimi — struktura, dizajni, zhvillimi, animacionet dhe identiteti i brendit. Çdo projekt ndërtohet posaçërisht për biznesin, pa shabllone dhe pa zgjidhje të gatshme.',
+    en: 'Branding, design, development, hosting and support are handled end to end by one studio — not handed off between different teams. Every project is built for the business it represents, with no templates.',
+    sq: 'Brendi, dizajni, zhvillimi, hostingu dhe mbështetja bëhen nga një studio e vetme — pa e kaluar punën ndër ekipe të ndryshme. Çdo projekt ndërtohet për biznesin që përfaqëson, pa shabllone.',
   },
-  'studio.p3': {
-    en: 'After launch, we host the website on servers in Kosovo and take care of the technical maintenance, so it stays fast, stable, and trouble-free.',
-    sq: 'Pas lansimit, webfaqen e hostojmë në serverë në Kosovë dhe kujdesemi për mirëmbajtjen teknike, që të mbetet e shpejtë, stabile dhe pa probleme.',
+
+  'process.eyebrow': { en: 'How it works', sq: 'Si punojmë' },
+  'process.s1.title': { en: 'Conversation', sq: 'Biseda' },
+  'process.s1.body': {
+    en: "Tell us about your business and what you need — through the chat at the bottom of the page, email or WhatsApp. We reply within 24 hours.",
+    sq: 'Na tregoni për biznesin dhe çfarë ju duhet — përmes bisedës në fund të faqes, email-it apo WhatsApp-it. Përgjigjemi brenda 24 orësh.',
   },
-  'studio.li1': { en: 'Web Design & Development', sq: 'Dizajn & Zhvillim Web' },
-  'studio.li2': { en: 'Branding & Visual Identity', sq: 'Branding & Identitet Vizual' },
-  'studio.li3': { en: 'Hosting in Kosovo', sq: 'Hosting në Kosovë' },
-  'studio.li4': { en: 'Maintenance & Support', sq: 'Mirëmbajtje & Përkrahje' },
+  'process.s2.title': { en: 'Proposal', sq: 'Oferta' },
+  'process.s2.body': {
+    en: 'We send you a clear proposal: what we will build, the timeline and the price — before any work starts.',
+    sq: 'Ju dërgojmë një ofertë të qartë: çfarë do të ndërtojmë, afatin dhe çmimin — para se të fillojë puna.',
+  },
+  'process.s3.title': { en: 'Design & build', sq: 'Dizajni & ndërtimi' },
+  'process.s3.body': {
+    en: 'We create the identity and the website, show you the work along the way and refine it with your feedback.',
+    sq: 'Krijojmë identitetin dhe webfaqen, jua tregojmë punën gjatë rrugës dhe e përmirësojmë sipas komenteve tuaja.',
+  },
+  'process.s4.title': { en: 'Launch & care', sq: 'Lansimi & kujdesi' },
+  'process.s4.body': {
+    en: 'We put the site live on servers in Kosovo, then keep it updated, backed up and supported.',
+    sq: 'E publikojmë webfaqen në serverë në Kosovë, pastaj e mbajmë të përditësuar, me backup dhe mbështetje.',
+  },
+
+  'faq.eyebrow': { en: 'Questions', sq: 'Pyetje' },
+  'faq.q1': { en: 'How much does a website cost?', sq: 'Sa kushton një webfaqe?' },
+  'faq.a1': {
+    en: 'It depends on the project. Answer a few questions from the little figure at the bottom of the page and he gives you an instant estimate; the exact price comes in our offer after we talk — no obligation.',
+    sq: 'Varet nga projekti. Përgjigju disa pyetjeve të figurës në fund të faqes dhe ajo të jep një vlerësim të menjëhershëm; çmimin e saktë e merr në ofertën tonë pas bisedës — pa asnjë obligim.',
+  },
+  'faq.q2': { en: 'How long does it take?', sq: 'Sa zgjat?' },
+  'faq.a2': {
+    en: 'A simple website takes less time than an online store or a booking system. We agree on an exact timeline together at the start.',
+    sq: 'Një webfaqe e thjeshtë merr më pak kohë se një dyqan online apo sistem rezervimesh. Afatin e saktë e caktojmë bashkë në fillim.',
+  },
+  'faq.q3': { en: 'Can I get only a logo, or only a website?', sq: 'A mund të marr vetëm logo, ose vetëm webfaqe?' },
+  'faq.a3': {
+    en: 'Yes. We can work on your brand, your website, or both — most projects benefit from doing them together.',
+    sq: 'Po. Mund të punojmë në brendin tuaj, në webfaqe, ose në të dyja — shumica e projekteve përfitojnë kur bëhen bashkë.',
+  },
+  'faq.q4': { en: 'Where is my website hosted?', sq: 'Ku hostohet webfaqja ime?' },
+  'faq.a4': {
+    en: 'On servers inside Kosovo, with SSL, backups and 24/7 monitoring.',
+    sq: 'Në serverë brenda Kosovës, me SSL, backup dhe monitorim 24/7.',
+  },
+  'faq.q5': { en: 'What happens after launch?', sq: 'Çfarë ndodh pas lansimit?' },
+  'faq.a5': {
+    en: "Our work doesn't end at launch — we keep providing updates, fixes, monitoring and support.",
+    sq: 'Puna jonë nuk përfundon me lansimin — vazhdojmë me përditësime, korrigjime, monitorim dhe mbështetje.',
+  },
 
   'contact.eyebrow': { en: 'Get In Touch', sq: 'Na Kontaktoni' },
   'contact.h2': { en: "Let's build something that doesn't look like anything else.", sq: 'Le të ndërtojmë diçka që nuk i ngjan asgjë tjetër.' },
   'contact.copied': { en: 'Copied', sq: 'U kopjua' },
+  'contact.phone': { en: 'Phone', sq: 'Telefon' },
   'contact.meta': {
-    en: 'Based remotely, worldwide.<br>Currently booking Q1 2026.<br>Replies within 24 hours.',
-    sq: 'Me bazë në distancë, kudo në botë.<br>Aktualisht duke rezervuar T1 2026.<br>Përgjigjemi brenda 24 orësh.',
+    // {q} and {y} are filled in with the visitor's current quarter and
+    // year at render time (see fillTokens below), so this never goes stale.
+    en: 'Based in Prishtinë, Kosovo.<br>Currently booking Q{q} {y}.<br>Replies within 24 hours.',
+    sq: 'Me bazë në Prishtinë, Kosovë.<br>Aktualisht duke rezervuar T{q} {y}.<br>Përgjigjemi brenda 24 orësh.',
   },
   'mascot.ariaLabel': {
     en: "A small figure formed from the page's own characters",
     sq: 'Një figurë e vogël e formuar nga vetë karakteret e faqes',
   },
-  'mascot.hint': { en: 'click here', sq: 'kliko këtu' },
+  'mascot.hint': { en: 'get a quote', sq: 'merr një ofertë' },
 
   // Mascot conversation — a guided, conversational project intake that
   // opens when the mascot is clicked. See mascot-convo.js. Same
@@ -195,7 +241,7 @@ const translations = {
   'convo.requiredNote': { en: "Just need this one before we continue.", sq: 'Kjo më duhet para se të vazhdojmë.' },
 
   'convo.open.line1': { en: 'oh, hey.', sq: 'hej.' },
-  'convo.open.line2': { en: "you've got something in mind?", sq: 'ke diçka në mendje?' },
+  'convo.open.line2': { en: "got something in mind? i'll tell you what it costs.", sq: 'ke diçka në mendje? të them edhe sa kushton.' },
   'convo.open.project': { en: 'yeah, i have a project', sq: 'po, kam një projekt' },
   'convo.open.justLooking': { en: 'just looking', sq: 'vetëm po shikoj' },
   'convo.justLooking.reply': {
@@ -209,11 +255,84 @@ const translations = {
   'convo.s2.placeholder': { en: 'Tell me in a sentence or two...', sq: 'Më trego me një a dy fjali...' },
 
   'convo.s3.prompt': { en: 'what brought you to NJORD?', sq: 'çfarë të solli te NJORD?' },
-  'convo.s3.opt1': { en: 'Website', sq: 'Website' },
-  'convo.s3.opt2': { en: 'Logo / Branding', sq: 'Logo / Brendim' },
+  'convo.s3.opt1': { en: 'A website', sq: 'Webfaqe' },
+  'convo.s3.opt2': { en: 'A logo / how the business looks', sq: 'Logo / pamja e biznesit' },
   'convo.s3.opt3': { en: 'Both', sq: 'Të dyja' },
   'convo.s3.opt4': { en: 'Something else', sq: 'Diçka tjetër' },
-  'convo.s3.opt5': { en: 'Not really sure yet', sq: 'Nuk jam ende i/e sigurt' },
+  'convo.s3.opt5': { en: 'Not sure yet — help me', sq: 'Nuk e di ende — më ndihmo' },
+
+  // Instant estimate (mascot-convo.js + pricing.js). Written for people
+  // who have never thought about how a website is built: options say
+  // what the business wants to DO, never the tech; `.hint` keys are the
+  // small grey example line under an option. Scope questions only
+  // appear when they apply; the estimate comes before the contact step.
+  'convo.brand.prompt': { en: 'where are you with your logo and look?', sq: 'si qëndron puna me logon dhe pamjen e biznesit?' },
+  'convo.brand.opt1': { en: 'I need a logo', sq: 'Më duhet një logo' },
+  'convo.brand.hint1': { en: 'just the logo itself', sq: 'vetëm logoja' },
+  'convo.brand.opt2': { en: 'A logo + colors and fonts', sq: 'Logo + ngjyrat dhe shkronjat' },
+  'convo.brand.hint2': { en: 'so the business looks the same everywhere', sq: 'që biznesi të duket njësoj kudo' },
+  'convo.brand.opt3': { en: 'A complete look for the business', sq: 'Pamje e plotë për biznesin' },
+  'convo.brand.hint3': { en: 'logo, colors, fonts and one style for everything you make', sq: 'logo, ngjyra, shkronja dhe një stil për çdo material' },
+  'convo.brand.opt4': { en: 'Complete look + a rulebook', sq: 'Pamje e plotë + libër rregullash' },
+  'convo.brand.hint4': { en: 'a guide to using it — handy for staff, printers or agencies', sq: 'udhëzues si përdoret — i dobishëm për stafin, shtypshkronjën apo agjencitë' },
+  'convo.brand.opt5': { en: 'Not sure — help me choose', sq: 'Nuk e di — më ndihmo' },
+  'convo.brand.hint5': { en: "we'll figure it out together", sq: 'e shohim bashkë' },
+
+  'convo.site.prompt': { en: 'what should your website do?', sq: 'çfarë duhet të bëjë webfaqja jote?' },
+  'convo.site.opt1': { en: 'Show who we are and how to find us', sq: 'Të tregojë kush jemi dhe si të na gjejnë' },
+  'convo.site.hint1': { en: 'one page — e.g. a café, barber or freelancer', sq: 'një faqe e vetme — p.sh. kafe, berber, freelancer' },
+  'convo.site.opt2': { en: 'Present the business over a few pages', sq: 'Të prezantojë biznesin me disa faqe' },
+  'convo.site.hint2': { en: 'e.g. home, about us, services, contact', sq: 'p.sh. ballina, rreth nesh, shërbimet, kontakti' },
+  'convo.site.opt3': { en: 'We have lots of services or products to show', sq: 'Kemi shumë shërbime apo produkte për të treguar' },
+  'convo.site.hint3': { en: 'e.g. a clinic, a hotel, a company with several branches', sq: 'p.sh. klinikë, hotel, kompani me disa degë' },
+  'convo.site.opt4': { en: 'Sell products online', sq: 'Të shesim produkte online' },
+  'convo.site.hint4': { en: 'customers order and pay on the site', sq: 'klientët porosisin dhe paguajnë në faqe' },
+  'convo.site.opt5': { en: 'Something bigger — a custom system', sq: 'Diçka më e madhe — një sistem me porosi' },
+  'convo.site.hint5': { en: 'e.g. a portal for your clients or a tool for your team', sq: 'p.sh. portal për klientët apo vegël për ekipin tënd' },
+  'convo.site.opt6': { en: 'Not sure — help me choose', sq: 'Nuk e di — më ndihmo' },
+  'convo.site.hint6': { en: "we'll figure it out together", sq: 'e shohim bashkë' },
+
+  'convo.features.prompt': { en: 'anything else the website should let you or your customers do?', sq: 'çfarë tjetër duhet të mundësojë webfaqja — për ty apo klientët e tu?' },
+  'convo.features.helper': { en: 'pick as many as you like — or none.', sq: 'zgjidh sa të duash — ose asnjë.' },
+  'convo.feature.contactForm': { en: 'Customers can message you from the site', sq: 'Klientët të të shkruajnë direkt nga faqja' },
+  'convo.feature.booking': { en: 'Customers can book an appointment', sq: 'Klientët të rezervojnë një termin' },
+  'convo.feature.userAccounts': { en: 'People can sign up and log in', sq: 'Njerëzit të krijojnë llogari dhe të hyjnë' },
+  'convo.feature.userAccounts.hint': { en: 'e.g. members or regular customers', sq: 'p.sh. anëtarë apo klientë të rregullt' },
+  'convo.feature.clientDashboard': { en: 'Clients get their own private area', sq: 'Klientët të kenë hapësirën e tyre private' },
+  'convo.feature.clientDashboard.hint': { en: 'e.g. to see their orders, files or progress', sq: 'p.sh. të shohin porositë, dokumentet apo progresin' },
+  'convo.feature.newsletter': { en: 'People can sign up for news by email', sq: 'Njerëzit të regjistrohen për lajme me email' },
+  'convo.feature.cms': { en: 'I can change texts and photos myself', sq: 'Unë vetë të ndryshoj tekstet dhe fotot' },
+  'convo.feature.cms.hint': { en: 'without having to call us', sq: 'pa pasur nevojë të na thërrasësh' },
+  'convo.feature.integration': { en: 'It connects to a program we already use', sq: 'Të lidhet me një program që e përdorim tashmë' },
+  'convo.feature.integration.hint': { en: 'e.g. for invoices, stock or customers', sq: 'p.sh. për fatura, stok apo klientë' },
+  'convo.feature.analytics': { en: 'I can see how many people visit', sq: 'Të shoh sa njerëz e vizitojnë' },
+  'convo.feature.animations': { en: 'Eye-catching movement and effects', sq: 'Lëvizje dhe efekte që bien në sy' },
+  'convo.feature.payments': { en: 'Customers can pay by card', sq: 'Klientët të paguajnë me kartelë' },
+  'convo.feature.customerAccounts': { en: 'Customers can have an account', sq: 'Klientët të kenë llogari' },
+  'convo.feature.customerAccounts.hint': { en: 'to save their address and past orders', sq: 'për të ruajtur adresën dhe porositë e kaluara' },
+  'convo.feature.customCheckout': { en: 'A checkout designed just for us', sq: 'Proces blerjeje i dizajnuar vetëm për ne' },
+  'convo.feature.customCheckout.hint': { en: 'instead of the standard one', sq: 'në vend të atij standard' },
+
+  'convo.estimate.prompt': { en: "ok — here's roughly what that costs:", sq: 'ok — kjo afërsisht kushton:' },
+  'convo.estimate.label': { en: 'Estimate', sq: 'Vlerësim' },
+  'convo.estimate.from': { en: 'from', sq: 'nga' },
+  'convo.estimate.fromNote': {
+    en: 'starting price — a custom system depends on what it needs to do.',
+    sq: 'çmim fillestar — një sistem me porosi varet nga çfarë duhet të bëjë.',
+  },
+  'convo.estimate.partial': {
+    en: "only for the part you were sure about — the rest we'll price together.",
+    sq: 'vetëm për pjesën ku ishe i/e sigurt — pjesën tjetër e shohim bashkë.',
+  },
+  'convo.estimate.note': {
+    en: 'rough estimate — the exact price comes in our offer after we talk. no obligation.',
+    sq: 'vlerësim i përafërt — çmimin e saktë e merr në ofertë pas bisedës. pa obligim.',
+  },
+  'convo.estimate.none': {
+    en: "this one needs a closer look — tell me who you are and we'll send you a price within 24 hours.",
+    sq: 'ky duhet parë nga afër — më trego kush je dhe të dërgojmë çmimin brenda 24 orësh.',
+  },
+  'convo.estimate.continue': { en: 'Sounds good, continue', sq: 'Në rregull, vazhdo' },
 
   'convo.s4.prompt1': { en: "tell me what's going on.", sq: 'më trego çfarë po ndodh.' },
   'convo.s4.prompt2': {
@@ -260,6 +379,7 @@ const translations = {
   'modal.deliverables': { en: 'Deliverables — ', sq: 'Rezultatet — ' },
   'modal.cta': { en: 'View full case study', sq: 'Shiko studimin e plotë të rastit' },
   'modal.ctaNote': { en: 'Full case study — in progress', sq: 'Studimi i plotë i rastit — në progres' },
+  'modal.concept': { en: 'Concept', sq: 'Koncept' },
   'modal.sitelink': { en: 'Visit live site', sq: 'Vizito faqen live' },
   'modal.sitelinkNote': { en: 'Live site — coming soon', sq: 'Faqja live — së shpejti' },
 
@@ -311,10 +431,19 @@ export function setLang(lang){
   listeners.forEach((fn) => fn(lang));
 }
 
+// Live date tokens: {q} = current quarter (1–4), {y} = current year.
+function fillTokens(str){
+  if(typeof str !== 'string' || str.indexOf('{') === -1) return str;
+  const now = new Date();
+  return str
+    .replace(/\{q\}/g, String(Math.floor(now.getMonth() / 3) + 1))
+    .replace(/\{y\}/g, String(now.getFullYear()));
+}
+
 export function t(key, lang = getLang()){
   const entry = translations[key];
   if(!entry) return key;
-  return entry[lang] || entry.en || key;
+  return fillTokens(entry[lang] || entry.en || key);
 }
 
 export function applyStaticTranslations(lang = getLang()){

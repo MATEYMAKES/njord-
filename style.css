@@ -8,8 +8,8 @@
   --paper: #F4F2EA;
   --paper-raised: #FBFAF5;
   --ink: #15150F;
-  --ink-soft: #57564C;
-  --ink-faint: #6B6A5E;
+  --ink-soft: #4A4940;
+  --ink-faint: #5C5B50;
   --line: #DBD7C9;
   --line-strong: #C3BFAE;
   --signal: #CBFF3D;
@@ -37,9 +37,9 @@
   --fs-display: clamp(2rem, 5.2vw, 4.2rem);
   --fs-h2: clamp(1.4rem, 3vw, 2rem);
   --fs-lead: clamp(1.05rem, 1.6vw, 1.35rem);
-  --fs-body: 1rem;
-  --fs-small: 0.8125rem;
-  --fs-micro: 0.6875rem;
+  --fs-body: 1.0625rem;
+  --fs-small: 0.9rem;
+  --fs-micro: 0.78rem;
 
   --gutter: clamp(20px, 4vw, 64px);
   --maxw: 1440px;
@@ -85,7 +85,7 @@
   --paper-raised: #17160F;
   --ink: #F3F1E6;
   --ink-soft: #ACA99B;
-  --ink-faint: #6E6C60;
+  --ink-faint: #8C8A79;
   --line: #2A281E;
   --line-strong: #3C3A2C;
   --signal: #CBFF3D;
@@ -553,8 +553,8 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
 .hero-descriptor{
   font-family: var(--f-display);
   font-weight: 400;
-  font-size: clamp(.95rem, 1.6vw, 1.2rem);
-  max-width: 34ch;
+  font-size: clamp(1.05rem, 1.6vw, 1.3rem);
+  max-width: 38ch;
   color: var(--ink-soft);
 }
 .hero-descriptor strong{ color: var(--ink); font-weight: 500; }
@@ -1708,3 +1708,160 @@ body.modal-open{ overflow: hidden; }
 /* work.html only: extra breathing room above the project list, since
    this page opens directly on it with no hero above. */
 .work-page .work-index{ padding-top: 200px; }
+
+
+/* ---------------------------------------------------------------
+   Audit fixes (2026-10): "Start a project" CTAs, direct contact
+   links, Studio / process / FAQ, footer clearance.
+   --------------------------------------------------------------- */
+
+/* Nav CTA — the one filled element in the header, so the way in to the
+   mascot conversation is visible from every scroll position. */
+.main-nav__cta-item{ margin-top: .6rem; }
+.nav-cta{
+  display: inline-flex; align-items: center; gap: .5em;
+  font-family: var(--f-mono);
+  font-size: var(--fs-micro);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: .7em 1em;
+  background: var(--signal);
+  color: var(--signal-ink);
+  border: 1px solid var(--signal);
+  transition: background .25s var(--ease-out), color .25s var(--ease-out), border-color .25s var(--ease-out);
+}
+.nav-cta:hover, .nav-cta:focus-visible{ background: var(--ink); color: var(--paper); border-color: var(--ink); }
+@media (max-width: 640px){
+  .main-nav__cta-item{ margin-top: .5rem; }
+  .nav-cta{ font-size: var(--fs-small); }
+}
+
+/* Hero CTA sits under the descriptor, bottom-left of the hero. */
+.hero-lead{ display: flex; flex-direction: column; align-items: flex-start; gap: 1.25rem; }
+.hero-cta{
+  display: inline-flex; align-items: center; gap: .6em;
+  font-family: var(--f-mono);
+  font-size: var(--fs-small);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: .85em 1.2em;
+  background: var(--ink);
+  color: var(--paper);
+  border: 1px solid var(--ink);
+  transition: background .25s var(--ease-out), color .25s var(--ease-out), border-color .25s var(--ease-out);
+}
+.hero-cta:hover, .hero-cta:focus-visible{ background: var(--signal); color: var(--signal-ink); border-color: var(--signal); }
+
+/* WhatsApp / phone — quieter than the big email, same row. */
+.contact-alt{
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column; gap: .5rem;
+  font-family: var(--f-mono);
+  font-size: var(--fs-small);
+}
+.contact-alt__link{ display: inline-flex; gap: .8em; align-items: baseline; color: var(--ink); border-bottom: 1px solid var(--line-strong); padding-bottom: .15em; transition: border-color .25s var(--ease-out), color .25s var(--ease-out); }
+.contact-alt__link:hover, .contact-alt__link:focus-visible{ border-color: var(--signal-text); color: var(--signal-text); }
+.contact-alt__label{ min-width: 6.5em; color: var(--ink-faint); text-transform: uppercase; letter-spacing: .1em; font-size: var(--fs-micro); }
+.contact-row{ align-items: flex-end; }
+.contact-row .contact-alt{ margin-right: auto; margin-left: clamp(1rem, 5vw, 4rem); }
+@media (max-width: 900px){
+  .contact-row .contact-alt{ margin-left: 0; }
+}
+
+/* Studio — about copy, then process, then FAQ. */
+.studio .process, .studio .faq{ margin-top: clamp(3rem, 8vw, 6rem); }
+.process-steps{
+  list-style: none; margin: 1.5rem 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(1rem, 2.5vw, 2rem);
+  counter-reset: none;
+}
+.process-step{ border-top: 1px solid var(--line-strong); padding-top: 1.1rem; }
+.process-step__num{ font-family: var(--f-mono); font-size: var(--fs-micro); color: var(--signal-text); letter-spacing: .1em; }
+.process-step__title{ font-family: var(--f-display); font-weight: 450; font-size: var(--fs-h2); margin: .5rem 0 .6rem; letter-spacing: -0.01em; }
+.process-step__body{ color: var(--ink-soft); font-size: var(--fs-body); line-height: 1.5; max-width: 34ch; }
+@media (max-width: 900px){ .process-steps{ grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px){ .process-steps{ grid-template-columns: 1fr; } }
+
+.faq-list{ margin-top: 1.5rem; border-top: 1px solid var(--line-strong); max-width: 60rem; }
+.faq-item{ border-bottom: 1px solid var(--line); }
+.faq-item summary{
+  list-style: none; cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center; gap: 1.5rem;
+  padding: 1.15rem 0;
+  font-family: var(--f-display); font-weight: 420;
+  font-size: var(--fs-lead);
+}
+.faq-item summary::-webkit-details-marker{ display: none; }
+.faq-item summary:focus-visible{ outline: 2px solid var(--signal-text); outline-offset: 4px; }
+.faq-item__icon{ position: relative; width: 14px; height: 14px; flex: none; }
+.faq-item__icon::before, .faq-item__icon::after{ content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: var(--ink); transition: transform .3s var(--ease-out); }
+.faq-item__icon::after{ transform: rotate(90deg); }
+.faq-item[open] .faq-item__icon::after{ transform: rotate(0deg); }
+.faq-item p{ color: var(--ink-soft); font-size: var(--fs-body); line-height: 1.55; max-width: 60ch; padding: 0 0 1.3rem; }
+
+/* The fixed sound / language toggles sit in the viewport's bottom
+   corners; at the very bottom of the page they used to cover the
+   footer text on desktop too (mobile already had this clearance). */
+@media (min-width: 641px){
+  .site-footer{ padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)); }
+}
+
+/* The hero's CTA now sits at the bottom-left, exactly where the fixed
+   sound toggle lives — lift the hero foot clear of the toggles. */
+.hero-foot{ bottom: calc(clamp(24px, 4vw, 48px) + 64px); }
+@media (max-width: 640px){
+  /* On phones there isn't room for an absolutely-pinned foot under the
+     centered wordmark (the descriptor + CTA collided with it), so the
+     foot joins the normal flow below the wordmark instead. */
+  .hero{ justify-content: center; padding-block: 96px 120px; }
+  .hero-foot{ position: relative; left: auto; right: auto; bottom: auto; margin-top: 2.5rem; padding-inline: var(--gutter); }
+}
+.nav-cta, .hero-cta{ white-space: nowrap; }
+
+/* The conversation stage scrolls (overflow-y:auto), which also clipped
+   the focus ring of the first answer button it focuses on open. */
+.mascot-convo__stage{ padding-block: 4px; }
+
+/* Mascot instant estimate (mascot-convo.js renderEstimate) */
+.mascot-convo__estimate{
+  display: flex; flex-direction: column; gap: .3rem;
+  padding: .9rem 1rem;
+  border: 1px solid var(--ink);
+  border-left: 6px solid var(--signal);
+}
+.mascot-convo__estimate-label{
+  font-family: var(--f-mono);
+  font-size: var(--fs-micro);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.mascot-convo__estimate-value{
+  font-family: var(--f-display);
+  font-weight: 420;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+}
+.mascot-convo__estimate + .mascot-convo__helper{ margin-top: 0; }
+@media (min-width: 641px){
+  .main-nav{ transition: opacity .35s var(--ease-out); }
+  body.convo-open .main-nav{ opacity: 0; pointer-events: none; }
+}
+
+/* Answer options with a small grey line of examples underneath */
+.mascot-convo__choice{ display: flex; flex-direction: column; gap: .2em; }
+.mascot-convo__choice-hint{
+  font-family: var(--f-display);
+  font-size: .85em;
+  letter-spacing: 0;
+  color: var(--ink-faint);
+  line-height: 1.3;
+}
+.mascot-convo__choice.is-selected .mascot-convo__choice-hint,
+.mascot-convo__choice--primary .mascot-convo__choice-hint{ color: var(--paper); opacity: .75; }
+@media (max-width: 640px){
+  /* keeps the estimate's notes + continue button in view on phones */
+  .mascot-convo__estimate ~ .mascot-convo__helper{ font-size: .95rem; line-height: 1.45; }
+}
