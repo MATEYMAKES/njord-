@@ -90,6 +90,22 @@ if(organismCanvas){
     { name: 'mascot', el: document.getElementById('mascot-anchor') },
   ].filter((z) => z.el));
 
+  // work.html: the artwork follows the pointer, not the scroll position
+  // (see AsciiOrganism.setFocus). Touch devices keep scroll mode — the
+  // stacked mobile layout is tall enough to scroll each row through.
+  if(isFinePointer && document.body.classList.contains('work-page')){
+    const FORMATION = { aurelia: 'diamond', pulse: 'wave', meridian: 'network' };
+    const rows = Array.from(document.querySelectorAll('.work-row'));
+    rows.forEach((row) => {
+      const name = FORMATION[row.dataset.project];
+      if(!name) return;
+      const focus = () => organism.setFocus(name, row);
+      row.addEventListener('pointerenter', focus);
+      row.addEventListener('focus', focus);
+    });
+    if(rows[0]) organism.setFocus(FORMATION[rows[0].dataset.project], rows[0]);
+  }
+
   if(isFinePointer){
     window.addEventListener('pointermove', (e) => {
       organism.setPointer(e.clientX / window.innerWidth, e.clientY / window.innerHeight);
@@ -736,13 +752,20 @@ const WEB3FORMS_ACCESS_KEY = 'a7d50666-5e41-4bdf-8051-3bd0a93010c1';
 const mascotHit = document.getElementById('mascot-hit');
 if(mascotHit && organism){
   const mascotConvoEl = document.getElementById('mascot-convo');
+  let convoOpen = false;
   const mascotConvo = mascotConvoEl ? initMascotConvo(mascotConvoEl, {
     accessKey: WEB3FORMS_ACCESS_KEY,
     onKeystroke: () => audio.playKeyTick(),
     // while the conversation is open, the mascot should hold his fully-
     // formed pose through much more upward scroll than usual before he
     // starts unforming (see AsciiOrganism.setMascotConvoOpen)
+    // the "our chat isn't finished" pill takes them back down to him
+    onResume: () => startProject(),
+    // scrolled away mid-conversation: let the page's own artwork come
+    // back instead of holding the mascot formation everywhere
+    onAwayChange: (away) => organism.setMascotConvoOpen(convoOpen && !away),
     onOpenChange: (open) => {
+      convoOpen = open;
       organism.setMascotConvoOpen(open);
       // the fixed header nav sits right where the panel grows on desktop
       // (it covered the estimate and the email field) — step it aside
@@ -780,7 +803,12 @@ if(mascotHit && organism){
   whenVisible(document.getElementById('contact'), () => {
     ticker.add(syncMascotHit);
     if(!mascotHintSeen && mascotHint) mascotHint.classList.add('is-visible');
-  }, () => ticker.remove(syncMascotHit));
+  }, () => {
+    ticker.remove(syncMascotHit);
+    // contact section fully off-screen: no more per-frame position
+    // updates, so mark the conversation as away explicitly
+    mascotConvo?.setAway(true);
+  });
   mascotHit.addEventListener('click', () => {
     organism.triggerMascotReaction();
     mascotConvo?.open();

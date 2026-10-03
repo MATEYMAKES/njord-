@@ -1865,3 +1865,42 @@ body.modal-open{ overflow: hidden; }
   /* keeps the estimate's notes + continue button in view on phones */
   .mascot-convo__estimate ~ .mascot-convo__helper{ font-size: .95rem; line-height: 1.45; }
 }
+
+/* Conversation hidden while the visitor has scrolled away from the
+   mascot (mascot-convo.js setAway) */
+.mascot-convo.is-away{ visibility: hidden; pointer-events: none; }
+.mascot-convo.is-away .mascot-convo__panel{ opacity: 0; }
+
+/* Resume indicator — icon only: a lime square with a down arrow,
+   bottom centre between the sound and language toggles. Tapping it
+   scrolls back down to the mascot and the open conversation. */
+.mascot-resume{
+  position: fixed;
+  left: 50%;
+  bottom: calc(clamp(18px, 3vw, 32px) + env(safe-area-inset-bottom, 0px));
+  z-index: 640;
+  width: 44px; height: 44px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--signal);
+  color: var(--signal-ink);
+  border: 1px solid var(--signal-ink);
+  font-family: var(--f-mono);
+  font-size: 1.15rem;
+  line-height: 1;
+  opacity: 0;
+  transform: translate(-50%, 8px);
+  transition: opacity .25s var(--ease-out), transform .25s var(--ease-out), background .2s, color .2s;
+}
+.mascot-resume.is-visible{ opacity: 1; transform: translate(-50%, 0); }
+.mascot-resume:hover, .mascot-resume:focus-visible{ background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.mascot-resume__arrow{ display: block; animation: mascot-resume-nudge 1.6s ease-in-out infinite; }
+@keyframes mascot-resume-nudge{ 0%, 100%{ transform: translateY(-2px); } 50%{ transform: translateY(3px); } }
+@media (prefers-reduced-motion: reduce){
+  .mascot-resume{ transition: none; }
+  .mascot-resume__arrow{ animation: none; }
+}
+@media (max-width: 640px){
+  /* the toggles take both bottom corners on phones — sit just above them */
+  .mascot-resume{ bottom: calc(clamp(18px, 3vw, 32px) + 64px + env(safe-area-inset-bottom, 0px)); }
+}
+.mascot-resume[hidden]{ display: none; }

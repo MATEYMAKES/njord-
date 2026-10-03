@@ -12,7 +12,7 @@
    the end instead of a raw chat transcript.
    ================================================================ */
 import { prefersReducedMotion } from './ascii-engine.js';
-import { t, getLang } from './i18n.js';
+import { t, getLang, onLangChange } from './i18n.js';
 import { PRICES, ALWAYS_WITH_WEBSITE, sumItems, visitorRange, formatEuro } from './pricing.js';
 
 const INTEREST_OPTIONS = [
@@ -168,6 +168,44 @@ export function initMascotConvo(container, opts = {}){
   const answers = {};
   let startedAt = null;
 
+  // "Away" = the visitor has scrolled up and the mascot is off-screen.
+  // The panel used to stay pinned to the bottom of the viewport over
+  // whatever section they were reading; now it hides, and a small
+  // resume pill (below) says the conversation is waiting for them.
+  let away = false;
+  const resumePill = document.createElement('button');
+  resumePill.type = 'button';
+  resumePill.className = 'mascot-resume';
+  resumePill.hidden = true;
+  // icon only — the label is for screen readers (aria-label)
+  resumePill.innerHTML = '<span class="mascot-resume__arrow" aria-hidden="true">&darr;</span>';
+  resumePill.addEventListener('click', () => opts.onResume?.());
+  document.body.appendChild(resumePill);
+
+  function updateResumePill(){
+    // only for a conversation actually in progress — not the "hey" intro
+    const inProgress = phase === 'flow' || phase === 'end';
+    const show = away && inProgress;
+    if(show) resumePill.setAttribute('aria-label', t('convo.resume'));
+    if(show === !resumePill.hidden) return;
+    if(show){
+      resumePill.hidden = false;
+      requestAnimationFrame(() => resumePill.classList.add('is-visible'));
+    } else {
+      resumePill.classList.remove('is-visible');
+      setTimeout(() => { if(!resumePill.classList.contains('is-visible')) resumePill.hidden = true; }, reduced ? 0 : 250);
+    }
+  }
+  onLangChange(() => updateResumePill());
+
+  function setAway(value){
+    if(away === value) return;
+    away = value;
+    container.classList.toggle('is-away', value);
+    updateResumePill();
+    opts.onAwayChange?.(value);
+  }
+
   function typeInto(el, text){
     const full = document.createElement('span');
     full.className = 'mascot-convo__sr';
@@ -214,6 +252,7 @@ export function initMascotConvo(container, opts = {}){
   }
 
   function updateChrome(){
+    updateResumePill();
     backBtn.hidden = !(phase === 'flow' && stepIndex > 0) && phase !== 'end';
     container.querySelector('.mascot-convo__progress').hidden = phase !== 'flow' && phase !== 'end';
     if(phase === 'flow') setProgress(stepIndex / activeSteps(answers).length);
@@ -621,6 +660,7 @@ export function initMascotConvo(container, opts = {}){
     container.classList.remove('is-open');
     headEl?.classList.remove('is-convo-open');
     phase = 'closed';
+    updateResumePill();
     opts.onOpenChange?.(false);
     const done = () => { container.hidden = true; };
     if(reduced) done();
@@ -639,6 +679,9 @@ export function initMascotConvo(container, opts = {}){
     const gapX = 22, gapY = 10;
     const GUTTER = 16;
     const vw = window.innerWidth, vh = window.innerHeight;
+    // mascot's head has dropped below the bottom of the screen → hide the
+    // panel instead of clamping it to the viewport bottom
+    setAway(frame.y - frame.height / 2 > vh - 24);
     // The panel grows up-and-left from the mascot (translate(-100%,-100%)
     // below anchors it by its OWN bottom-right corner) — on a narrow
     // phone, if he's currently sitting anywhere near the left edge, that
@@ -682,5 +725,5 @@ export function initMascotConvo(container, opts = {}){
   closeBtn.addEventListener('click', close);
   container.addEventListener('keydown', (e) => { if(e.key === 'Escape') close(); });
 
-  return { open, close, updatePosition };
+  return { open, close, updatePosition, setAway };
 }

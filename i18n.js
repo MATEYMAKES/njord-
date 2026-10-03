@@ -332,6 +332,7 @@ const translations = {
     en: "this one needs a closer look — tell me who you are and we'll send you a price within 24 hours.",
     sq: 'ky duhet parë nga afër — më trego kush je dhe të dërgojmë çmimin brenda 24 orësh.',
   },
+  'convo.resume': { en: "we weren't done talking", sq: 'biseda jonë s\'ka mbaruar' },
   'convo.estimate.continue': { en: 'Sounds good, continue', sq: 'Në rregull, vazhdo' },
 
   'convo.s4.prompt1': { en: "tell me what's going on.", sq: 'më trego çfarë po ndodh.' },
