@@ -452,6 +452,27 @@ export class AsciiOrganism{
    *  closes (see mascot-convo.js's onOpenChange). See _timelineSegment
    *  for what this actually does to the scroll-to-formation mapping. */
   setMascotConvoOpen(open){ this._mascotHoldOpen = !!open; }
+  /** Pointer-driven mode (work.html on mouse/trackpad devices): instead
+   *  of following the scroll position, the organism forms whichever
+   *  project the visitor is pointing at, next to that row. The page is
+   *  too short to scroll each row past the viewport centre, so scroll
+   *  mode only ever showed one of them. Switching runs the same two-point
+   *  blend the scroll timeline uses, over ~0.7s. */
+  setFocus(name, el){
+    if(!name || !el) return;
+    if(this._focusTo && this._focusTo.name === name && this._focusTo.el === el) return;
+    this._focusFrom = this._focusTo || { name, el };
+    this._focusTo = { name, el };
+    this._focusStart = performance.now();
+  }
+  _focusAnchor(el){
+    const r = el.getBoundingClientRect();
+    const vh = window.innerHeight || 1;
+    return {
+      x: Math.max(0.16, Math.min(0.8, (r.left + r.width * 0.74) / (this.w || 1))),
+      y: Math.max(0.1, Math.min(0.9, (r.top + r.height / 2) / vh)),
+    };
+  }
   setPointer(nx, ny){
     this.lastPointerX = this.pointerX; this.lastPointerY = this.pointerY;
     this.pointerX = nx; this.pointerY = ny;
@@ -648,6 +669,17 @@ export class AsciiOrganism{
     const scrollY = window.scrollY || 0;
     const vh = window.innerHeight || 1;
     if(this.zones.length === 0) return { a: 'globe', b: 'globe', t: 0, anchorX: 0.72, anchorY: 0.5 };
+    if(this._focusTo){
+      const from = this._focusFrom, to = this._focusTo;
+      const B = this._focusAnchor(to.el);
+      const p = this.reduced ? 1 : Math.min(1, (performance.now() - this._focusStart) / 700);
+      if(p >= 1 || (from.name === to.name && from.el === to.el)){
+        return { a: to.name, b: to.name, t: 0, anchorX: B.x, anchorY: B.y };
+      }
+      const A = this._focusAnchor(from.el);
+      const s = p * p * (3 - 2 * p);
+      return { a: from.name, b: to.name, t: s, anchorX: A.x + (B.x - A.x) * s, anchorY: A.y + (B.y - A.y) * s };
+    }
 
     const rangedNames = this._rangedZoneNames || new Set();
     const points = [];
@@ -1561,7 +1593,8 @@ export class AsciiOrganism{
     // that dimmed the mascot too, who has no text competing with him and
     // should read at full strength. Baking the dim into per-particle alpha
     // instead lets it fade out exactly as mascotPresence fades in.
-    const mobileDim = this.isMobile ? lerp(0.4, 1, mascotPresence) : 1;
+    // 0.4 still read as noise behind paragraphs on phones — quieter now
+    const mobileDim = this.isMobile ? lerp(0.28, 1, mascotPresence) : 1;
     let lastMixKey = -1, lastFill = '';
     for(let i = 0; i < n; i++){
       const inten = this.intensity[i];

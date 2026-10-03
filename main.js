@@ -13,6 +13,35 @@ import { initIdentity } from './identity.js';
 
 applyStaticTranslations(getLang());
 
+/* "Logo — Paleta e ngjyrave — Tipografia — …" lines under each service:
+   split into separate items so phones can show them as small tags
+   instead of 3–4 lines of spaced capitals (desktop keeps the inline
+   "a — b — c" look via CSS). Re-run after every language switch, since
+   applyStaticTranslations() puts the plain string back. */
+function chipifyProvides(){
+  document.querySelectorAll('.service-provides').forEach((el) => {
+    const parts = el.textContent.split(/\s+—\s+/).map((p) => p.trim()).filter(Boolean);
+    if(parts.length < 2) return;
+    el.replaceChildren(...parts.map((p) => {
+      const s = document.createElement('span');
+      s.className = 'service-provides__item';
+      s.textContent = p;
+      return s;
+    }));
+  });
+}
+chipifyProvides();
+onLangChange(() => chipifyProvides());
+
+/* body.at-contact while the contact section is on screen — used to hide
+   the phone-only sticky quote button there (the mascot is right there) */
+const contactForSticky = document.getElementById('contact');
+if(contactForSticky && 'IntersectionObserver' in window){
+  new IntersectionObserver(([entry]) => {
+    document.body.classList.toggle('at-contact', entry.isIntersecting);
+  }).observe(contactForSticky);
+}
+
 const reduced = prefersReducedMotion();
 const inkColor = () => getComputedStyle(document.documentElement).getPropertyValue('--ink').trim();
 
@@ -627,7 +656,7 @@ function onModalKeydown(e){
   trapTabKey(e, modal);
 }
 
-document.querySelectorAll('.project-modal__brand').forEach((b) => {
+document.querySelectorAll('.project-modal__brand, .project-modal__close').forEach((b) => {
   b.addEventListener('click', (e) => {
     // e.detail is 0 for a keyboard-activated click (Enter/Space) — there's
     // no real pointer position then, so don't trust clientX/clientY (browsers
@@ -802,9 +831,18 @@ if(mascotHit && organism){
   };
   whenVisible(document.getElementById('contact'), () => {
     ticker.add(syncMascotHit);
+    mascotHit.style.visibility = '';
     if(!mascotHintSeen && mascotHint) mascotHint.classList.add('is-visible');
   }, () => {
     ticker.remove(syncMascotHit);
+    // both are position:fixed and stop being repositioned here — without
+    // this the hint text stayed floating over whatever section you
+    // scrolled back up to, and the invisible tap target over it
+    mascotHit.style.visibility = 'hidden';
+    if(mascotHint){
+      mascotHint.classList.remove('is-visible');
+      try{ mascotHintSeen = localStorage.getItem('njord-mascot-hint-seen') === '1'; }catch(e){ /* ignore */ }
+    }
     // contact section fully off-screen: no more per-frame position
     // updates, so mark the conversation as away explicitly
     mascotConvo?.setAway(true);

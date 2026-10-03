@@ -44,7 +44,11 @@ export function initIdentity() {
       const rect = row2.getBoundingClientRect();
       const from = vh * 0.95, to = vh * 0.3;
       const t = Math.max(0, Math.min(1, (from - rect.top) / (from - to)));
-      row2.style.transform = `translateY(${-150 * t}px)`;
+      // pull up by at most half of the CSS gap — on phones the gap is
+      // only ~120px, and a fixed 150px pull put the two words on top of
+      // each other
+      const gap = parseFloat(getComputedStyle(row2).marginTop) || 300;
+      row2.style.transform = `translateY(${-Math.min(150, gap * 0.5) * t}px)`;
     }
   }
 

@@ -394,6 +394,10 @@
 
 </main>
 
+<!-- phones: a quote button that follows you once the hero is gone
+     (hidden in the hero, at #contact, while chatting, and with the menu open) -->
+<a class="sticky-quote" href="#contact" data-start-project><span data-i18n="hero.cta">Merr një ofertë</span> <span aria-hidden="true">&rarr;</span></a>
+
 <div id="project-modal" class="project-modal" role="dialog" aria-modal="true" data-i18n-aria="modal.ariaLabel" hidden>
   <div class="project-modal__bg" aria-hidden="true">
     <canvas id="aurelia-visual" data-panel="aurelia"></canvas>
@@ -402,6 +406,7 @@
   </div>
   <div class="project-modal__bar">
     <button class="project-modal__brand" type="button" data-i18n-aria="modal.brandAria">NJORD</button>
+    <button class="project-modal__close" type="button"><span aria-hidden="true">&larr;</span> <span data-i18n="modal.back">Kthehu</span></button>
   </div>
   <div class="project-modal__body">
     <div>
@@ -420,10 +425,6 @@
     <div><span class="project-modal__highlight-num">01</span><p data-highlight="0"></p></div>
     <div><span class="project-modal__highlight-num">02</span><p data-highlight="1"></p></div>
     <div><span class="project-modal__highlight-num">03</span><p data-highlight="2"></p></div>
-  </div>
-  <div class="project-modal__cta-row">
-    <button class="project-modal__cta magnetic" type="button"><span data-i18n="modal.cta">Shiko studimin e plotë të rastit</span> <span aria-hidden="true">→</span></button>
-    <span class="project-modal__cta-note" aria-live="polite"></span>
   </div>
 </div>
 

@@ -332,7 +332,7 @@ const translations = {
     en: "this one needs a closer look — tell me who you are and we'll send you a price within 24 hours.",
     sq: 'ky duhet parë nga afër — më trego kush je dhe të dërgojmë çmimin brenda 24 orësh.',
   },
-  'convo.resume': { en: "we weren't done talking", sq: 'biseda jonë s\'ka mbaruar' },
+  'convo.resume': { en: 'Back to the conversation', sq: 'Kthehu te biseda' },
   'convo.estimate.continue': { en: 'Sounds good, continue', sq: 'Në rregull, vazhdo' },
 
   'convo.s4.prompt1': { en: "tell me what's going on.", sq: 'më trego çfarë po ndodh.' },
@@ -381,6 +381,7 @@ const translations = {
   'modal.cta': { en: 'View full case study', sq: 'Shiko studimin e plotë të rastit' },
   'modal.ctaNote': { en: 'Full case study — in progress', sq: 'Studimi i plotë i rastit — në progres' },
   'modal.concept': { en: 'Concept', sq: 'Koncept' },
+  'modal.back': { en: 'Back', sq: 'Kthehu' },
   'modal.sitelink': { en: 'Visit live site', sq: 'Vizito faqen live' },
   'modal.sitelinkNote': { en: 'Live site — coming soon', sq: 'Faqja live — së shpejti' },
 

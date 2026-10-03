@@ -1762,8 +1762,12 @@ body.modal-open{ overflow: hidden; }
 .contact-alt__link{ display: inline-flex; gap: .8em; align-items: baseline; color: var(--ink); border-bottom: 1px solid var(--line-strong); padding-bottom: .15em; transition: border-color .25s var(--ease-out), color .25s var(--ease-out); }
 .contact-alt__link:hover, .contact-alt__link:focus-visible{ border-color: var(--signal-text); color: var(--signal-text); }
 .contact-alt__label{ min-width: 6.5em; color: var(--ink-faint); text-transform: uppercase; letter-spacing: .1em; font-size: var(--fs-micro); }
-.contact-row{ align-items: flex-end; }
-.contact-row .contact-alt{ margin-right: auto; margin-left: clamp(1rem, 5vw, 4rem); }
+/* desktop only — unscoped, this also overrode the phone layout's
+   flex-start and pushed the email to the right edge */
+@media (min-width: 641px){
+  .contact-row{ align-items: flex-end; }
+  .contact-row .contact-alt{ margin-right: auto; margin-left: clamp(1rem, 5vw, 4rem); }
+}
 @media (max-width: 900px){
   .contact-row .contact-alt{ margin-left: 0; }
 }
@@ -1904,3 +1908,146 @@ body.modal-open{ overflow: hidden; }
   .mascot-resume{ bottom: calc(clamp(18px, 3vw, 32px) + 64px + env(safe-area-inset-bottom, 0px)); }
 }
 .mascot-resume[hidden]{ display: none; }
+
+
+/* ================================================================
+   Phone pass (2026-10) — fixes from a 375px walkthrough
+   ================================================================ */
+
+/* service "provides" line → separate items (main.js chipifyProvides).
+   Desktop keeps the original inline "a — b — c" look. */
+.service-provides__item + .service-provides__item::before{ content: " — "; }
+
+/* project page: a visible way back, on every screen size */
+.project-modal__close{
+  font-family: var(--f-mono);
+  font-size: var(--fs-small);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  display: inline-flex; align-items: center; gap: .5em;
+  padding: .55em .9em;
+  border: 1px solid currentColor;
+  transition: background .2s, color .2s;
+}
+.project-modal__close:hover, .project-modal__close:focus-visible{ background: currentColor; }
+.project-modal__close:hover span, .project-modal__close:focus-visible span{ filter: invert(1); }
+
+/* sticky quote button — phones only, see index.html */
+.sticky-quote{ display: none; }
+
+@media (max-width: 640px){
+  /* 1 — header gets a solid background so text no longer slides under
+     the logo and menu button */
+  .site-header::before{
+    background: var(--paper);
+    box-shadow: 0 10px 14px -10px color-mix(in srgb, var(--paper) 100%, transparent);
+    border-bottom: 1px solid var(--line);
+  }
+  body.modal-open .site-header::before{ border-bottom-color: transparent; }
+
+  /* 2 — identity heading: eyebrow above the word, both words left */
+  .identity-word-row--1{ flex-direction: column; align-items: flex-start; gap: .6rem; }
+  .identity-word-row--2{ justify-content: flex-start; text-align: left; }
+
+  /* 3 — language + sound live in the menu drawer instead of covering
+     the page; shown at the bottom of the drawer while it's open */
+  .sound-toggle, .lang-toggle{
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity .3s var(--ease-out), visibility 0s .3s;
+  }
+  body.nav-open .sound-toggle, body.nav-open .lang-toggle{
+    opacity: 1; visibility: visible; pointer-events: auto;
+    transition: opacity .3s var(--ease-out) .1s;
+  }
+  body.nav-open .lang-toggle{ left: calc(100vw - min(78vw, 320px) + var(--gutter)); right: auto; }
+  body.nav-open .sound-toggle{ right: var(--gutter); left: auto; }
+  .site-footer{ padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); }
+  .mascot-resume{ bottom: calc(clamp(18px, 3vw, 32px) + env(safe-area-inset-bottom, 0px)); }
+
+  /* 4 — the menu button (animated into an ×) sits above the open drawer */
+  .nav-toggle{ position: relative; z-index: 640; }
+
+  /* 6 — paragraphs in the regular font: the typewriter font is tiring
+     to read in long runs on a small screen */
+  .identity-copy, .webdev-copy p, .hosting-copy p, .maintenance-copy p,
+  .work-preview-row__desc, .work-row__desc, .section-head .section-note{
+    font-family: var(--f-display);
+    font-size: 1.0625rem;
+    line-height: 1.55;
+  }
+
+  /* 7 — "provides" items as small tags in normal case */
+  .service-provides{
+    display: flex; flex-wrap: wrap; gap: .45rem;
+    text-transform: none; letter-spacing: 0;
+    font-size: .9rem;
+    margin-top: 1.1rem;
+  }
+  .service-provides__item{
+    border: 1px solid var(--line-strong);
+    padding: .3em .65em;
+    color: var(--ink-soft);
+  }
+  .service-provides__item + .service-provides__item::before{ content: none; }
+
+  /* 9 — shorter page: tighter sections and compact project rows */
+  .section{ padding-block: 56px; }
+  .identity-word-row--2{ margin-top: 96px; }
+  .webdev-inner, .hosting-inner{ min-height: 0; gap: 1.5rem; }
+  .maintenance-inner{ min-height: 0; }
+  .section-head{ margin-bottom: 1.75rem; }
+  .work-preview-row{
+    grid-template-columns: auto 1fr;
+    column-gap: .75rem;
+    padding-block: 1.15rem;
+    align-items: baseline;
+  }
+  .work-preview-row__index{ font-size: .9rem; }
+  .work-preview-row__tags{ gap: .35rem .9rem; margin-top: .5rem; }
+  .work-preview-row__tags span{ border: 0; padding: 0; font-size: .75rem; }
+  .work-preview-row__meta{ margin-top: .5rem; }
+  .studio .process, .studio .faq{ margin-top: 2.5rem; }
+  .process-steps{ gap: 1.25rem; }
+  .process-step{ padding-top: .8rem; }
+  .process-step__title{ font-size: 1.5rem; margin: .3rem 0 .4rem; }
+  .contact-head{ padding-bottom: 150px; }
+
+  /* 10 — section headings one size down */
+  .section-head h2{ font-size: clamp(2.1rem, 8.6vw, 2.6rem); max-width: none; }
+  .contact-head h2{ font-size: clamp(2.3rem, 10vw, 3rem); }
+
+  /* 11 — project page back button: compact on phones */
+  .project-modal__close{ font-size: .85rem; padding: .5em .8em; }
+
+  /* 13 — sticky quote button */
+  .sticky-quote{
+    display: inline-flex; align-items: center; gap: .6em;
+    position: fixed; left: 50%;
+    bottom: calc(clamp(18px, 3vw, 32px) + env(safe-area-inset-bottom, 0px));
+    z-index: 600;
+    padding: .85em 1.25em;
+    background: var(--ink); color: var(--paper);
+    font-family: var(--f-mono); font-size: .9rem; letter-spacing: .1em; text-transform: uppercase;
+    white-space: nowrap;
+    opacity: 0; pointer-events: none;
+    transform: translate(-50%, 12px);
+    transition: opacity .3s var(--ease-out), transform .3s var(--ease-out);
+  }
+  body.is-past-hero:not(.at-contact):not(.convo-open):not(.nav-open):not(.modal-open) .sticky-quote{
+    opacity: 1; pointer-events: auto; transform: translate(-50%, 0);
+  }
+}
+@media (max-width: 640px){
+  /* work.html rows: number beside the title, tags as one quiet line
+     (row spacing is kept — the artwork on this page follows scrolling
+     on phones and needs the distance between rows) */
+  .work-row{ grid-template-columns: auto 1fr; column-gap: .75rem; align-items: baseline; }
+  .work-row__index{ width: auto; height: auto; }
+  .work-row__index-num{ font-size: .9rem; }
+  .work-row__tags{ gap: .35rem .9rem; margin-top: .5rem; }
+  .work-row__tags li, .work-row__tags span{
+    border: 0; padding: 0;
+    font-family: var(--f-mono); font-size: .75rem;
+    letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint);
+  }
+}
