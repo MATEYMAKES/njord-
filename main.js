@@ -7,7 +7,7 @@ import {
   AsciiOrganism, StaticGlyphField, FormationPortrait,
 } from './ascii-engine.js';
 import { GenerativeAudio } from './audio-engine-a2.js'; // A2 (lighter) — A1 kept intact in audio-engine.js
-import { t, getLang, setLang, applyStaticTranslations, onLangChange } from './i18n.js';
+import { t, getLang, setLang, applyStaticTranslations, onLangChange, hasKey } from './i18n.js';
 import { initMascotConvo } from './mascot-convo.js';
 import { initIdentity } from './identity.js';
 import {
@@ -129,6 +129,7 @@ if(organismCanvas){
     // hidden (see index.html) — their zones are deliberately not
     // registered while that's true, since a hidden element's layout
     // rect isn't meaningful as a scroll anchor.
+    { name: 'roadmap', el: document.getElementById('process'), ranged: true },
     { name: 'chaos', el: document.getElementById('cloud-anchor') },
   { name: 'mascot', el: document.getElementById('mascot-anchor') },
   ].filter((z) => z.el));
@@ -289,13 +290,14 @@ if(hero){
    driven directly by scroll position (never a timer), so it un-types
    symmetrically on scroll-up exactly like the path itself reverses.
    --------------------------------------------------------------- */
-const SERVICE_KEYS = ['01', '02', '03', '04', '05'];
+const SERVICE_KEYS = ['1', '2', '3', '4'];
 function serviceRoadmapCopy(num){
-  return { heading: t(`services.${num}.title`), support: t(`services.${num}.desc`) };
+  const bodyKey = `process.s${num}.body`;
+  return { heading: t(`process.s${num}.title`), support: hasKey(bodyKey) ? t(bodyKey) : '' };
 }
 
 const roadmapNodesEl = document.getElementById('roadmap-nodes');
-const servicesSection = document.getElementById('services');
+const servicesSection = document.getElementById('process');
 if(roadmapNodesEl && organism && servicesSection && !servicesSection.hidden){
   const nodeEls = Array.from(roadmapNodesEl.querySelectorAll('.roadmap-node'));
 

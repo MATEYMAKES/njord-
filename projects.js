@@ -101,7 +101,7 @@ export const PROJECTS_DATA = [
     formation: 'diamond', burstColor: '#C8102E', modalClass: 'project-modal--aurelia',
   },
   {
-    slug: 'pulse', name: 'PULSE',
+    slug: 'pulse', name: 'Pulse',
     type: 'CONCEPT', status: 'CONCEPT', published: true, category: 'WEBSITE',
     year: '2026', industry: null, services: null,
     liveUrl: 'pulse-showcase/',

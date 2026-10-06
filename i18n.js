@@ -147,6 +147,7 @@ const translations = {
   'process.s3.title': { en: 'Design & build', sq: 'Dizajni & ndërtimi' },
   'process.s3.body': { en: "We show you the work along the way and refine it with your feedback.", sq: "Jua tregojmë punën gjatë rrugës dhe e përmirësojmë sipas komenteve tuaja." },
   'process.s4.title': { en: 'Launch & care', sq: 'Lansimi & kujdesi' },
+  'process.s4.body': { en: "We launch it, then keep it running and improving.", sq: "E publikojmë dhe vazhdojmë ta mbajmë e përditësuar." },
 
   'faq.eyebrow': { en: 'Questions', sq: 'Pyetje' },
   'faq.q1': { en: 'How much does a website cost?', sq: 'Sa kushton një webfaqe?' },
@@ -339,7 +340,7 @@ const translations = {
   'project.aurelia.highlight3': { en: 'Built directly on Shopify', sq: 'Ndërtuar direkt në Shopify' },
 
   'project.pulse.tagline': { en: 'Websites that get companies seen.', sq: 'Faqe interneti që i nxjerrin kompanitë në pah.' },
-  'project.pulse.description': { en: "PULSE is the branch of NJORD that builds them. Its own site is set on a night street.", sq: "PULSE është dega e NJORD që i ndërton ato. Faqja e tij është vendosur në një rrugë nate." },
+  'project.pulse.description': { en: "Pulse is the branch of NJORD that builds them. Its own site is set on a night street.", sq: "PULSE është dega e NJORD që i ndërton ato. Faqja e tij është vendosur në një rrugë nate." },
   'project.pulse.discipline': { en: 'Brand Identity, Web Design, Front-End Build', sq: 'Identitet Brendi, Dizajn Web, Ndërtim Front-End' },
   'project.pulse.deliverables': { en: 'Brand Identity, Company Website, Front-End Build', sq: 'Identitet Brendi, Faqe Kompanie, Ndërtim Front-End' },
   'project.pulse.highlight1': { en: 'A night palette: near-black with one warm amber', sq: 'Paletë nate: pothuajse e zezë me një qelibar të ngrohtë' },

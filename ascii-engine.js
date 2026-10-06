@@ -600,7 +600,7 @@ export class AsciiOrganism{
      changes happen (including iOS's own toolbar-driven resize).
      ---------------------------------------------------------------- */
   _generateRoadmapLayout(){
-    const NODE_COUNT = 5;
+    const NODE_COUNT = 4;
     this.roadmapNodeCount = NODE_COUNT;
     const xBand = this.isMobile ? [0.38, 0.62] : [0.18, 0.82];
     const minSep = this.isMobile ? 0.08 : 0.14;
