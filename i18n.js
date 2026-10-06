@@ -37,10 +37,7 @@ const translations = {
   'identity.eyebrow': { en: 'Identity', sq: 'Identiteti' },
   'identity.word1': { en: 'We create', sq: 'Krijojmë' },
   'identity.word2': { en: 'identity.', sq: 'identitet.' },
-  'identity.body': {
-    en: 'Every business needs a consistent identity, wherever it appears. We design your logo, fonts and colors, then set it all out in brand guidelines so you stay recognizable everywhere.',
-    sq: 'Çdo biznes ka nevojë për një identitet të qëndrueshëm, kudo që shfaqet. Dizajnojmë logon, fontet dhe ngjyrat, dhe i përmbledhim në udhëzues marke, që të mbeteni të njohshëm kudo.',
-  },
+  'identity.body': { en: "Every business needs a consistent identity, wherever it appears.", sq: "Çdo biznes ka nevojë për një identitet të qëndrueshëm, kudo që shfaqet." },
   'identity.provides': {
     en: 'Logo — Color palette — Typography — Brand guidelines',
     sq: 'Logo — Paleta e ngjyrave — Tipografia — Udhëzime marke',
@@ -61,10 +58,6 @@ const translations = {
   'hosting.eyebrow': { en: '03 / Hosting & Security', sq: '03 / Hosting & Siguri' },
   'hosting.titleLeft': { en: 'Hosting', sq: 'Hosting' },
   'hosting.titleRight': { en: 'Security.', sq: 'Siguri.' },
-  'hosting.body': {
-    en: 'We host your website on fast, managed servers and keep it secure around the clock.',
-    sq: 'E hostojmë webfaqen tuaj në servera të shpejtë e të menaxhuar, duke e mbajtur të sigurt në çdo moment.',
-  },
   'hosting.provides': {
     en: 'Managed servers — Uptime monitoring — SSL & backups — Threat protection',
     sq: 'Servera të menaxhuar — Monitorim 24/7 — SSL & backup — Mbrojtje nga kërcënimet',
@@ -72,19 +65,12 @@ const translations = {
 
   'maintenance.eyebrow': { en: '04 / Maintenance', sq: '04 / Mirëmbajtja' },
   'maintenance.title': { en: 'Maintenance.', sq: 'Mirëmbajtja.' },
-  'maintenance.body': {
-    en: "Our work doesn't end when your website goes live — we take care of it even after launch, with updates, fixes, 24/7 monitoring, and support.",
-    sq: 'Puna jonë nuk përfundon kur webfaqja publikohet — kujdesemi për të edhe pas lansimit, duke ofruar përditësime, korrigjime, monitorim 24/7 dhe mbështetje.',
-  },
-  'maintenance.provides': {
-    en: 'Updates & fixes — Monitoring — Backups — Ongoing support',
-    sq: 'Përditësime & korrigjime — Monitorim — Backup — Mbështetje e vazhdueshme',
-  },
+  'maintenance.body': { en: "Our work doesn't end when your website goes live.", sq: "Puna jonë nuk përfundon kur webfaqja publikohet." },
+  'maintenance.provides': { en: "Updates & fixes — Ongoing support", sq: "Përditësime & korrigjime — Mbështetje e vazhdueshme" },
 
   'work.cta': { en: 'See more', sq: 'Shiko më shumë' },
   'work.eyebrow': { en: 'Selected Work', sq: 'Punë të përzgjedhura' },
   'work.h2': { en: 'Real work. Real businesses.', sq: 'Punë reale. Biznese reale.' },
-  'work.note': { en: 'Projects built for real clients. Our own creative concepts are listed separately below.', sq: 'Projekte të ndërtuara për klientë realë. Konceptet tona krijuese janë të ndara më poshtë.' },
   'work.enter': { en: 'Enter', sq: 'Hyr' },
 
   'work.aurelia.aria': { en: 'Enter Aurelia project', sq: 'Hyr te projekti Aurelia' },
@@ -115,16 +101,10 @@ const translations = {
   'work.meridian.tag3': { en: 'Data Viz', sq: 'Vizualizim të Dhënash' },
 
   'work.metalium.aria': { en: 'Enter METALIUM project', sq: 'Hyr te projekti METALIUM' },
-  'work.metalium.desc': {
-    en: 'A one-page site for a steel and metal fabrication company: bold, industrial, with a steel weight calculator built in.',
-    sq: 'Një faqe njëfaqëshe për një kompani konstruksionesh çeliku dhe përpunimi metali: e fortë, industriale, me kalkulator peshe çeliku të integruar.',
-  },
+  'work.metalium.desc': { en: "A bold, industrial one-page site with a steel weight calculator built in.", sq: "Një faqe njëfaqëshe e fortë dhe industriale, me kalkulator peshe çeliku të integruar." },
 
   'work.vyron.aria': { en: 'Enter VYRON project', sq: 'Hyr te projekti VYRON' },
-  'work.vyron.desc': {
-    en: 'Brand identity and website for an advanced flooring company: bronze on charcoal, calm motion, systems from ARDEX, Gerflor and HAFRO.',
-    sq: 'Identiteti i brendit dhe faqja për një kompani dyshemesh të avansuara: bronz mbi qymyr, lëvizje e qetë, sisteme nga ARDEX, Gerflor dhe HAFRO.',
-  },
+  'work.vyron.desc': { en: "Brand identity and website: bronze on charcoal, calm motion, systems from ARDEX, Gerflor and HAFRO.", sq: "Identiteti i brendit dhe faqja: bronz mbi qymyr, lëvizje e qetë, sisteme nga ARDEX, Gerflor dhe HAFRO." },
 
   'services.eyebrow': { en: 'Capabilities', sq: 'Aftësitë' },
   'services.h2': { en: 'What we do.', sq: 'Çfarë bëjmë.' },
@@ -160,63 +140,27 @@ const translations = {
 
   'studio.eyebrow': { en: 'Studio', sq: 'Studio' },
   'studio.h2': { en: 'One studio. From idea to launch.', sq: 'Një studio. Nga ideja deri te lansimi.' },
-  'studio.p1': {
-    en: 'NJORD is a web and branding studio based in Prishtinë. We design and build websites, create visual identities, and make sure everything keeps working long after launch.',
-    sq: 'NJORD është studio për web dhe branding me bazë në Prishtinë. Dizajnojmë dhe ndërtojmë webfaqe, krijojmë identitete vizuale dhe kujdesemi që gjithçka të funksionojë edhe shumë pas lansimit.',
-  },
-  'studio.p2': {
-    en: 'Branding, design, development, hosting and support are handled end to end by one studio — not handed off between different teams. Every project is built for the business it represents, with no templates.',
-    sq: 'Brendi, dizajni, zhvillimi, hostingu dhe mbështetja bëhen nga një studio e vetme — pa e kaluar punën ndër ekipe të ndryshme. Çdo projekt ndërtohet për biznesin që përfaqëson, pa shabllone.',
-  },
+  'studio.p2': { en: "Every project is built for the business it represents, with no templates.", sq: "Çdo projekt ndërtohet për biznesin që përfaqëson, pa shabllone." },
 
   'process.eyebrow': { en: 'How it works', sq: 'Si punojmë' },
   'process.s1.title': { en: 'Conversation', sq: 'Biseda' },
-  'process.s1.body': {
-    en: "Tell us about your business and what you need — through the chat at the bottom of the page, email or WhatsApp. We reply within 24 hours.",
-    sq: 'Na tregoni për biznesin dhe çfarë ju duhet — përmes bisedës në fund të faqes, email-it apo WhatsApp-it. Përgjigjemi brenda 24 orësh.',
-  },
+  'process.s1.body': { en: "Tell us about your business and what you need.", sq: "Na tregoni për biznesin dhe çfarë ju duhet." },
   'process.s2.title': { en: 'Proposal', sq: 'Oferta' },
   'process.s2.body': {
     en: 'We send you a clear proposal: what we will build, the timeline and the price — before any work starts.',
     sq: 'Ju dërgojmë një ofertë të qartë: çfarë do të ndërtojmë, afatin dhe çmimin — para se të fillojë puna.',
   },
   'process.s3.title': { en: 'Design & build', sq: 'Dizajni & ndërtimi' },
-  'process.s3.body': {
-    en: 'We create the identity and the website, show you the work along the way and refine it with your feedback.',
-    sq: 'Krijojmë identitetin dhe webfaqen, jua tregojmë punën gjatë rrugës dhe e përmirësojmë sipas komenteve tuaja.',
-  },
+  'process.s3.body': { en: "We show you the work along the way and refine it with your feedback.", sq: "Jua tregojmë punën gjatë rrugës dhe e përmirësojmë sipas komenteve tuaja." },
   'process.s4.title': { en: 'Launch & care', sq: 'Lansimi & kujdesi' },
-  'process.s4.body': {
-    en: 'We put the site live on fast, secure servers, then keep it updated, backed up and supported.',
-    sq: 'E publikojmë webfaqen në serverë të shpejtë e të sigurt, pastaj e mbajmë të përditësuar, me backup dhe mbështetje.',
-  },
 
   'faq.eyebrow': { en: 'Questions', sq: 'Pyetje' },
   'faq.q1': { en: 'How much does a website cost?', sq: 'Sa kushton një webfaqe?' },
-  'faq.a1': {
-    en: 'It depends on the project. Tell the little figure at the bottom of the page what you need, or write to us, and we send you a clear offer after we talk — no obligation.',
-    sq: 'Varet nga projekti. Tregoji figurës së vogël në fund të faqes çfarë të duhet, ose na shkruaj, dhe të dërgojmë një ofertë të qartë pas bisedës — pa asnjë obligim.',
-  },
+  'faq.a1': { en: "It depends on the project — no obligation.", sq: "Varet nga projekti — pa asnjë obligim." },
   'faq.q2': { en: 'How long does it take?', sq: 'Sa zgjat?' },
-  'faq.a2': {
-    en: 'A simple website takes less time than an online store or a booking system. We agree on an exact timeline together at the start.',
-    sq: 'Një webfaqe e thjeshtë merr më pak kohë se një dyqan online apo sistem rezervimesh. Afatin e saktë e caktojmë bashkë në fillim.',
-  },
+  'faq.a2': { en: "A simple website takes less time than an online store or a booking system.", sq: "Një webfaqe e thjeshtë merr më pak kohë se një dyqan online apo sistem rezervimesh." },
   'faq.q3': { en: 'Can I get only a logo, or only a website?', sq: 'A mund të marr vetëm logo, ose vetëm webfaqe?' },
-  'faq.a3': {
-    en: 'Yes. We can work on your brand, your website, or both — most projects benefit from doing them together.',
-    sq: 'Po. Mund të punojmë në brendin tuaj, në webfaqe, ose në të dyja — shumica e projekteve përfitojnë kur bëhen bashkë.',
-  },
-  'faq.q4': { en: 'Where is my website hosted?', sq: 'Ku hostohet webfaqja ime?' },
-  'faq.a4': {
-    en: 'On fast, secure servers that we manage for you, with SSL, backups and 24/7 monitoring.',
-    sq: 'Në serverë të shpejtë e të sigurt që i menaxhojmë ne për ju, me SSL, backup dhe monitorim 24/7.',
-  },
-  'faq.q5': { en: 'What happens after launch?', sq: 'Çfarë ndodh pas lansimit?' },
-  'faq.a5': {
-    en: "Our work doesn't end at launch — we keep providing updates, fixes, monitoring and support.",
-    sq: 'Puna jonë nuk përfundon me lansimin — vazhdojmë me përditësime, korrigjime, monitorim dhe mbështetje.',
-  },
+  'faq.a3': { en: "Yes. We can work on your brand, your website, or both.", sq: "Po. Mund të punojmë në brendin tuaj, në webfaqe, ose në të dyja." },
 
   'contact.eyebrow': { en: 'Get In Touch', sq: 'Na Kontaktoni' },
   'contact.h2': { en: "Let's build something that doesn't look like anything else.", sq: 'Le të ndërtojmë diçka që nuk i ngjan asgjë tjetër.' },
@@ -393,10 +337,7 @@ const translations = {
   'modal.sitelinkNote': { en: 'Live site — coming soon', sq: 'Faqja live — së shpejti' },
 
   'project.aurelia.tagline': { en: 'Jewelry, presented like art.', sq: 'Bizhuteri, të paraqitura si art.' },
-  'project.aurelia.description': {
-    en: 'Aurelia sells heirloom-grade jewelry to a generation raised on fast fashion. The site slows everything down: full-bleed compositions, warm cream and burgundy tones, and a single serif voice used with total consistency. Motion is slow and deliberate — pieces cross-fade like pages in a lookbook, never snap into place.',
-    sq: 'Aurelia shet bizhuteri të nivelit trashëgimor për një brez të rritur me modën e shpejtë. Faqja i ngadalëson të gjitha: kompozime që mbulojnë të gjithë ekranin, tone të ngrohta kremi dhe bordoje, dhe një zë të vetëm serif të përdorur me konsistencë të plotë. Lëvizja është e ngadaltë dhe e qëllimshme — pjesët kalojnë njëra në tjetrën si faqet e një katalogu, kurrë nuk kërcejnë në vend.',
-  },
+  'project.aurelia.description': { en: "Aurelia sells heirloom-grade jewelry to a generation raised on fast fashion. The site slows everything down: full-bleed compositions and warm cream and burgundy tones.", sq: "Aurelia shet bizhuteri të nivelit trashëgimor për një brez të rritur me modën e shpejtë. Faqja i ngadalëson të gjitha: kompozime që mbulojnë të gjithë ekranin dhe tone të ngrohta kremi dhe bordoje." },
   'project.aurelia.discipline': { en: 'Brand Identity, E-Commerce Design', sq: 'Identitet Brendi, Dizajn E-Commerce' },
   'project.aurelia.deliverables': { en: 'Visual Identity, Art Direction, Shopify Build', sq: 'Identitet Vizual, Drejtim Artistik, Ndërtim në Shopify' },
   'project.aurelia.highlight1': { en: 'Slow, deliberate motion — nothing snaps into place', sq: 'Lëvizje e ngadaltë dhe e qëllimshme — asgjë nuk kërcen në vend' },
@@ -404,10 +345,7 @@ const translations = {
   'project.aurelia.highlight3': { en: 'Built directly on Shopify', sq: 'Ndërtuar direkt në Shopify' },
 
   'project.pulse.tagline': { en: 'Websites that get companies seen.', sq: 'Faqe interneti që i nxjerrin kompanitë në pah.' },
-  'project.pulse.description': {
-    en: 'PULSE is the branch of NJORD that builds websites for companies. Its own site is set on a night street: a near-black sky, one warm amber light, and calm motion that guides the eye. Design, development, hosting and upkeep are explained in one place.',
-    sq: 'PULSE është dega e NJORD që krijon faqe interneti për kompani. Faqja e tij është vendosur në një rrugë nate: qiell pothuajse i zi, një dritë e vetme qelibar dhe lëvizje e qetë që udhëheq syrin. Dizajni, zhvillimi, hostimi dhe mirëmbajtja shpjegohen në një vend të vetëm.',
-  },
+  'project.pulse.description': { en: "PULSE is the branch of NJORD that builds them. Its own site is set on a night street.", sq: "PULSE është dega e NJORD që i ndërton ato. Faqja e tij është vendosur në një rrugë nate." },
   'project.pulse.discipline': { en: 'Brand Identity, Web Design, Front-End Build', sq: 'Identitet Brendi, Dizajn Web, Ndërtim Front-End' },
   'project.pulse.deliverables': { en: 'Brand Identity, Company Website, Front-End Build', sq: 'Identitet Brendi, Faqe Kompanie, Ndërtim Front-End' },
   'project.pulse.highlight1': { en: 'A night palette: near-black with one warm amber', sq: 'Paletë nate: pothuajse e zezë me një qelibar të ngrohtë' },
@@ -415,10 +353,7 @@ const translations = {
   'project.pulse.highlight3': { en: 'Fast and light, with motion that guides rather than distracts', sq: 'E shpejtë dhe e lehtë, me lëvizje që udhëheq në vend që të shpërqendrojë' },
 
   'project.meridian.tagline': { en: 'Trust, rendered as an interface.', sq: 'Besimi, i shprehur si ndërfaqe.' },
-  'project.meridian.description': {
-    en: 'Meridian turns market data into decisions. Every pixel earns its place: a strict grid, a single accent blue, and typography sized for scanning fast-moving numbers. We designed the system before we designed a single screen.',
-    sq: 'Meridian i shndërron të dhënat e tregut në vendime. Çdo piksel e fiton vendin e vet: një rrjetë strikte, një blu të vetme aksenti, dhe tipografi të përmasuar për të skanuar numra që lëvizin shpejt. Ne projektuam sistemin para se të projektonim qoftë edhe një ekran të vetëm.',
-  },
+  'project.meridian.description': { en: "Meridian turns market data into decisions. Every pixel earns its place, on a strict grid. We designed the system before we designed a single screen.", sq: "Meridian i shndërron të dhënat e tregut në vendime. Çdo piksel e fiton vendin e vet, në një rrjetë strikte. Ne projektuam sistemin para se të projektonim qoftë edhe një ekran të vetëm." },
   'project.meridian.discipline': { en: 'Product Design, UI System, Data Viz', sq: 'Dizajn Produkti, Sistem UI, Vizualizim të Dhënash' },
   'project.meridian.deliverables': { en: 'Design System, Dashboard UI, Chart Library', sq: 'Sistem Dizajni, UI Paneli, Bibliotekë Grafikësh' },
   'project.meridian.highlight1': { en: 'One accent blue, spent only where it matters', sq: 'Një blu e vetme aksenti, përdorur vetëm aty ku ka rëndësi' },
@@ -426,10 +361,7 @@ const translations = {
   'project.meridian.highlight3': { en: 'A single chart system, shared across every screen', sq: 'Një sistem i vetëm grafikësh, i ndarë në çdo ekran' },
 
   'project.metalium.tagline': { en: 'Steel, shown the way it is made.', sq: 'Çeliku, i paraqitur ashtu siç bëhet.' },
-  'project.metalium.description': {
-    en: 'METALIUM builds steel structures and metal fabrication projects, and its site had to feel as solid as the work. A black-and-bone page with a single signal red, full-bleed photography of the workshop and the weld, sparks that fly across the images, and a logo intro that plays once. The whole page runs in Albanian and English, with a steel weight calculator and a quote form next to the service list.',
-    sq: 'METALIUM ndërton konstruksione çeliku dhe projekte të përpunimit të metalit, dhe faqja e saj duhej të ndihej po aq e fortë sa puna. Një faqe në të zezë dhe të bardhë kocke me një të kuqe sinjali të vetme, fotografi që mbulojnë të gjithë ekranin nga punishtja dhe saldimi, shkëndija që fluturojnë mbi imazhet dhe një hyrje e logos që luhet vetëm një herë. E gjithë faqja funksionon në shqip dhe anglisht, me kalkulator peshe çeliku dhe formular oferte pranë listës së shërbimeve.',
-  },
+  'project.metalium.description': { en: "The site had to feel as solid as the work: full-bleed photography of the workshop and the weld, and a logo intro that plays once.", sq: "Faqja duhej të ndihej po aq e fortë sa puna: fotografi që mbulojnë të gjithë ekranin nga punishtja dhe saldimi, dhe një hyrje e logos që luhet vetëm një herë." },
   'project.metalium.discipline': { en: 'Web Design, Development, Digital Presence', sq: 'Dizajn Web, Zhvillim, Prezencë Digjitale' },
   'project.metalium.deliverables': { en: 'One-Page Site (AL/EN), Steel Weight Calculator, Quote Form', sq: 'Faqe Njëfaqëshe (SQ/EN), Kalkulator Peshe Çeliku, Formular Oferte' },
   'project.metalium.highlight1': { en: 'One signal red on black and bone, used sparingly', sq: 'Një e kuqe sinjali në të zezë dhe të bardhë kocke, e përdorur me kursim' },
@@ -437,10 +369,7 @@ const translations = {
   'project.metalium.highlight3': { en: 'A steel weight calculator built into the page', sq: 'Një kalkulator peshe çeliku i integruar në faqe' },
 
   'project.vyron.tagline': { en: 'Flooring, shown with restraint.', sq: 'Dyshemeja, e paraqitur me thjeshtësi.' },
-  'project.vyron.description': {
-    en: 'VYRON brings together premium materials, technical systems and professional execution on site, so its identity and its website had to feel exact. A charcoal, warm-white and bronze palette taken from the monogram, one typeface, long pauses between sections, and motion that stays calm: a V that draws itself, headlines that rise out of a mask, photographs that wipe in. The site runs in Albanian and English and lays out the ARDEX, Gerflor and HAFRO systems plainly, with a direct way to ask for a quote.',
-    sq: 'VYRON bashkon materiale premium, sisteme teknike dhe ekzekutim profesional në terren, ndaj identiteti dhe faqja e saj duhej të ndiheshin të sakta. Një paletë qymyr, e bardhë e ngrohtë dhe bronz e marrë nga monograma, një shkronjë e vetme, pauza të gjata mes seksioneve dhe lëvizje që mbetet e qetë: një V që vizaton veten, tituj që ngrihen nga një maskë, fotografi që shfaqen me një fshirje. Faqja funksionon në shqip dhe anglisht dhe i paraqet qartë sistemet ARDEX, Gerflor dhe HAFRO, me një mënyrë të drejtpërdrejtë për të kërkuar ofertë.',
-  },
+  'project.vyron.description': { en: "VYRON brings together premium materials, technical systems and professional execution on site, so its identity and its website had to feel exact. Long pauses between sections, headlines that rise out of a mask, photographs that wipe in. The site lays out the ARDEX, Gerflor and HAFRO systems plainly, with a direct way to ask for a quote.", sq: "VYRON bashkon materiale premium, sisteme teknike dhe ekzekutim profesional në terren, ndaj identiteti dhe faqja e saj duhej të ndiheshin të sakta. Pauza të gjata mes seksioneve, tituj që ngrihen nga një maskë, fotografi që shfaqen me një fshirje. Faqja i paraqet qartë sistemet ARDEX, Gerflor dhe HAFRO, me një mënyrë të drejtpërdrejtë për të kërkuar ofertë." },
   'project.vyron.discipline': { en: 'Web Design, Development, Digital Presence', sq: 'Dizajn Web, Zhvillim, Prezencë Digjitale' },
   'project.vyron.deliverables': { en: 'Logo & Brand Manual, Brand Applications, One-Page Site (AL/EN)', sq: 'Logo dhe Manual Brendi, Aplikime të Brendit, Faqe Njëfaqëshe (SQ/EN)' },
   'project.vyron.highlight1': { en: 'Bronze on charcoal, taken straight from the monogram', sq: 'Bronz mbi qymyr, marrë drejt nga monograma' },
@@ -459,20 +388,14 @@ const translations = {
   'modal.results': { en: 'Results', sq: 'Rezultatet e matura' },
   'studio.chain.aria': { en: 'The NJORD process, from brand to support', sq: 'Procesi i NJORD, nga brendi deri te mbështetja' },
   'studio.chain.brand': { en: 'Brand', sq: 'Brendi' },
-  'studio.chain.brand.note': { en: 'Logo, colour, typography', sq: 'Logo, ngjyra, tipografi' },
   'studio.chain.design': { en: 'Design', sq: 'Dizajni' },
-  'studio.chain.design.note': { en: 'The site and the experience', sq: 'Faqja dhe përvoja' },
   'studio.chain.dev': { en: 'Development', sq: 'Zhvillimi' },
-  'studio.chain.dev.note': { en: 'Built to order, no templates', sq: 'Ndërtuar sipas porosisë, pa shabllone' },
   'studio.chain.hosting': { en: 'Hosting', sq: 'Hostingu' },
-  'studio.chain.hosting.note': { en: 'Managed servers', sq: 'Serverë të menaxhuar' },
   'studio.chain.support': { en: 'Support', sq: 'Mbështetja' },
-  'studio.chain.support.note': { en: 'Updates and monitoring', sq: 'Përditësime dhe monitorim' },
-  'studio.chain.summary': { en: 'You don\'t need separate designers, developers, hosting providers and tech support. NJORD carries the whole digital process, from idea to launch and beyond.', sq: 'Nuk keni nevojë për dizajner, zhvillues, hosting dhe mbështetje teknike të ndarë. NJORD e bart gjithë procesin digjital, nga ideja deri te lansimi dhe më tej.' },
   'faq.q6': { en: 'Can you redesign the website we already have?', sq: 'A mund ta ridizajnoni webfaqen që e kemi?' },
   'faq.a6': { en: 'Yes. We can redesign or rebuild your existing website, keeping what still works and improving the rest.', sq: 'Po. Mund ta ridizajnojmë ose rindërtojmë webfaqen tuaj ekzistuese, duke ruajtur pjesët që ende funksionojnë dhe duke përmirësuar pjesën tjetër.' },
   'faq.q7': { en: 'We don\'t have a visual identity. Can we start from zero?', sq: 'Nuk kemi identitet vizual. A mund të fillojmë nga zero?' },
-  'faq.a7': { en: 'Yes. NJORD can build the visual identity and the digital presence from the start, so everything works as one system.', sq: 'Po. NJORD mund ta ndërtojë identitetin vizual dhe prezencën digjitale nga fillimi, në mënyrë që gjithçka të funksionojë si një sistem i vetëm.' },
+  'faq.a7': { en: "Yes. We can build the visual identity and the digital presence from the start.", sq: "Po. NJORD mund ta ndërtojë identitetin vizual dhe prezencën digjitale nga fillimi." },
   'clients.eyebrow': { en: 'Collaborations', sq: 'Bashkëpunime' },
 };
 

@@ -2166,4 +2166,4 @@ body.modal-open{ overflow: hidden; }
 .clients-list{ list-style: none; display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem 3rem; margin: 1.2rem 0 0; padding: 0; }
 .clients-list img{ display: block; height: clamp(28px, 4vw, 44px); width: auto; max-width: 60vw; filter: grayscale(1); opacity: .8; }
 
-.studio-chain__summary + .studio-copy{ margin-top: clamp(2rem, 5vw, 3rem); }
+.studio-chain + .studio-copy{ margin-top: clamp(2rem, 5vw, 3rem); }
