@@ -23,6 +23,11 @@ const INTEREST_OPTIONS = [
   { value: 'not-sure', labelKey: 'convo.s3.opt5' },
 ];
 
+// Visitor-facing price estimate is switched OFF. The estimate step, pricing.js
+// and all the maths are kept intact; flip to true to bring it back.
+// The internal estimate is still computed and sent to the studio with the lead.
+const SHOW_ESTIMATE = false;
+
 // ---- instant estimate ------------------------------------------------
 // Scope questions that only appear when they apply (see `when` on the
 // steps below). Written for someone who has never thought about how a
@@ -140,7 +145,7 @@ const STEPS = [
   { key: 'audience', type: 'choice', promptKeys: ['convo.s5.prompt'], options: AUDIENCE_OPTIONS, required: true },
   // the price, shown BEFORE asking who they are — no contact details
   // required to see it (deliberate: trust first, see HANDOFF.md)
-  { key: 'estimate', type: 'estimate', promptKeys: ['convo.estimate.prompt'], when: (a) => wantsBrand(a) || wantsSite(a) },
+  { key: 'estimate', type: 'estimate', promptKeys: ['convo.estimate.prompt'], when: (a) => SHOW_ESTIMATE && (wantsBrand(a) || wantsSite(a)) },
   { key: 'contact', type: 'contact', promptKeys: ['convo.s14.prompt1', 'convo.s14.prompt2'], required: true },
   { key: 'additionalNotes', type: 'textarea', promptKeys: ['convo.s15.prompt'], optional: true },
 ];
@@ -614,7 +619,7 @@ export function initMascotConvo(container, opts = {}){
       `Branding scope: ${p.brandScope || '—'}`,
       `Website type: ${p.siteType || '—'}`,
       `Extras: ${p.features || '—'}`,
-      `Estimate shown to visitor: ${p.estimateShown}`,
+      `Internal estimate (NOT shown to visitor): ${p.estimateShown}`,
       `  Starter tier: ${p.estimateStarter || '—'}`,
       `  Mainstream tier: ${p.estimateMainstream || '—'}`,
       `  Priced items: ${p.estimateItems || '—'}`,

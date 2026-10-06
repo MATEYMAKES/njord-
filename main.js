@@ -10,7 +10,15 @@ import { GenerativeAudio } from './audio-engine-a2.js'; // A2 (lighter) — A1 k
 import { t, getLang, setLang, applyStaticTranslations, onLangChange } from './i18n.js';
 import { initMascotConvo } from './mascot-convo.js';
 import { initIdentity } from './identity.js';
+import {
+  PROJECTS_DATA, publishedProjects, renderWorkLists, renderClientProof,
+  fillCaseStudy, applyProjectMeta, restoreProjectMeta,
+} from './projects.js';
 
+/* Project rows are built from projects.js (the single source of truth)
+   before translations run and before anything below queries them. */
+renderWorkLists();
+renderClientProof();
 applyStaticTranslations(getLang());
 
 /* "Logo — Paleta e ngjyrave — Tipografia — …" lines under each service:
@@ -96,6 +104,13 @@ const heroWord = document.querySelector('.hero-word');
 const organismCanvas = document.getElementById('ascii-organism');
 let organism = null;
 
+/* One scroll zone per published project, in the order the rows appear on
+   the page (real client work first, then concepts). */
+const WORK_ZONES = publishedProjects().filter((p) => p.formation).map((p) => ({
+  name: p.formation,
+  el: document.querySelector(`.work-row[data-project="${p.slug}"], .work-preview-row[data-project="${p.slug}"]`),
+}));
+
 if(organismCanvas){
   organism = new AsciiOrganism(organismCanvas, { getInkColor: inkColor });
   organism.setZones([
@@ -109,11 +124,7 @@ if(organismCanvas){
     // lighter stand-in on index.html's own Work section — whichever
     // exists on the current page is what gets picked up here, so both
     // pages' project rows get their matching formation anchored to them.
-    { name: 'diamond', el: document.querySelector('.work-row[data-project="aurelia"], .work-preview-row[data-project="aurelia"]') },
-    { name: 'wave', el: document.querySelector('.work-row[data-project="pulse"], .work-preview-row[data-project="pulse"]') },
-    { name: 'network', el: document.querySelector('.work-row[data-project="meridian"], .work-preview-row[data-project="meridian"]') },
-    { name: 'sparks', el: document.querySelector('.work-row[data-project="metalium"], .work-preview-row[data-project="metalium"]') },
-    { name: 'vee', el: document.querySelector('.work-row[data-project="vyron"], .work-preview-row[data-project="vyron"]') },
+    ...WORK_ZONES,
     // 'roadmap'/#services and 'constellation'/#studio are currently
     // hidden (see index.html) — their zones are deliberately not
     // registered while that's true, since a hidden element's layout
@@ -126,7 +137,7 @@ if(organismCanvas){
   // (see AsciiOrganism.setFocus). Touch devices keep scroll mode — the
   // stacked mobile layout is tall enough to scroll each row through.
   if(isFinePointer && document.body.classList.contains('work-page')){
-    const FORMATION = { aurelia: 'diamond', pulse: 'wave', meridian: 'network', metalium: 'sparks', vyron: 'vee' };
+    const FORMATION = Object.fromEntries(PROJECTS_DATA.filter((p) => p.formation).map((p) => [p.slug, p.formation]));
     const rows = Array.from(document.querySelectorAll('.work-row'));
     rows.forEach((row) => {
       const name = FORMATION[row.dataset.project];
@@ -381,13 +392,9 @@ if(roadmapNodesEl && organism && servicesSection && !servicesSection.hidden){
    pulled from i18n.js per current language via projectCopy() below,
    so the modal — including one already open — can be re-rendered on
    a language switch without needing its own duplicated data here. */
-const PROJECTS = {
-  aurelia: { title: 'Aurelia', year: '2025', burstColor: '#C8102E', modalClass: 'project-modal--aurelia' },
-  pulse: { title: 'PULSE', year: '2026', burstColor: '#F1C27C', modalClass: 'project-modal--pulse' },
-  meridian: { title: 'Meridian', year: '2025', burstColor: '#1F4C78', modalClass: 'project-modal--meridian' },
-  metalium: { title: 'METALIUM', year: '2026', burstColor: '#FF0013', modalClass: 'project-modal--metalium' },
-  vyron: { title: 'VYRON', year: '2026', burstColor: '#8B5A2B', modalClass: 'project-modal--vyron' },
-};
+const PROJECTS = Object.fromEntries(PROJECTS_DATA.map((p) => [p.slug, {
+  title: p.name, year: p.year, burstColor: p.burstColor, modalClass: p.modalClass, type: p.type,
+}]));
 function projectCopy(key){
   return {
     tagline: t(`project.${key}.tagline`),
@@ -593,8 +600,10 @@ function showModal(key, project, cx, cy){
   currentProject = project;
   currentKey = key;
   const copy = projectCopy(key);
+  fillCaseStudy(modal, key, getLang());
+  applyProjectMeta(key, getLang());
   modal.className = `project-modal ${project.modalClass}`;
-  modal.querySelector('.project-modal__eyebrow').textContent = `${t('modal.concept')} — ${project.title}`.toUpperCase();
+  modal.querySelector('.project-modal__eyebrow').textContent = `${t(project.type === 'CLIENT' ? 'modal.client' : 'modal.concept')} — ${project.title}`.toUpperCase();
   modal.querySelector('.project-modal__title').textContent = project.title;
   modal.querySelector('.project-modal__tag').textContent = copy.tagline;
   modal.querySelector('.project-modal__desc').textContent = copy.description;
@@ -639,6 +648,7 @@ function closeProject(clickX, clickY){
   modal.removeEventListener('keydown', onModalKeydown);
   if(organism && currentProject) organism.unburst(currentProject.burstColor);
   stopPortrait();
+  restoreProjectMeta();
   currentKey = null;
 
   // the circle now collapses toward wherever the NJORD wordmark was
@@ -722,7 +732,7 @@ if(processLink && !document.body.classList.contains('work-page')){
 }
 
 /* Projects with a hosted showcase copy; the rest keep the coming-soon note. */
-const SHOWCASE_URL = { aurelia: 'aurelia-showcase/', meridian: 'meridian-showcase/', pulse: 'pulse-showcase/', metalium: 'metalium-showcase/', vyron: 'vyron-showcase/' };
+const SHOWCASE_URL = Object.fromEntries(PROJECTS_DATA.filter((p) => p.liveUrl).map((p) => [p.slug, p.liveUrl]));
 const siteLink = modal ? modal.querySelector('.project-modal__sitelink') : null;
 if(siteLink){
   siteLink.addEventListener('click', (e) => {
@@ -748,6 +758,8 @@ onLangChange(() => {
   }
   if(currentKey && !modal.hidden){
     const copy = projectCopy(currentKey);
+    fillCaseStudy(modal, currentKey, getLang());
+    applyProjectMeta(currentKey, getLang());
     modal.querySelector('.project-modal__tag').textContent = copy.tagline;
     modal.querySelector('.project-modal__desc').textContent = copy.description;
     modal.querySelector('[data-meta="discipline"]').textContent = copy.discipline;
@@ -762,7 +774,7 @@ onLangChange(() => {
    of that project's own formation (diamond/wave/network), drawn faint
    and behind the text in the page's own ink color, so it reads as a
    watermark texture rather than a separate, unrelated decorative graphic. */
-const PORTRAIT_FORMATION = { aurelia: 'diamond', pulse: 'wave', meridian: 'network', metalium: 'sparks', vyron: 'vee' };
+const PORTRAIT_FORMATION = Object.fromEntries(PROJECTS_DATA.filter((p) => p.formation).map((p) => [p.slug, p.formation]));
 const portraits = {};
 Object.keys(PORTRAIT_FORMATION).forEach((key) => {
   const canvas = document.getElementById(`${key}-visual`);
@@ -958,3 +970,15 @@ if(mascotHit && organism){
     if(e.key >= '1' && e.key <= '3') organism.triggerMascotIdleRoutine(Number(e.key));
   });
 }
+
+/* "One studio" chain: the five stages ease in one after another the first
+   time the chain scrolls into view (instantly with reduced motion). */
+(function initStudioChain(){
+  const chain = document.querySelector('.studio-chain');
+  if(!chain) return;
+  if(prefersReducedMotion() || !('IntersectionObserver' in window)){ chain.classList.add('is-in'); return; }
+  const io = new IntersectionObserver(([entry]) => {
+    if(entry.isIntersecting){ chain.classList.add('is-in'); io.disconnect(); }
+  }, { threshold: 0.25 });
+  io.observe(chain);
+})();

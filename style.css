@@ -2075,3 +2075,95 @@ body.modal-open{ overflow: hidden; }
     letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint);
   }
 }
+
+/* ================================================================
+   Portfolio: real client work vs concepts, one-studio chain,
+   case-study blocks, client proof
+   ================================================================ */
+.work-group + .work-group{ margin-top: clamp(3.5rem, 9vw, 7rem); }
+.work-group__head{
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end;
+  gap: 1rem 3rem; padding-bottom: clamp(1.2rem, 3vw, 2rem);
+}
+.work-group__note{ font-family: var(--f-mono); font-size: var(--fs-small); color: var(--ink-soft); max-width: 44ch; }
+.work-preview-row__industry, .work-row__industry{
+  display: block; margin-top: .55em;
+  font-family: var(--f-mono); font-size: var(--fs-micro); letter-spacing: .1em;
+  text-transform: uppercase; color: var(--signal-text);
+}
+/* real client work reads larger than the concepts below it */
+.work-group--client .work-preview-row__title{ font-size: clamp(2rem, 4.8vw, 3.6rem); }
+.work-group--client .work-row__title{ font-size: clamp(2.2rem, 5.4vw, 4rem); }
+.work-group--concepts .work-preview-row__title{ font-size: clamp(1.3rem, 2.8vw, 2rem); }
+.work-group--concepts .work-row__title{ font-size: clamp(1.7rem, 4vw, 2.6rem); }
+.work-group--concepts .work-preview-row{ padding-block: clamp(1rem, 2.6vw, 1.7rem); }
+
+/* hero: business outcome first, then what NJORD does */
+.hero-descriptor .hero-outcome{ display: block; color: var(--ink); font-weight: 450; }
+.hero-descriptor .hero-support{ display: block; margin-top: .9em; font-size: .82em; color: var(--ink-soft); max-width: 46ch; }
+
+/* one studio: brand > design > development > hosting > support */
+.studio-chain{
+  list-style: none; margin: clamp(2rem, 5vw, 3.5rem) 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0 clamp(.75rem, 2vw, 1.5rem);
+}
+.studio-chain__step{
+  position: relative; border-top: 1px solid var(--line-strong);
+  padding: 1rem .5rem 0 0; min-width: 0;
+  opacity: 0; transform: translateY(10px);
+  transition: opacity .7s var(--ease-out), transform .7s var(--ease-out);
+}
+.studio-chain__step::before{
+  content: ""; position: absolute; top: -3px; left: 0; width: 5px; height: 5px; background: var(--signal);
+}
+.studio-chain__step:not(:last-child)::after{
+  content: "\2192"; position: absolute; top: -.95em; right: .4rem;
+  font-family: var(--f-mono); font-size: var(--fs-small); color: var(--ink-faint); background: var(--paper); padding-left: .3em;
+}
+.studio-chain.is-in .studio-chain__step{ opacity: 1; transform: none; }
+.studio-chain.is-in .studio-chain__step:nth-child(2){ transition-delay: .14s; }
+.studio-chain.is-in .studio-chain__step:nth-child(3){ transition-delay: .28s; }
+.studio-chain.is-in .studio-chain__step:nth-child(4){ transition-delay: .42s; }
+.studio-chain.is-in .studio-chain__step:nth-child(5){ transition-delay: .56s; }
+.studio-chain__num{ display: block; font-family: var(--f-mono); font-size: var(--fs-micro); color: var(--signal-text); letter-spacing: .1em; }
+.studio-chain__label{
+  display: block; margin-top: .45rem;
+  font-family: var(--f-display); font-weight: 400; text-transform: uppercase; letter-spacing: .04em;
+  font-size: clamp(1rem, 1.9vw, 1.5rem); overflow-wrap: anywhere;
+}
+.studio-chain__note{ display: block; margin-top: .4rem; font-family: var(--f-mono); font-size: var(--fs-micro); line-height: 1.5; color: var(--ink-soft); }
+.studio-chain__summary{ margin-top: clamp(1.5rem, 3vw, 2.2rem); max-width: 56ch; color: var(--ink-soft); font-size: var(--fs-body); line-height: 1.55; }
+@media (max-width: 900px){
+  .studio-chain{ grid-template-columns: 1fr; }
+  .studio-chain__step{ display: grid; grid-template-columns: 2.5rem 1fr; column-gap: .5rem; padding: .9rem 1.6rem .9rem 0; }
+  .studio-chain__note{ grid-column: 2; margin-top: .2rem; }
+  .studio-chain__step:not(:last-child)::after{ content: "\2193"; top: auto; bottom: .7rem; right: 0; background: none; padding: 0; }
+}
+@media (prefers-reduced-motion: reduce){
+  .studio-chain__step{ opacity: 1; transform: none; transition: none; }
+}
+
+/* case-study blocks inside the project modal (only filled when data exists) */
+.project-modal__case{ margin-top: 2rem; display: grid; gap: 1.4rem; max-width: 52ch; }
+.project-modal__case[hidden]{ display: none; }
+.project-modal__case-label{
+  font-family: var(--f-mono); font-size: var(--fs-micro); letter-spacing: .14em; text-transform: uppercase;
+  font-weight: 400; opacity: .6; margin-bottom: .45em;
+}
+.project-modal__case-block p, .project-modal__case-block li{ font-size: .98rem; line-height: 1.6; opacity: .85; }
+.project-modal__case-block ul{ list-style: none; padding: 0; margin: 0; display: grid; gap: .35rem; }
+.project-modal__media img{ display: block; width: 100%; height: auto; }
+.project-modal__quote blockquote{ font-size: 1.15rem; line-height: 1.5; }
+.project-modal__quote figcaption{
+  margin-top: .6rem; font-family: var(--f-mono); font-size: var(--fs-micro);
+  letter-spacing: .1em; text-transform: uppercase; opacity: .65;
+}
+.project-modal__quote img{ width: 44px; height: 44px; object-fit: cover; margin-bottom: .8rem; display: block; }
+
+/* client proof strip: hidden until real logos are supplied (see projects.js) */
+.clients[hidden]{ display: none; }
+.clients{ padding-block: clamp(2.5rem, 6vw, 4rem); }
+.clients-list{ list-style: none; display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem 3rem; margin: 1.2rem 0 0; padding: 0; }
+.clients-list img{ display: block; height: clamp(28px, 4vw, 44px); width: auto; max-width: 60vw; filter: grayscale(1); opacity: .8; }
+
+.studio-chain__summary + .studio-copy{ margin-top: clamp(2rem, 5vw, 3rem); }

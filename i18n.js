@@ -18,7 +18,7 @@ const translations = {
   'nav.studio': { en: 'Studio', sq: 'Studio' },
   'nav.services': { en: 'Services', sq: 'Shërbimet' },
   'nav.contact': { en: 'Contact', sq: 'Kontakt' },
-  'nav.start': { en: 'Get a quote', sq: 'Merr një ofertë' },
+  'nav.start': { en: 'Start a project', sq: 'Nis një projekt' },
   'nav.toggleAria': { en: 'Toggle navigation menu', sq: 'Ndrysho menynë e navigimit' },
 
   'skip.link': { en: 'Skip to content', sq: 'Kalo te përmbajtja' },
@@ -30,12 +30,9 @@ const translations = {
   'logo.ariaLabel': { en: 'NJORD — back to top', sq: 'NJORD — kthehu në krye' },
 
   'hero.eyebrow': { en: 'Web & Branding Studio', sq: 'Studio Web & Brendi' },
-  'hero.descriptor': {
-    en: 'Websites and brand identities for businesses in Kosovo — designed, built, hosted and looked after by one studio in Prishtinë.',
-    sq: 'Dizajnojmë dhe zhvillojmë webfaqe, ndërtojmë identitete vizuale dhe krijojmë brende që dallohen — për bizneset në Kosovë, prej idesë së parë deri te lansimi.',
-  },
+  'hero.descriptor': { en: '<span class="hero-outcome">Your business deserves to look as good online as it does in person.</span><span class="hero-support">We design identities and build digital experiences for businesses that want to stand out.</span>', sq: '<span class="hero-outcome">Biznesi juaj meriton të duket aq mirë online sa duket në realitet.</span><span class="hero-support">Dizajnojmë identitete dhe ndërtojmë eksperienca digjitale për bizneset që duan të dallohen.</span>' },
   'hero.scroll': { en: 'Scroll', sq: 'Zbrit' },
-  'hero.cta': { en: 'Get a quote', sq: 'Merr një ofertë' },
+  'hero.cta': { en: 'Start a project', sq: 'Nis një projekt' },
 
   'identity.eyebrow': { en: 'Identity', sq: 'Identiteti' },
   'identity.word1': { en: 'We create', sq: 'Krijojmë' },
@@ -85,12 +82,9 @@ const translations = {
   },
 
   'work.cta': { en: 'See more', sq: 'Shiko më shumë' },
-  'work.eyebrow': { en: 'Concept Work — 05 Projects', sq: 'Projekte Koncept — 05 Projekte' },
-  'work.h2': { en: 'Five worlds, five languages.', sq: 'Pesë botë, pesë gjuhë.' },
-  'work.note': {
-    en: 'Concept projects that show how we think and what we can build — each with its own design, character and experience. Client work is added here as it launches.',
-    sq: 'Projekte koncept që tregojnë si mendojmë dhe çfarë mund të ndërtojmë — secili me dizajn, karakter dhe përvojë të vetën. Punët me klientë shtohen këtu sapo të lansohen.',
-  },
+  'work.eyebrow': { en: 'Selected Work', sq: 'Punë të përzgjedhura' },
+  'work.h2': { en: 'Real work. Real businesses.', sq: 'Punë reale. Biznese reale.' },
+  'work.note': { en: 'Projects built for real clients. Our own creative concepts are listed separately below.', sq: 'Projekte të ndërtuara për klientë realë. Konceptet tona krijuese janë të ndara më poshtë.' },
   'work.enter': { en: 'Enter', sq: 'Hyr' },
 
   'work.aurelia.aria': { en: 'Enter Aurelia project', sq: 'Hyr te projekti Aurelia' },
@@ -125,18 +119,12 @@ const translations = {
     en: 'A one-page site for a steel and metal fabrication company: bold, industrial, with a steel weight calculator built in.',
     sq: 'Një faqe njëfaqëshe për një kompani konstruksionesh çeliku dhe përpunimi metali: e fortë, industriale, me kalkulator peshe çeliku të integruar.',
   },
-  'work.metalium.tag1': { en: 'Web Design', sq: 'Dizajn Web' },
-  'work.metalium.tag2': { en: 'Bilingual Site', sq: 'Faqe Dygjuhëshe' },
-  'work.metalium.tag3': { en: 'Steel Calculator', sq: 'Kalkulator Çeliku' },
 
   'work.vyron.aria': { en: 'Enter VYRON project', sq: 'Hyr te projekti VYRON' },
   'work.vyron.desc': {
     en: 'Brand identity and website for an advanced flooring company: bronze on charcoal, calm motion, systems from ARDEX, Gerflor and HAFRO.',
     sq: 'Identiteti i brendit dhe faqja për një kompani dyshemesh të avansuara: bronz mbi qymyr, lëvizje e qetë, sisteme nga ARDEX, Gerflor dhe HAFRO.',
   },
-  'work.vyron.tag1': { en: 'Brand Identity', sq: 'Identitet Brendi' },
-  'work.vyron.tag2': { en: 'Web Design', sq: 'Dizajn Web' },
-  'work.vyron.tag3': { en: 'One-Page Site', sq: 'Faqe Njëfaqëshe' },
 
   'services.eyebrow': { en: 'Capabilities', sq: 'Aftësitë' },
   'services.h2': { en: 'What we do.', sq: 'Çfarë bëjmë.' },
@@ -171,7 +159,7 @@ const translations = {
   },
 
   'studio.eyebrow': { en: 'Studio', sq: 'Studio' },
-  'studio.h2': { en: 'One studio in Prishtinë, from idea to launch.', sq: 'Një studio në Prishtinë, prej idesë deri te lansimi.' },
+  'studio.h2': { en: 'One studio. From idea to launch.', sq: 'Një studio. Nga ideja deri te lansimi.' },
   'studio.p1': {
     en: 'NJORD is a web and branding studio based in Prishtinë. We design and build websites, create visual identities, and make sure everything keeps working long after launch.',
     sq: 'NJORD është studio për web dhe branding me bazë në Prishtinë. Dizajnojmë dhe ndërtojmë webfaqe, krijojmë identitete vizuale dhe kujdesemi që gjithçka të funksionojë edhe shumë pas lansimit.',
@@ -206,8 +194,8 @@ const translations = {
   'faq.eyebrow': { en: 'Questions', sq: 'Pyetje' },
   'faq.q1': { en: 'How much does a website cost?', sq: 'Sa kushton një webfaqe?' },
   'faq.a1': {
-    en: 'It depends on the project. Answer a few questions from the little figure at the bottom of the page and he gives you an instant estimate; the exact price comes in our offer after we talk — no obligation.',
-    sq: 'Varet nga projekti. Përgjigju disa pyetjeve të figurës në fund të faqes dhe ajo të jep një vlerësim të menjëhershëm; çmimin e saktë e merr në ofertën tonë pas bisedës — pa asnjë obligim.',
+    en: 'It depends on the project. Tell the little figure at the bottom of the page what you need, or write to us, and we send you a clear offer after we talk — no obligation.',
+    sq: 'Varet nga projekti. Tregoji figurës së vogël në fund të faqes çfarë të duhet, ose na shkruaj, dhe të dërgojmë një ofertë të qartë pas bisedës — pa asnjë obligim.',
   },
   'faq.q2': { en: 'How long does it take?', sq: 'Sa zgjat?' },
   'faq.a2': {
@@ -237,14 +225,14 @@ const translations = {
   'contact.meta': {
     // {q} and {y} are filled in with the visitor's current quarter and
     // year at render time (see fillTokens below), so this never goes stale.
-    en: 'Based in Prishtinë, Kosovo.<br>Currently booking Q{q} {y}.<br>Replies within 24 hours.',
-    sq: 'Me bazë në Prishtinë, Kosovë.<br>Aktualisht duke rezervuar T{q} {y}.<br>Përgjigjemi brenda 24 orësh.',
+    en: 'Based in Prishtinë, Kosovo.<br>Now accepting new projects for Q{q} {y}.<br>Replies within 24 hours.',
+    sq: 'Me bazë në Prishtinë, Kosovë.<br>Po pranojmë projekte të reja për T{q} {y}.<br>Përgjigjemi brenda 24 orësh.',
   },
   'mascot.ariaLabel': {
     en: "A small figure formed from the page's own characters",
     sq: 'Një figurë e vogël e formuar nga vetë karakteret e faqes',
   },
-  'mascot.hint': { en: 'get a quote', sq: 'merr një ofertë' },
+  'mascot.hint': { en: 'start a project', sq: 'nis një projekt' },
 
   // Mascot conversation — a guided, conversational project intake that
   // opens when the mascot is clicked. See mascot-convo.js. Same
@@ -259,7 +247,7 @@ const translations = {
   'convo.requiredNote': { en: "Just need this one before we continue.", sq: 'Kjo më duhet para se të vazhdojmë.' },
 
   'convo.open.line1': { en: 'oh, hey.', sq: 'hej.' },
-  'convo.open.line2': { en: "got something in mind? i'll tell you what it costs.", sq: 'ke diçka në mendje? të them edhe sa kushton.' },
+  'convo.open.line2': { en: "got something in mind? tell me about it.", sq: 'ke diçka në mendje? më trego.' },
   'convo.open.project': { en: 'yeah, i have a project', sq: 'po, kam një projekt' },
   'convo.open.justLooking': { en: 'just looking', sq: 'vetëm po shikoj' },
   'convo.justLooking.reply': {
@@ -442,7 +430,7 @@ const translations = {
     en: 'METALIUM builds steel structures and metal fabrication projects, and its site had to feel as solid as the work. A black-and-bone page with a single signal red, full-bleed photography of the workshop and the weld, sparks that fly across the images, and a logo intro that plays once. The whole page runs in Albanian and English, with a steel weight calculator and a quote form next to the service list.',
     sq: 'METALIUM ndërton konstruksione çeliku dhe projekte të përpunimit të metalit, dhe faqja e saj duhej të ndihej po aq e fortë sa puna. Një faqe në të zezë dhe të bardhë kocke me një të kuqe sinjali të vetme, fotografi që mbulojnë të gjithë ekranin nga punishtja dhe saldimi, shkëndija që fluturojnë mbi imazhet dhe një hyrje e logos që luhet vetëm një herë. E gjithë faqja funksionon në shqip dhe anglisht, me kalkulator peshe çeliku dhe formular oferte pranë listës së shërbimeve.',
   },
-  'project.metalium.discipline': { en: 'Web Design, Front-End Build', sq: 'Dizajn Web, Zhvillim Front-End' },
+  'project.metalium.discipline': { en: 'Web Design, Development, Digital Presence', sq: 'Dizajn Web, Zhvillim, Prezencë Digjitale' },
   'project.metalium.deliverables': { en: 'One-Page Site (AL/EN), Steel Weight Calculator, Quote Form', sq: 'Faqe Njëfaqëshe (SQ/EN), Kalkulator Peshe Çeliku, Formular Oferte' },
   'project.metalium.highlight1': { en: 'One signal red on black and bone, used sparingly', sq: 'Një e kuqe sinjali në të zezë dhe të bardhë kocke, e përdorur me kursim' },
   'project.metalium.highlight2': { en: 'Sparks that fly across the workshop photography', sq: 'Shkëndija që fluturojnë mbi fotografitë e punishtes' },
@@ -453,11 +441,39 @@ const translations = {
     en: 'VYRON brings together premium materials, technical systems and professional execution on site, so its identity and its website had to feel exact. A charcoal, warm-white and bronze palette taken from the monogram, one typeface, long pauses between sections, and motion that stays calm: a V that draws itself, headlines that rise out of a mask, photographs that wipe in. The site runs in Albanian and English and lays out the ARDEX, Gerflor and HAFRO systems plainly, with a direct way to ask for a quote.',
     sq: 'VYRON bashkon materiale premium, sisteme teknike dhe ekzekutim profesional në terren, ndaj identiteti dhe faqja e saj duhej të ndiheshin të sakta. Një paletë qymyr, e bardhë e ngrohtë dhe bronz e marrë nga monograma, një shkronjë e vetme, pauza të gjata mes seksioneve dhe lëvizje që mbetet e qetë: një V që vizaton veten, tituj që ngrihen nga një maskë, fotografi që shfaqen me një fshirje. Faqja funksionon në shqip dhe anglisht dhe i paraqet qartë sistemet ARDEX, Gerflor dhe HAFRO, me një mënyrë të drejtpërdrejtë për të kërkuar ofertë.',
   },
-  'project.vyron.discipline': { en: 'Brand Identity, Web Design, Front-End Build', sq: 'Identitet Brendi, Dizajn Web, Zhvillim Front-End' },
+  'project.vyron.discipline': { en: 'Web Design, Development, Digital Presence', sq: 'Dizajn Web, Zhvillim, Prezencë Digjitale' },
   'project.vyron.deliverables': { en: 'Logo & Brand Manual, Brand Applications, One-Page Site (AL/EN)', sq: 'Logo dhe Manual Brendi, Aplikime të Brendit, Faqe Njëfaqëshe (SQ/EN)' },
   'project.vyron.highlight1': { en: 'Bronze on charcoal, taken straight from the monogram', sq: 'Bronz mbi qymyr, marrë drejt nga monograma' },
   'project.vyron.highlight2': { en: 'A V that draws itself, then gets out of the way', sq: 'Një V që vizaton veten, pastaj tërhiqet' },
   'project.vyron.highlight3': { en: 'Montserrat in two weights, light and bold', sq: 'Montserrat në dy peshë, e lehtë dhe e trashë' },
+  'work.concepts.eyebrow': { en: 'Concepts / Experiments', sq: 'Koncepte / Eksperimente' },
+  'work.concepts.note': { en: 'Our own projects, not real clients. They show our creative range.', sq: 'Projekte tonat, jo klientë realë. Tregojnë gamën tonë krijuese.' },
+  'work.development.eyebrow': { en: 'In development', sq: 'Në zhvillim' },
+  'work.development.note': { en: 'Real projects currently being built.', sq: 'Projekte reale që po ndërtohen aktualisht.' },
+  'modal.client': { en: 'Client work', sq: 'Punë me klient' },
+  'modal.industry': { en: 'Industry', sq: 'Industria' },
+  'modal.about': { en: 'The client', sq: 'Klienti' },
+  'modal.challenge': { en: 'The challenge', sq: 'Sfida' },
+  'modal.solution': { en: 'What NJORD built', sq: 'Çfarë ndërtoi NJORD' },
+  'modal.features': { en: 'Technical features', sq: 'Veçoritë teknike' },
+  'modal.results': { en: 'Results', sq: 'Rezultatet e matura' },
+  'studio.chain.aria': { en: 'The NJORD process, from brand to support', sq: 'Procesi i NJORD, nga brendi deri te mbështetja' },
+  'studio.chain.brand': { en: 'Brand', sq: 'Brendi' },
+  'studio.chain.brand.note': { en: 'Logo, colour, typography', sq: 'Logo, ngjyra, tipografi' },
+  'studio.chain.design': { en: 'Design', sq: 'Dizajni' },
+  'studio.chain.design.note': { en: 'The site and the experience', sq: 'Faqja dhe përvoja' },
+  'studio.chain.dev': { en: 'Development', sq: 'Zhvillimi' },
+  'studio.chain.dev.note': { en: 'Built to order, no templates', sq: 'Ndërtuar sipas porosisë, pa shabllone' },
+  'studio.chain.hosting': { en: 'Hosting', sq: 'Hostingu' },
+  'studio.chain.hosting.note': { en: 'Managed servers', sq: 'Serverë të menaxhuar' },
+  'studio.chain.support': { en: 'Support', sq: 'Mbështetja' },
+  'studio.chain.support.note': { en: 'Updates and monitoring', sq: 'Përditësime dhe monitorim' },
+  'studio.chain.summary': { en: 'You don\'t need separate designers, developers, hosting providers and tech support. NJORD carries the whole digital process, from idea to launch and beyond.', sq: 'Nuk keni nevojë për dizajner, zhvillues, hosting dhe mbështetje teknike të ndarë. NJORD e bart gjithë procesin digjital, nga ideja deri te lansimi dhe më tej.' },
+  'faq.q6': { en: 'Can you redesign the website we already have?', sq: 'A mund ta ridizajnoni webfaqen që e kemi?' },
+  'faq.a6': { en: 'Yes. We can redesign or rebuild your existing website, keeping what still works and improving the rest.', sq: 'Po. Mund ta ridizajnojmë ose rindërtojmë webfaqen tuaj ekzistuese, duke ruajtur pjesët që ende funksionojnë dhe duke përmirësuar pjesën tjetër.' },
+  'faq.q7': { en: 'We don\'t have a visual identity. Can we start from zero?', sq: 'Nuk kemi identitet vizual. A mund të fillojmë nga zero?' },
+  'faq.a7': { en: 'Yes. NJORD can build the visual identity and the digital presence from the start, so everything works as one system.', sq: 'Po. NJORD mund ta ndërtojë identitetin vizual dhe prezencën digjitale nga fillimi, në mënyrë që gjithçka të funksionojë si një sistem i vetëm.' },
+  'clients.eyebrow': { en: 'Collaborations', sq: 'Bashkëpunime' },
 };
 
 export function getLang(){
@@ -504,3 +520,6 @@ export function applyStaticTranslations(lang = getLang()){
 
 const listeners = [];
 export function onLangChange(fn){ listeners.push(fn); }
+
+export function hasKey(key){ return Object.prototype.hasOwnProperty.call(translations, key); }
+export function addTranslations(map){ Object.assign(translations, map); }
