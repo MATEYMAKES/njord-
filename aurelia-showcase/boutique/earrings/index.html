@@ -65,7 +65,7 @@
     if (typeof u !== 'string' || u.indexOf(SITE + '/') !== 0) return u;
     var r = u.slice(SITE.length + 1), m = r.match(LR);
     if (m) r = r.slice(m[0].length);
-    if (/^(assets|_app)\//.test(r) || r.charAt(0) === '#') return u;
+    if (/^(assets|app)\//.test(r) || r.charAt(0) === '#') return u;
     return SITE + '/' + (l && l !== D && L.indexOf(l) >= 0 ? l + (r ? '/' + r : '') : r);
   };
   var RX = new RegExp('"(' + q(SITE) + '/[^"]*)"', 'g');
@@ -143,7 +143,7 @@
   try { if (sessionStorage.getItem('aurelia:intro')) h.classList.add('no-intro'); } catch (e) {}
 })();
 </script>
-<link rel="stylesheet" href="/aurelia-showcase/_app/app.fd34332526.css">
+<link rel="stylesheet" href="/aurelia-showcase/app/app.fd34332526.css">
 <style>
 .ft__word { fill: url(#ft-fill); }
 .fgs .fgs-stream { stroke: url(#fgs-stream); }
@@ -807,39 +807,39 @@
   </div>
 </footer>
 
-<script src="/aurelia-showcase/_app/00-core.b8f87975a3.js"></script>
+<script src="/aurelia-showcase/app/00-core.b8f87975a3.js"></script>
 <script>(function (l) { var A = window.AU; if (A && l && A.lang !== l) { A.lang = l; document.documentElement.setAttribute('lang', l); } })(window.AU_URL_LANG);</script>
-<script src="/aurelia-showcase/_app/01-content.a0337e33fd.js"></script>
-<script src="/aurelia-showcase/_app/02-content-bespoke.c725265f02.js"></script>
-<script src="/aurelia-showcase/_app/02-content-shell.a5a2a859ed.js"></script>
-<script src="/aurelia-showcase/_app/02-content-shop.cd0d154c3a.js"></script>
-<script src="/aurelia-showcase/_app/02-content-story.df18cb500b.js"></script>
-<script src="/aurelia-showcase/_app/03-router.c308e62949.js"></script>
-<script src="/aurelia-showcase/_app/05-assets.6003bf6c2a.js"></script>
-<script src="/aurelia-showcase/_app/06-atmos.86f5068191.js"></script>
-<script src="/aurelia-showcase/_app/09-lang-de.7f817718bd.js"></script>
-<script src="/aurelia-showcase/_app/09-lang-fr.9d77f72643.js"></script>
-<script src="/aurelia-showcase/_app/10-shell.c486006b14.js"></script>
-<script src="/aurelia-showcase/_app/11-home.1b18af38a8.js"></script>
-<script src="/aurelia-showcase/_app/40-shop.6fb17e4131.js"></script>
-<script src="/aurelia-showcase/_app/41-shop-list.a1500a3507.js"></script>
-<script src="/aurelia-showcase/_app/42-shop-piece.092b0015cf.js"></script>
-<script src="/aurelia-showcase/_app/43-shop-compare.d810a30581.js"></script>
-<script src="/aurelia-showcase/_app/44-shop-checkout.1d08b785de.js"></script>
-<script src="/aurelia-showcase/_app/50-bespoke.863fd1533b.js"></script>
-<script src="/aurelia-showcase/_app/51-size.77b2fad4de.js"></script>
-<script src="/aurelia-showcase/_app/52-stack.fcb7d84914.js"></script>
-<script src="/aurelia-showcase/_app/53-gemlab.e5fc81d2d0.js"></script>
-<script src="/aurelia-showcase/_app/60-story.1d5da18776.js"></script>
-<script src="/aurelia-showcase/_app/61-story-atelier.e240b05822.js"></script>
-<script src="/aurelia-showcase/_app/62-story-years.8820569528.js"></script>
-<script src="/aurelia-showcase/_app/63-story-voices.789fb1c733.js"></script>
-<script src="/aurelia-showcase/_app/64-story-journal.1f0302c7ac.js"></script>
-<script src="/aurelia-showcase/_app/65-story-birthstones.26b5d93293.js"></script>
-<script src="/aurelia-showcase/_app/66-story-gifts.5e8585fe43.js"></script>
-<script src="/aurelia-showcase/_app/67-story-visit.ad09070ff1.js"></script>
-<script src="/aurelia-showcase/_app/68-story-care.5f846fc81a.js"></script>
-<script src="/aurelia-showcase/_app/70-tryon.22c571e492.js"></script>
-<script type="module" src="/aurelia-showcase/_app/gl.d6c2ee88c8.js"></script>
+<script src="/aurelia-showcase/app/01-content.a0337e33fd.js"></script>
+<script src="/aurelia-showcase/app/02-content-bespoke.c725265f02.js"></script>
+<script src="/aurelia-showcase/app/02-content-shell.a5a2a859ed.js"></script>
+<script src="/aurelia-showcase/app/02-content-shop.cd0d154c3a.js"></script>
+<script src="/aurelia-showcase/app/02-content-story.df18cb500b.js"></script>
+<script src="/aurelia-showcase/app/03-router.c308e62949.js"></script>
+<script src="/aurelia-showcase/app/05-assets.6003bf6c2a.js"></script>
+<script src="/aurelia-showcase/app/06-atmos.86f5068191.js"></script>
+<script src="/aurelia-showcase/app/09-lang-de.7f817718bd.js"></script>
+<script src="/aurelia-showcase/app/09-lang-fr.9d77f72643.js"></script>
+<script src="/aurelia-showcase/app/10-shell.c486006b14.js"></script>
+<script src="/aurelia-showcase/app/11-home.1b18af38a8.js"></script>
+<script src="/aurelia-showcase/app/40-shop.6fb17e4131.js"></script>
+<script src="/aurelia-showcase/app/41-shop-list.a1500a3507.js"></script>
+<script src="/aurelia-showcase/app/42-shop-piece.092b0015cf.js"></script>
+<script src="/aurelia-showcase/app/43-shop-compare.d810a30581.js"></script>
+<script src="/aurelia-showcase/app/44-shop-checkout.1d08b785de.js"></script>
+<script src="/aurelia-showcase/app/50-bespoke.863fd1533b.js"></script>
+<script src="/aurelia-showcase/app/51-size.77b2fad4de.js"></script>
+<script src="/aurelia-showcase/app/52-stack.fcb7d84914.js"></script>
+<script src="/aurelia-showcase/app/53-gemlab.e5fc81d2d0.js"></script>
+<script src="/aurelia-showcase/app/60-story.1d5da18776.js"></script>
+<script src="/aurelia-showcase/app/61-story-atelier.e240b05822.js"></script>
+<script src="/aurelia-showcase/app/62-story-years.8820569528.js"></script>
+<script src="/aurelia-showcase/app/63-story-voices.789fb1c733.js"></script>
+<script src="/aurelia-showcase/app/64-story-journal.1f0302c7ac.js"></script>
+<script src="/aurelia-showcase/app/65-story-birthstones.26b5d93293.js"></script>
+<script src="/aurelia-showcase/app/66-story-gifts.5e8585fe43.js"></script>
+<script src="/aurelia-showcase/app/67-story-visit.ad09070ff1.js"></script>
+<script src="/aurelia-showcase/app/68-story-care.5f846fc81a.js"></script>
+<script src="/aurelia-showcase/app/70-tryon.22c571e492.js"></script>
+<script type="module" src="/aurelia-showcase/app/gl.d6c2ee88c8.js"></script>
 <a class="njord-back" href="/" onclick="event.preventDefault();window.location.href='/'" aria-label="Back to NJORD">&larr; NJORD</a><style>.njord-back{position:fixed;left:16px;bottom:16px;z-index:99999;padding:9px 16px;border:1px solid rgba(255,255,255,.4);border-radius:999px;background:rgba(20,10,10,.7);backdrop-filter:blur(8px);color:#fff;font:500 12px/1 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.12em;text-decoration:none;text-transform:uppercase}.njord-back:hover{border-color:#fff}</style></body>
 </html>
