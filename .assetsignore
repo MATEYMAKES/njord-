@@ -1,0 +1,11 @@
+wrangler.jsonc
+.assetsignore
+.gitignore
+.nojekyll
+CNAME
+HANDOFF.md
+_dev_server.py
+docs
+aurelia
+.claude
+node_modules
