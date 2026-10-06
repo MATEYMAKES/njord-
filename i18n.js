@@ -30,7 +30,7 @@ const translations = {
   'logo.ariaLabel': { en: 'NJORD — back to top', sq: 'NJORD — kthehu në krye' },
 
   'hero.eyebrow': { en: 'Web & Branding Studio', sq: 'Studio Web & Brendi' },
-  'hero.descriptor': { en: '<span class="hero-outcome">Your business deserves to look as good online as it does in person.</span><span class="hero-support">We design identities and build digital experiences for businesses that want to stand out.</span>', sq: '<span class="hero-outcome">Biznesi juaj meriton të duket aq mirë online sa duket në realitet.</span><span class="hero-support">Dizajnojmë identitete dhe ndërtojmë eksperienca digjitale për bizneset që duan të dallohen.</span>' },
+  'hero.descriptor': { en: "<span class=\"hero-outcome\">Your business deserves to look as good online as it does in person.</span>", sq: "<span class=\"hero-outcome\">Biznesi juaj meriton të duket aq mirë online sa duket në realitet.</span>" },
   'hero.scroll': { en: 'Scroll', sq: 'Zbrit' },
   'hero.cta': { en: 'Start a project', sq: 'Nis një projekt' },
 
@@ -83,19 +83,13 @@ const translations = {
   'work.aurelia.tag3': { en: 'Art Direction', sq: 'Drejtim Artistik' },
 
   'work.pulse.aria': { en: 'Enter Pulse project', sq: 'Hyr te projekti Pulse' },
-  'work.pulse.desc': {
-    en: 'The NJORD branch for company websites: a night-street brand and site that gets companies seen.',
-    sq: 'Dega e NJORD për faqe interneti: një brend nate, i ndritur nga rruga, që i nxjerr kompanitë në pah.',
-  },
+  'work.pulse.desc': { en: "The NJORD branch for company websites.", sq: "Dega e NJORD për faqet e kompanive." },
   'work.pulse.tag1': { en: 'Brand Identity', sq: 'Identitet Brendi' },
   'work.pulse.tag2': { en: 'Web Design', sq: 'Dizajn Web' },
   'work.pulse.tag3': { en: 'Front-End Build', sq: 'Ndërtim Front-End' },
 
   'work.meridian.aria': { en: 'Enter Meridian project', sq: 'Hyr te projekti Meridian' },
-  'work.meridian.desc': {
-    en: 'Precision-first interface design for a financial platform built on trust and data.',
-    sq: 'Dizajn ndërfaqeje me precizion të lartë për një platformë financiare të ndërtuar mbi besim dhe të dhëna.',
-  },
+  'work.meridian.desc': { en: "Interface design for a financial platform.", sq: "Dizajn ndërfaqeje për një platformë financiare." },
   'work.meridian.tag1': { en: 'Product Design', sq: 'Dizajn Produkti' },
   'work.meridian.tag2': { en: 'UI System', sq: 'Sistem UI' },
   'work.meridian.tag3': { en: 'Data Viz', sq: 'Vizualizim të Dhënash' },
@@ -376,7 +370,7 @@ const translations = {
   'project.vyron.highlight2': { en: 'A V that draws itself, then gets out of the way', sq: 'Një V që vizaton veten, pastaj tërhiqet' },
   'project.vyron.highlight3': { en: 'Montserrat in two weights, light and bold', sq: 'Montserrat në dy peshë, e lehtë dhe e trashë' },
   'work.concepts.eyebrow': { en: 'Concepts / Experiments', sq: 'Koncepte / Eksperimente' },
-  'work.concepts.note': { en: 'Our own projects, not real clients. They show our creative range.', sq: 'Projekte tonat, jo klientë realë. Tregojnë gamën tonë krijuese.' },
+  'work.concepts.note': { en: "Our own projects, not real clients.", sq: "Projektet tona, jo klientë realë." },
   'work.development.eyebrow': { en: 'In development', sq: 'Në zhvillim' },
   'work.development.note': { en: 'Real projects currently being built.', sq: 'Projekte reale që po ndërtohen aktualisht.' },
   'modal.client': { en: 'Client work', sq: 'Punë me klient' },
@@ -394,8 +388,6 @@ const translations = {
   'studio.chain.support': { en: 'Support', sq: 'Mbështetja' },
   'faq.q6': { en: 'Can you redesign the website we already have?', sq: 'A mund ta ridizajnoni webfaqen që e kemi?' },
   'faq.a6': { en: 'Yes. We can redesign or rebuild your existing website, keeping what still works and improving the rest.', sq: 'Po. Mund ta ridizajnojmë ose rindërtojmë webfaqen tuaj ekzistuese, duke ruajtur pjesët që ende funksionojnë dhe duke përmirësuar pjesën tjetër.' },
-  'faq.q7': { en: 'We don\'t have a visual identity. Can we start from zero?', sq: 'Nuk kemi identitet vizual. A mund të fillojmë nga zero?' },
-  'faq.a7': { en: "Yes. We can build the visual identity and the digital presence from the start.", sq: "Po. NJORD mund ta ndërtojë identitetin vizual dhe prezencën digjitale nga fillimi." },
   'clients.eyebrow': { en: 'Collaborations', sq: 'Bashkëpunime' },
 };
 
