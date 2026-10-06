@@ -104,12 +104,12 @@ const translations = {
 
   'work.pulse.aria': { en: 'Enter Pulse project', sq: 'Hyr te projekti Pulse' },
   'work.pulse.desc': {
-    en: 'A loud, kinetic identity for a music festival that never sits still.',
-    sq: 'Një identitet i fortë dhe kinetik për një festival muzikor që nuk ndalet kurrë.',
+    en: 'The NJORD branch for company websites: a night-street brand and site that gets companies seen.',
+    sq: 'Dega e NJORD për faqe interneti: një brend nate, i ndritur nga rruga, që i nxjerr kompanitë në pah.',
   },
-  'work.pulse.tag1': { en: 'Web Design', sq: 'Dizajn Web' },
-  'work.pulse.tag2': { en: 'Motion', sq: 'Lëvizje' },
-  'work.pulse.tag3': { en: 'Brand System', sq: 'Sistem Brendi' },
+  'work.pulse.tag1': { en: 'Brand Identity', sq: 'Identitet Brendi' },
+  'work.pulse.tag2': { en: 'Web Design', sq: 'Dizajn Web' },
+  'work.pulse.tag3': { en: 'Front-End Build', sq: 'Ndërtim Front-End' },
 
   'work.meridian.aria': { en: 'Enter Meridian project', sq: 'Hyr te projekti Meridian' },
   'work.meridian.desc': {
@@ -415,16 +415,16 @@ const translations = {
   'project.aurelia.highlight2': { en: 'One serif voice, used with total consistency', sq: 'Një zë i vetëm serif, i përdorur me konsistencë të plotë' },
   'project.aurelia.highlight3': { en: 'Built directly on Shopify', sq: 'Ndërtuar direkt në Shopify' },
 
-  'project.pulse.tagline': { en: 'A festival brand that refuses to sit still.', sq: 'Një brend festivali që refuzon të qëndrojë i palëvizur.' },
+  'project.pulse.tagline': { en: 'Websites that get companies seen.', sq: 'Faqe interneti që i nxjerrin kompanitë në pah.' },
   'project.pulse.description': {
-    en: 'Pulse needed an identity as loud as its lineup. We built a system of saturated color collisions, oversized condensed type, and layouts that break their own grid on purpose. Nothing on the site holds still for more than a second — including the navigation.',
-    sq: 'Pulse kishte nevojë për një identitet po aq të fortë sa edhe programi i tij. Ne ndërtuam një sistem përplasjesh ngjyrash të ngopura, shkronja të kondensuara e të mëdha, dhe skema faqesh që thyejnë me qëllim rrjetën e tyre. Asgjë në faqe nuk qëndron e palëvizur për më shumë se një sekondë — përfshirë edhe navigimin.',
+    en: 'PULSE is the branch of NJORD that builds websites for companies. Its own site is set on a night street: a near-black sky, one warm amber light, and calm motion that guides the eye. Design, development, hosting and upkeep are explained in one place.',
+    sq: 'PULSE është dega e NJORD që krijon faqe interneti për kompani. Faqja e tij është vendosur në një rrugë nate: qiell pothuajse i zi, një dritë e vetme qelibar dhe lëvizje e qetë që udhëheq syrin. Dizajni, zhvillimi, hostimi dhe mirëmbajtja shpjegohen në një vend të vetëm.',
   },
-  'project.pulse.discipline': { en: 'Web Design, Motion, Brand System', sq: 'Dizajn Web, Lëvizje, Sistem Brendi' },
-  'project.pulse.deliverables': { en: 'Identity System, Web Platform, Motion Toolkit', sq: 'Sistem Identiteti, Platformë Web, Kompleks Mjetesh Lëvizjeje' },
-  'project.pulse.highlight1': { en: 'Color collisions instead of one fixed palette', sq: 'Përplasje ngjyrash në vend të një palete fikse' },
-  'project.pulse.highlight2': { en: 'Type that reacts to whoever is headlining', sq: 'Shkronja që reagojnë sipas artistit kryesor' },
-  'project.pulse.highlight3': { en: 'One motion toolkit, shared across every channel', sq: 'Një kompleks i vetëm mjetesh lëvizjeje, i ndarë në çdo kanal' },
+  'project.pulse.discipline': { en: 'Brand Identity, Web Design, Front-End Build', sq: 'Identitet Brendi, Dizajn Web, Ndërtim Front-End' },
+  'project.pulse.deliverables': { en: 'Brand Identity, Company Website, Front-End Build', sq: 'Identitet Brendi, Faqe Kompanie, Ndërtim Front-End' },
+  'project.pulse.highlight1': { en: 'A night palette: near-black with one warm amber', sq: 'Paletë nate: pothuajse e zezë me një qelibar të ngrohtë' },
+  'project.pulse.highlight2': { en: 'Design, development, hosting and upkeep on one page', sq: 'Dizajn, zhvillim, hostim dhe mirëmbajtje në një faqe' },
+  'project.pulse.highlight3': { en: 'Fast and light, with motion that guides rather than distracts', sq: 'E shpejtë dhe e lehtë, me lëvizje që udhëheq në vend që të shpërqendrojë' },
 
   'project.meridian.tagline': { en: 'Trust, rendered as an interface.', sq: 'Besimi, i shprehur si ndërfaqe.' },
   'project.meridian.description': {

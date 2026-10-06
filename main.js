@@ -383,7 +383,7 @@ if(roadmapNodesEl && organism && servicesSection && !servicesSection.hidden){
    a language switch without needing its own duplicated data here. */
 const PROJECTS = {
   aurelia: { title: 'Aurelia', year: '2025', burstColor: '#C8102E', modalClass: 'project-modal--aurelia' },
-  pulse: { title: 'Pulse', year: '2024', burstColor: '#7A1B33', modalClass: 'project-modal--pulse' },
+  pulse: { title: 'PULSE', year: '2026', burstColor: '#F1C27C', modalClass: 'project-modal--pulse' },
   meridian: { title: 'Meridian', year: '2025', burstColor: '#1F4C78', modalClass: 'project-modal--meridian' },
   metalium: { title: 'METALIUM', year: '2026', burstColor: '#FF0013', modalClass: 'project-modal--metalium' },
   vyron: { title: 'VYRON', year: '2026', burstColor: '#8B5A2B', modalClass: 'project-modal--vyron' },
