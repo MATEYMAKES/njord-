@@ -1,0 +1,847 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Grace Pendant — Aurelia</title>
+<script>window.AU_BUILD={"route":"path","base":"/aurelia-showcase/","target":"site","langs":["en","fr","de"]};</script>
+<script>(function langRuntime(C) {
+  var B = C.base, D = C.def, L = C.langs, LS = 'aurelia:lang', H = history, P = H.pushState, R = H.replaceState;
+  var q = function (s) { return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); };
+  var PRE = new RegExp('^' + q(B) + '(' + L.map(q).join('|') + ')(?=/|$)');
+  var split = function (p) { var m = p.match(PRE); return m ? [m[1], B + p.slice(m[0].length + 1)] : [null, p]; };
+  var withLang = function (l, p) {
+    if (!l || l === D || L.indexOf(l) < 0 || p.indexOf(B) !== 0) return p;
+    var r = p.slice(B.length);
+    return B + l + (r ? '/' + r : '');
+  };
+  var stored = null;
+  try { stored = JSON.parse(localStorage.getItem(LS)); } catch (e) {}
+  var here = split(location.pathname);
+  var lang = here[0] || (L.indexOf(stored) >= 0 ? stored : D);
+  window.AU_URL_LANG = lang;
+  if (here[0]) {
+    try { localStorage.setItem(LS, JSON.stringify(here[0])); } catch (e) {}
+    try { R.call(H, H.state, '', here[1] + location.search + location.hash); } catch (e) {}
+  }
+  document.documentElement.setAttribute('lang', lang);
+  var cur = function () { var l = window.AU && window.AU.lang; return !l ? lang : L.indexOf(l) >= 0 ? l : D; };
+
+  var popping = 0;
+  var fix = function (u) {
+    if (popping || u == null || u === '') return u;
+    try {
+      var x = new URL(u, location.href);
+      if (x.origin !== location.origin || split(x.pathname)[0]) return u;
+      var p = withLang(cur(), x.pathname);
+      return p === x.pathname ? u : p + x.search + x.hash;
+    } catch (e) { return u; }
+  };
+  var put = function () {
+    var p = withLang(cur(), split(location.pathname)[1]);
+    if (p !== location.pathname) { try { R.call(H, H.state, '', p + location.search + location.hash); } catch (e) {} }
+  };
+  H.pushState = function (s, t, u) { return P.call(H, s, t, fix(u)); };
+  H.replaceState = function (s, t, u) {
+    // the router stamps its state on the address it is about to read (at start, and on back/forward to an entry it
+    // did not make): that address stays as it is until the router has read it, then gets its prefix
+    var same = false;
+    try { same = u != null && u !== '' && new URL(u, location.href).href === location.href; } catch (e) {}
+    if (same && !popping) { var r = R.call(H, s, t, u); setTimeout(put, 0); return r; }
+    return R.call(H, s, t, fix(u));
+  };
+  addEventListener('popstate', function () {
+    var s = split(location.pathname);
+    popping++;
+    if (s[0]) { try { R.call(H, H.state, '', s[1] + location.search + location.hash); } catch (e) {} }
+    setTimeout(function () { popping--; put(); }, 0);
+  });
+  document.addEventListener('au:lang', put);
+
+  var SITE = C.site;
+  if (!SITE) return;
+  var LR = new RegExp('^(' + L.map(q).join('|') + ')(?:/|$)');
+  var relang = function (u, l) {
+    if (typeof u !== 'string' || u.indexOf(SITE + '/') !== 0) return u;
+    var r = u.slice(SITE.length + 1), m = r.match(LR);
+    if (m) r = r.slice(m[0].length);
+    if (/^(assets|_app)\//.test(r) || r.charAt(0) === '#') return u;
+    return SITE + '/' + (l && l !== D && L.indexOf(l) >= 0 ? l + (r ? '/' + r : '') : r);
+  };
+  var RX = new RegExp('"(' + q(SITE) + '/[^"]*)"', 'g');
+  var KEYS = [D].concat(L, 'x-default');
+  var sync = function () {
+    var l = cur(), h = document.head;
+    var can = h.querySelector('link[rel="canonical"]');
+    if (can) { var cu = can.getAttribute('href') || '', cw = relang(cu, l); if (cw !== cu) can.setAttribute('href', cw); }
+    var ld = document.getElementById('ld-route');
+    if (ld) { var t = ld.textContent, n = t.replace(RX, function (m, u) { return '"' + relang(u, l) + '"'; }); if (n !== t) ld.textContent = n; }
+    var alts = h.querySelectorAll('link[rel="alternate"][hreflang]');
+    if (!can) { for (var i = 0; i < alts.length; i++) alts[i].remove(); return; }
+    var c0 = relang(can.getAttribute('href') || '', D);
+    KEYS.forEach(function (k) {
+      var href = relang(c0, k === 'x-default' ? D : k);
+      var a = h.querySelector('link[rel="alternate"][hreflang="' + k + '"]');
+      if (!a) { a = document.createElement('link'); a.rel = 'alternate'; a.setAttribute('hreflang', k); h.appendChild(a); }
+      if (a.getAttribute('href') !== href) a.setAttribute('href', href);
+    });
+  };
+  // after the head is parsed (the baked tags are in place), then on every change the router makes to it
+  document.addEventListener('DOMContentLoaded', function () {
+    sync();
+    try { new MutationObserver(sync).observe(document.head, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ['href'] }); } catch (e) {}
+  });
+  document.addEventListener('au:lang', sync);
+})({"base":"/aurelia-showcase/","langs":["fr","de"],"def":"en","site":"https://njord.live/aurelia-showcase"});</script>
+<meta name="description" content="Grace Pendant. A round diamond that seems to float on a fine yellow-gold chain. 18k Yellow Gold · Diamond.">
+<link rel="canonical" href="https://njord.live/aurelia-showcase/piece/au-grace-pendant">
+<link rel="alternate" hreflang="en" href="https://njord.live/aurelia-showcase/piece/au-grace-pendant">
+<link rel="alternate" hreflang="fr" href="https://njord.live/aurelia-showcase/fr/piece/au-grace-pendant">
+<link rel="alternate" hreflang="de" href="https://njord.live/aurelia-showcase/de/piece/au-grace-pendant">
+<link rel="alternate" hreflang="x-default" href="https://njord.live/aurelia-showcase/piece/au-grace-pendant">
+<meta property="og:site_name" content="Aurelia">
+<meta property="og:type" content="product">
+<meta property="og:title" content="Grace Pendant — Aurelia">
+<meta property="og:description" content="Grace Pendant. A round diamond that seems to float on a fine yellow-gold chain. 18k Yellow Gold · Diamond.">
+<meta property="og:url" content="https://njord.live/aurelia-showcase/piece/au-grace-pendant">
+<meta property="og:image" content="https://njord.live/aurelia-showcase/assets/og/au-grace-pendant.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Grace Pendant — Aurelia">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="fr_FR">
+<meta property="og:locale:alternate" content="de_DE">
+<meta property="product:price:amount" content="2250.00">
+<meta property="product:price:currency" content="USD">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Grace Pendant — Aurelia">
+<meta name="twitter:description" content="Grace Pendant. A round diamond that seems to float on a fine yellow-gold chain. 18k Yellow Gold · Diamond.">
+<meta name="twitter:image" content="https://njord.live/aurelia-showcase/assets/og/au-grace-pendant.jpg">
+<meta name="twitter:image:alt" content="Grace Pendant — Aurelia">
+<script type="application/ld+json" id="ld-route">{"@context":"https://schema.org","@type":"Product","name":"Grace Pendant","description":"A round diamond that seems to float on a fine yellow-gold chain.","sku":"au-grace-pendant","category":"Pendant","material":"18k Yellow Gold · Diamond","brand":{"@type":"Brand","name":"Aurelia"},"url":"https://njord.live/aurelia-showcase/piece/au-grace-pendant","offers":{"@type":"Offer","price":"2250.00","priceCurrency":"USD","availability":"https://schema.org/InStock","url":"https://njord.live/aurelia-showcase/piece/au-grace-pendant"},"image":["https://njord.live/aurelia-showcase/aurelia-showcase/assets/r/e41f499d97aae3.webp"],"additionalProperty":[{"@type":"PropertyValue","name":"Collection","value":"Eternal Grace"}]}</script>
+<meta name="theme-color" content="#300404">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23480807'/%3E%3Cg fill='none' stroke='%23fff' stroke-width='2.4' stroke-linejoin='round' stroke-linecap='round'%3E%3Ccircle cx='32' cy='38' r='13'/%3E%3Cpath d='M25 19l7-7 7 7-7 6z'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- The three faces every first screen uses (Latin subset; Cormorant Garamond and Infant are variable fonts, so one file
+     serves 300/400/500), fetched in parallel with the stylesheet instead of after it, so the first page is laid out in
+     its real type and never reflows. These are the URLs the css2 request below returns to Chromium/Firefox/Safari (woff2);
+     if Google moves a version, the browser warns about an unused preload and simply fetches the new file as before. -->
+<link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/alexbrush/v23/SZc83FzrJKuqFbwMKk6EhUXz7Q.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/cormorantgaramond/v21/co3bmX5slCNuHLi8bLeY9MK7whWMhyjYqXtK.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/cormorantinfant/v22/HhyPU44g9vKiM1sORYSiWeAsLN997_cV2Q.woff2">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Cormorant+Infant:ital,wght@0,300;0,400;0,500;1,400&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<script>
+/* Before first paint: the saved light/dark choice (dark is the brand default), and a flag that script is running. */
+(function () {
+  var h = document.documentElement, m = 'dark';
+  try { var s = JSON.parse(localStorage.getItem('aurelia:mode')); if (s === 'light' || s === 'dark') m = s; } catch (e) {}
+  h.setAttribute('data-mode', m);
+  h.classList.add('js');
+  try { if (matchMedia('(prefers-reduced-motion: reduce)').matches) h.classList.add('reduced'); } catch (e) {}
+  try { if (sessionStorage.getItem('aurelia:intro')) h.classList.add('no-intro'); } catch (e) {}
+})();
+</script>
+<link rel="stylesheet" href="/aurelia-showcase/_app/app.fd34332526.css">
+<style>
+.ft__word { fill: url(#ft-fill); }
+.fgs .fgs-stream { stroke: url(#fgs-stream); }
+.atl-svg .k-band { fill: url(#atl-molten); }
+</style>
+</head>
+<body>
+
+<!-- ---- 00-base.html ---- -->
+<a class="skip" href="#main" data-t="ui.core.skip">Skip to content</a>
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ---- 10-a-intro.html ---- -->
+<div id="intro" class="intro" aria-hidden="true">
+  <div class="intro__inner">
+    <svg class="intro__word" viewBox="0 0 1000 320" preserveAspectRatio="xMidYMid meet" focusable="false">
+      <text class="intro__fill" x="500" y="214" text-anchor="middle" data-t="brand.name">Aurelia</text>
+      <g class="intro__pen">
+        <text class="intro__stroke" x="500" y="214" text-anchor="middle" data-t="brand.name">Aurelia</text>
+      </g>
+    </svg>
+    <span class="intro__line"></span>
+    <p class="intro__ed caps" data-intro-ed>No. <span class="num">2.0</span> &mdash; Fine Jewelry</p>
+  </div>
+</div>
+
+<!-- ---- 10-b-header.html ---- -->
+<header class="site-head" data-head>
+  <div class="head__bar">
+    <a class="head__mark" href="#/" aria-label="Aurelia, home" data-t-aria-label="ui.shell.head.home"><span class="script" aria-hidden="true" data-t="brand.name">Aurelia</span></a>
+
+    <nav class="head__nav" aria-label="Main" data-t-aria-label="ui.shell.head.nav">
+      <ul class="head__links" data-head-nav></ul>
+    </nav>
+
+    <div class="head__tools">
+      <!-- client care, always in sight: the words where the bar has room for them, else the icon with its name on hover
+           and focus (10-shell.js measures which fits; care-text / care-icon / care-off on the header). It opens a small
+           card: the atelier's telephone and its hours, the email, and the care pages (sizing, delivery, a viewing). -->
+      <button class="head__care" type="button" data-head-care data-path="/care" aria-expanded="false" aria-controls="carepop" aria-label="Client care" data-t-aria-label="ui.shell.head.care">
+        <i data-icon="phone" data-size="19"></i><span class="head__care-t" data-head-care-t aria-hidden="true" data-t="ui.shell.head.care">Client care</span>
+      </button>
+      <button class="icon-btn head__btn head__btn--search" type="button" data-head-search aria-label="Search" data-t-aria-label="ui.shell.head.search">
+        <i data-icon="search" data-size="21"></i>
+      </button>
+      <button class="icon-btn head__btn head__btn--wish" type="button" data-head-wish aria-label="Saved pieces">
+        <i data-icon="heart" data-size="21"></i>
+        <span class="head__count num" data-wish-count hidden></span>
+      </button>
+      <button class="icon-btn head__btn head__btn--bag" type="button" data-head-bag aria-label="Shopping bag">
+        <i data-icon="bag" data-size="21"></i>
+        <span class="head__count num" data-cart-count hidden></span>
+      </button>
+      <button class="icon-btn head__btn head__btn--prefs" type="button" data-prefs-btn aria-expanded="false" aria-controls="prefs" aria-label="Preferences" data-t-aria-label="ui.shell.prefs.title">
+        <span class="head__globe" data-shell-icon="globe"></span>
+      </button>
+      <button class="head__burger" type="button" data-burger aria-controls="menu" aria-expanded="false" aria-label="Open the menu" data-t-aria-label="ui.shell.head.menu">
+        <span class="burger__l"></span><span class="burger__l"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- the Collections mega menu: a disclosure panel under the bar (rendered by 10-shell.js) -->
+  <div class="mega" id="mega" data-mega inert>
+    <div class="mega__in" data-mega-in></div>
+  </div>
+
+  <!-- the preferences popover: language, currency, sound, light/dark, season -->
+  <div class="prefs" id="prefs" role="dialog" aria-modal="false" aria-labelledby="prefs-title" data-prefs inert>
+    <div class="prefs__in">
+      <p class="caps caps--sm prefs__title" id="prefs-title" data-t="ui.shell.prefs.title">Preferences</p>
+      <div class="prefs__groups" data-prefs-groups></div>
+    </div>
+  </div>
+
+  <!-- the client care card (rendered by 10-shell.js) -->
+  <div class="prefs carepop" id="carepop" role="dialog" aria-modal="false" aria-labelledby="carepop-title" data-carepop inert>
+    <div class="carepop__in" data-carepop-in></div>
+  </div>
+
+  <span class="head__dim" data-head-dim aria-hidden="true"></span>
+  <span class="head__progress" aria-hidden="true"><span class="head__progress-bar" data-head-progress></span></span>
+</header>
+
+<!-- ---- 10-c-search.html ---- -->
+<div id="search" class="overlay srch" data-overlay aria-hidden="true">
+  <div class="overlay__scrim" data-close></div>
+  <div class="srch__panel" role="dialog" aria-modal="true" aria-labelledby="search-label">
+    <div class="srch__inner">
+      <div class="srch__top">
+        <label id="search-label" class="caps caps--sm srch__label" for="search-q" data-t="ui.shell.search.label">Search Aurelia</label>
+        <button class="icon-btn srch__close" type="button" data-close aria-label="Close the search" data-t-aria-label="ui.shell.search.close"><i data-icon="close" data-size="20"></i></button>
+      </div>
+
+      <div class="srch__field">
+        <i data-icon="search" data-size="26"></i>
+        <input id="search-q" class="srch__input" type="search" autofocus autocomplete="off" spellcheck="false"
+               placeholder="A ring, a stone, a page" data-t-placeholder="ui.shell.search.placeholder" enterkeyhint="search"
+               role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="search-results" data-search-input>
+        <span class="srch__underline" aria-hidden="true"></span>
+      </div>
+
+      <div class="srch__chips" data-search-chips></div>
+
+      <!-- before anything is typed: the services people look for most (sizing, care, a viewing, contact) -->
+      <nav class="srch__quick" aria-labelledby="srch-quick-h" data-search-quick>
+        <p class="caps caps--sm srch__quick-h" id="srch-quick-h" data-t="ui.shell.search.quick">Quick links</p>
+        <ul class="srch__quick-list" data-search-quick-list></ul>
+      </nav>
+
+      <p class="srch__status small" data-search-status aria-live="polite"></p>
+      <div id="search-results" class="srch__results" role="listbox" aria-label="Results" data-t-aria-label="ui.shell.search.results" data-search-results></div>
+    </div>
+  </div>
+</div>
+
+<!-- ---- 10-d-menu.html ---- -->
+<div id="menu" class="overlay menu" data-overlay aria-hidden="true">
+  <div class="menu__panel" role="dialog" aria-modal="true" aria-label="Menu" data-t-aria-label="ui.shell.menu.label">
+    <div class="menu__bar">
+      <a class="menu__mark" href="#/" data-menu-link aria-label="Aurelia, home" data-t-aria-label="ui.shell.head.home"><span class="script" aria-hidden="true" data-t="brand.name">Aurelia</span></a>
+      <button class="menu__close" type="button" data-close aria-label="Close the menu" data-t-aria-label="ui.shell.menu.close">
+        <span class="burger__l"></span><span class="burger__l"></span>
+      </button>
+    </div>
+
+    <nav class="menu__nav" aria-label="Main" data-t-aria-label="ui.shell.head.nav">
+      <ol class="menu__links" data-menu-nav></ol>
+      <p class="caps caps--sm menu__h" data-t="ui.shell.menu.discover">Discover</p>
+      <ul class="menu__more" data-menu-more></ul>
+    </nav>
+
+    <div class="menu__foot">
+      <span class="menu__rule" aria-hidden="true"></span>
+      <div class="menu__row">
+        <button class="menu__act caps caps--sm" type="button" data-menu-bag="saved">
+          <i data-icon="heart" data-size="18"></i><span data-t="ui.shell.menu.saved">Saved</span><span class="menu__count num" data-wish-count hidden></span>
+        </button>
+        <button class="menu__act caps caps--sm" type="button" data-menu-bag="bag">
+          <i data-icon="bag" data-size="18"></i><span data-t="ui.shell.menu.bag">Bag</span><span class="menu__count num" data-cart-count hidden></span>
+        </button>
+        <button class="menu__act menu__prefs-btn caps caps--sm" type="button" aria-expanded="false" aria-controls="menu-prefs" data-menu-prefs>
+          <span class="menu__globe" data-shell-icon="globe"></span><span data-t="ui.shell.menu.prefs">Preferences</span>
+          <span class="menu__chev" aria-hidden="true"><i data-icon="chevron" data-size="14"></i></span>
+        </button>
+      </div>
+      <div class="menu__prefs" id="menu-prefs" data-menu-prefs-panel hidden></div>
+      <!-- the atelier, one tap away: the telephone first (the most useful contact on a phone), then the email -->
+      <p class="menu__contact" data-menu-contact></p>
+    </div>
+  </div>
+</div>
+
+<!-- ---- 40-shop.html ---- -->
+<!-- Shop overlays (owned by the shop area): the bag drawer, the refine drawer of the boutique, and the compare tray.
+     Pages themselves (collections, boutique, piece, compare, checkout) are rendered by src/js/41-…44-*.js. -->
+<div class="overlay bag" id="bag" data-overlay aria-hidden="true">
+  <div class="overlay__scrim" data-close></div>
+  <aside class="bag__panel" role="dialog" aria-modal="true" aria-labelledby="bag-title">
+    <header class="bag__head">
+      <h2 id="bag-title" class="sr-only" data-t="ui.shop.bag.title">Your bag and saved pieces</h2>
+      <div class="bag__tabs" role="tablist" data-t-aria-label="ui.shop.bag.tabs" data-bag-tabs>
+        <button class="bag__tab caps" type="button" role="tab" id="bag-tab-bag" aria-controls="bag-pane-bag" aria-selected="true" data-bag-tabbtn="bag"><span data-t="ui.shop.bag.bag">Bag</span> <span class="bag__n">(<span class="num" data-bag-n>0</span>)</span></button>
+        <button class="bag__tab caps" type="button" role="tab" id="bag-tab-saved" aria-controls="bag-pane-saved" aria-selected="false" tabindex="-1" data-bag-tabbtn="saved"><span data-t="ui.shop.bag.saved">Saved</span> <span class="bag__n">(<span class="num" data-saved-n>0</span>)</span></button>
+        <span class="bag__ink" aria-hidden="true" data-bag-ink></span>
+      </div>
+      <button class="icon-btn bag__close" type="button" data-close data-t-aria-label="ui.shop.bag.close"><i data-icon="close"></i></button>
+    </header>
+
+    <div class="bag__panes" data-bag-panes>
+      <section class="bag__pane" role="tabpanel" id="bag-pane-bag" aria-labelledby="bag-tab-bag" tabindex="-1" data-bag-pane="bag">
+        <ul class="bag__list" data-bag-list data-t-aria-label="ui.shop.bag.listBag"></ul>
+        <div class="bag__empty" data-bag-empty hidden>
+          <span class="bag__empty-mark" aria-hidden="true"><i data-icon="bag" data-size="26"></i></span>
+          <p class="script t-h3" data-t="ui.shop.bag.emptyBagTitle">Your bag is empty</p>
+          <p class="body" data-t="ui.shop.bag.emptyBagText"></p>
+          <a class="link caps caps--sm" href="#/boutique" data-bag-go><span data-t="ui.shop.bag.emptyBagLink"></span> <i data-icon="arrow" data-size="16"></i></a>
+        </div>
+      </section>
+      <section class="bag__pane" role="tabpanel" id="bag-pane-saved" aria-labelledby="bag-tab-saved" tabindex="-1" data-bag-pane="saved" hidden>
+        <ul class="bag__list" data-saved-list data-t-aria-label="ui.shop.bag.listSaved"></ul>
+        <div class="bag__empty" data-saved-empty hidden>
+          <span class="bag__empty-mark" aria-hidden="true"><i data-icon="heart" data-size="26"></i></span>
+          <p class="script t-h3" data-t="ui.shop.bag.emptySavedTitle">Nothing saved yet</p>
+          <p class="body" data-t="ui.shop.bag.emptySavedText"></p>
+          <a class="link caps caps--sm" href="#/boutique" data-bag-go><span data-t="ui.shop.bag.emptySavedLink"></span> <i data-icon="arrow" data-size="16"></i></a>
+        </div>
+      </section>
+    </div>
+
+    <footer class="bag__foot" data-bag-foot>
+      <div class="bag__sum">
+        <span class="caps caps--sm" data-t="ui.shop.bag.subtotal">Subtotal</span>
+        <span class="bag__total" data-bag-total></span>
+      </div>
+      <p class="small bag__ship"><i data-icon="truck" data-size="18"></i><span data-t="ui.shop.bag.ship"></span></p>
+      <a class="btn btn--solid bag__checkout" href="#/checkout" data-bag-go data-bag-checkout><span data-t="ui.shop.bag.checkout">Checkout</span> <i data-icon="arrow" data-size="16"></i></a>
+    </footer>
+  </aside>
+</div>
+
+<div class="overlay refine" id="refine" data-overlay aria-hidden="true">
+  <div class="overlay__scrim" data-close></div>
+  <aside class="refine__panel" role="dialog" aria-modal="true" aria-labelledby="refine-title">
+    <header class="refine__head">
+      <h2 id="refine-title" class="caps" data-t="ui.shop.boutique.refineTitle">Refine the selection</h2>
+      <button class="icon-btn refine__close" type="button" data-close data-t-aria-label="ui.shop.boutique.close"><i data-icon="close"></i></button>
+    </header>
+    <div class="refine__body" data-refine-body></div>
+    <footer class="refine__foot">
+      <button class="link caps caps--sm refine__clear" type="button" data-refine-clear data-t="ui.shop.boutique.clear">Clear all</button>
+      <button class="btn btn--solid refine__show" type="button" data-close data-refine-show></button>
+    </footer>
+  </aside>
+</div>
+
+<div class="ctray" id="ctray" role="region" data-t-aria-label="ui.shop.tray.label" hidden>
+  <div class="ctray__inner">
+    <!-- phones: the tray rests folded to one row (small thumbnails and the compare button); this opens it -->
+    <button class="ctray__peek" type="button" data-ctray-peek aria-expanded="false" data-t-aria-label="ui.shop.tray.show">
+      <span class="ctray__minis" data-ctray-minis aria-hidden="true"></span>
+      <span class="ctray__peek-ico" aria-hidden="true"><i data-icon="chevron" data-size="18"></i></span>
+    </button>
+    <p class="ctray__title caps caps--sm" data-t="ui.shop.tray.title">Compare</p>
+    <ul class="ctray__list" data-ctray-list></ul>
+    <p class="ctray__room small" data-ctray-room></p>
+    <div class="ctray__acts">
+      <button class="ctray__fold" type="button" data-ctray-fold data-t-aria-label="ui.shop.tray.hide"><i data-icon="chevron" data-size="18"></i></button>
+      <button class="link caps caps--sm ctray__clear" type="button" data-ctray-clear data-t="ui.shop.tray.clear">Clear</button>
+      <a class="btn btn--solid btn--sm ctray__go" href="#/compare" data-ctray-go></a>
+    </div>
+  </div>
+</div>
+
+<!-- ---- 50-bespoke.html ---- -->
+<!-- Bespoke area page skeletons (v2). The router clones these into <main>; src/js/50-53 fill the lists and wire them.
+     Every visible word comes from content (data-t); the JS adds the dynamic parts with AU.t(). -->
+
+<!-- /bespoke: the ring configurator -->
+<template id="tpl-bespoke">
+  <section class="bk" aria-labelledby="bk-title">
+    <div class="bk__grid wrap">
+      <header class="bk__head">
+        <p class="eyebrow caps" data-t="ui.bespoke.eyebrow"></p>
+        <h1 id="bk-title" class="bk__title script t-h2" data-t="ui.bespoke.title"></h1>
+        <p class="bk__lede lede" data-t="ui.bespoke.lede"></p>
+      </header>
+
+      <div class="bk__left">
+        <div class="bk__stagewrap">
+          <figure class="bk__frame" data-bk-frame data-light="studio">
+            <div class="bk__glow" aria-hidden="true"></div>
+            <div class="bk__flat" data-bk-flat role="img"></div>
+            <div class="bk__stage" data-bk-stage data-cursor="drag"></div>
+            <div class="bk__tools">
+              <button class="bk__tool icon-btn" type="button" data-bk-loupe aria-pressed="false" hidden></button>
+              <button class="bk__tool icon-btn" type="button" data-bk-reset hidden><i data-icon="rotate" data-size="20"></i></button>
+            </div>
+            <div class="bk__light" data-bk-light>
+              <span class="bk__lightname caps caps--sm" data-bk-lightname aria-hidden="true"></span>
+            </div>
+            <p class="bk__hint caps caps--sm" data-bk-hint aria-hidden="true" hidden>
+              <svg class="ico" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3.5 12h17M6.5 9 3.5 12l3 3M17.5 9l3 3-3 3"/><circle cx="12" cy="12" r="1.6"/></svg>
+              <span data-t="ui.bespoke.dragHint"></span>
+            </p>
+          </figure>
+          <div class="bk__cap">
+            <p class="bk__sum caps caps--sm" data-bk-summary></p>
+            <p class="bk__capr caps caps--sm" data-bk-capr></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bk__panel">
+        <div class="bk__tabs" role="tablist" data-bk-tabs></div>
+        <div class="bk__panes" data-bk-panes></div>
+        <div class="bk__buy" data-bk-buy>
+          <div class="bk__bar">
+            <div class="bk__total">
+              <p class="bk__tl caps caps--sm"><span class="bk__yr" data-t="ui.bespoke.yourRing"></span><span class="bk__est" data-t="ui.bespoke.estimate"></span></p>
+              <p class="bk__price" data-bk-price aria-hidden="true"></p>
+            </div>
+            <button class="btn btn--solid bk__add" type="button" data-bk-add><span data-bk-addl data-t="ui.bespoke.add"></span></button>
+          </div>
+          <a class="btn bk__consult" href="#/visit" data-bk-consult><span data-t="ui.bespoke.consult"></span></a>
+          <p class="bk__note small" data-t="ui.bespoke.note"></p>
+        </div>
+        <p class="sr-only" aria-live="polite" data-bk-live></p>
+      </div>
+    </div>
+  </section>
+</template>
+
+<!-- /size: the ring size finder -->
+<template id="tpl-size">
+  <section class="sz" aria-labelledby="sz-title">
+    <div class="wrap">
+      <header class="sz__head">
+        <p class="eyebrow caps" data-t="ui.bespoke.size.eyebrow"></p>
+        <h1 id="sz-title" class="sz__title script t-h2" data-t="ui.bespoke.size.title"></h1>
+        <div class="sz__intro">
+          <p class="sz__lede lede" data-t="ui.bespoke.size.lede"></p>
+          <!-- for a visitor who already knows a size: straight to the chart, or the paper sizer -->
+          <p class="sz__jump">
+            <a class="link caps caps--sm" href="#sz-chart-t"><span data-t="ui.bespoke.size.chartTitle"></span><svg class="ico" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4v16M6 14l6 6 6-6"/></svg></a>
+            <button class="link caps caps--sm" type="button" data-sz-print><span data-t="ui.bespoke.size.print"></span><svg class="ico" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 9V3.5h10V9M7 17.5H4.5v-8h15v8H17"/><path d="M7 14h10v6.5H7z"/></svg></button>
+          </p>
+        </div>
+      </header>
+
+      <div class="sz__tool" data-sz-tool data-step="1">
+        <ol class="sz__steps" aria-hidden="true">
+          <li class="sz__sn" data-sz-sn="1"><span class="num">01</span><span class="caps caps--sm" data-t="ui.bespoke.size.step1"></span></li>
+          <li class="sz__sn" data-sz-sn="2"><span class="num">02</span><span class="caps caps--sm" data-t="ui.bespoke.size.step2"></span></li>
+        </ol>
+
+        <div class="sz__body">
+          <!-- step 1: calibrate -->
+          <div class="sz__pane" data-sz-pane="1">
+            <div class="sz__text">
+              <h2 class="sz__h caps caps--lg" data-t="ui.bespoke.size.step1Title"></h2>
+              <p class="body" data-t="ui.bespoke.size.step1Text"></p>
+              <p class="small" data-t="ui.bespoke.size.step1Any"></p>
+              <div class="rg sz__rg" data-sz-card-rg></div>
+              <p class="sz__cal small" data-sz-cal></p>
+              <button class="btn btn--solid sz__go" type="button" data-sz-done><span data-t="ui.bespoke.size.cardDone"></span><i data-icon="arrow" data-size="16"></i></button>
+            </div>
+            <div class="sz__pad sz__pad--card" data-sz-cardpad></div>
+          </div>
+
+          <!-- step 2: measure -->
+          <div class="sz__pane" data-sz-pane="2">
+            <div class="sz__text">
+              <h2 class="sz__h caps caps--lg" data-t="ui.bespoke.size.step2Title"></h2>
+              <p class="body" data-t="ui.bespoke.size.step2Text"></p>
+              <div class="rg sz__rg" data-sz-ring-rg></div>
+              <div class="sz__result" data-sz-result aria-live="polite"></div>
+              <div class="sz__acts">
+                <button class="btn btn--solid" type="button" data-sz-use><span data-sz-usel data-t="ui.bespoke.size.use"></span></button>
+                <button class="link caps caps--sm" type="button" data-sz-back><span data-t="ui.bespoke.size.recalibrate"></span></button>
+              </div>
+              <p class="sz__next" data-sz-next hidden>
+                <a class="link caps caps--sm" href="#/bespoke"><span data-t="ui.bespoke.size.designRing"></span><i data-icon="arrow" data-size="16"></i></a>
+                <a class="link caps caps--sm" href="#/boutique/rings"><span data-t="ui.bespoke.size.shopRings"></span><i data-icon="arrow" data-size="16"></i></a>
+              </p>
+            </div>
+            <div class="sz__pad sz__pad--ring" data-sz-ringpad></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sz__more">
+        <section class="sz__chart" aria-labelledby="sz-chart-t" data-reveal="up">
+          <h2 id="sz-chart-t" class="sz__h2 script t-h3" data-t="ui.bespoke.size.chartTitle"></h2>
+          <p class="small" data-t="ui.bespoke.size.chartLede"></p>
+          <div class="sz__tablewrap"><table class="sz__table" data-sz-table></table></div>
+        </section>
+        <aside class="sz__side">
+          <section class="sz__print" aria-labelledby="sz-print-t" data-reveal="up">
+            <h2 id="sz-print-t" class="sz__h2 script t-h3" data-t="ui.bespoke.size.printTitle"></h2>
+            <p class="body" data-t="ui.bespoke.size.printText"></p>
+            <div class="sz__mini" aria-hidden="true" data-sz-mini></div>
+            <button class="btn" type="button" data-sz-print><span data-t="ui.bespoke.size.print"></span></button>
+          </section>
+          <section class="sz__tips" aria-labelledby="sz-tips-t" data-reveal="up">
+            <h2 id="sz-tips-t" class="caps caps--md" data-t="ui.bespoke.size.tipsTitle"></h2>
+            <ul class="sz__tiplist" data-sz-tips></ul>
+          </section>
+        </aside>
+      </div>
+    </div>
+    <!-- the printable sheet: only shown by the print stylesheet -->
+    <div class="sz-sheet" data-sz-sheet aria-hidden="true"></div>
+  </section>
+</template>
+
+<!-- /stack: the stack builder -->
+<template id="tpl-stack">
+  <section class="sk" aria-labelledby="sk-title">
+    <div class="sk__grid wrap">
+      <header class="sk__head">
+        <p class="eyebrow caps" data-t="ui.bespoke.stack.eyebrow"></p>
+        <h1 id="sk-title" class="sk__title script t-h2" data-t="ui.bespoke.stack.title"></h1>
+        <p class="sk__lede lede" data-t="ui.bespoke.stack.lede"></p>
+      </header>
+      <div class="sk__left">
+        <figure class="sk__frame" data-sk-frame>
+          <div class="sk__glow" aria-hidden="true"></div>
+          <div class="sk__flat" data-sk-flat role="img"></div>
+          <div class="sk__stage" data-sk-stage data-cursor="drag"></div>
+        </figure>
+      </div>
+      <div class="sk__panel">
+        <h2 class="caps caps--sm sk__ch" id="sk-pick-t" data-t="ui.bespoke.stack.choose"></h2>
+        <ul class="sk__picks" data-sk-picks aria-labelledby="sk-pick-t"></ul>
+        <div class="sk__slotshead">
+          <h2 class="caps caps--sm" id="sk-slots-t" data-t="ui.bespoke.stack.slots"></h2>
+          <button class="link caps caps--sm sk__clear" type="button" data-sk-clear data-t="ui.bespoke.stack.clear"></button>
+        </div>
+        <ol class="sk__slots" data-sk-slots aria-labelledby="sk-slots-t"></ol>
+        <div class="sk__buy">
+          <div class="sk__total">
+            <p class="caps caps--sm sk__tl" data-t="ui.bespoke.stack.total"></p>
+            <p class="sk__price" data-sk-price></p>
+          </div>
+          <button class="btn btn--solid sk__add" type="button" data-sk-add><span data-sk-addl data-t="ui.bespoke.stack.addAll"></span></button>
+        </div>
+        <p class="sr-only" aria-live="polite" data-sk-live></p>
+      </div>
+    </div>
+  </section>
+</template>
+
+<!-- /gem-lab: one stone under the loupe -->
+<template id="tpl-lab">
+  <section class="gl" aria-labelledby="gl-title">
+    <div class="gl__grid wrap">
+      <header class="gl__head">
+        <p class="eyebrow caps" data-t="ui.bespoke.lab.eyebrow"></p>
+        <h1 id="gl-title" class="gl__title script t-h2" data-t="ui.bespoke.lab.title"></h1>
+        <p class="gl__lede lede" data-t="ui.bespoke.lab.lede"></p>
+      </header>
+      <div class="gl__left">
+        <figure class="gl__frame" data-gl-frame>
+          <div class="gl__glow" aria-hidden="true"></div>
+          <div class="gl__flat" data-gl-flat role="img"></div>
+          <div class="gl__stage" data-gl-stage data-cursor="drag"></div>
+          <div class="gl__views" data-gl-views hidden></div>
+          <p class="gl__still caps caps--sm" data-gl-still data-t="ui.bespoke.lab.still"></p>
+          <figcaption class="gl__cap" aria-hidden="true">
+            <span class="gl__capname script" data-gl-capname></span>
+            <span class="gl__capgrades caps caps--sm" data-gl-capgrades></span>
+          </figcaption>
+        </figure>
+        <div class="gl__buy">
+          <div class="gl__total">
+            <p class="caps caps--sm gl__tl" data-t="ui.bespoke.lab.price"></p>
+            <p class="gl__price" data-gl-price aria-hidden="true"></p>
+          </div>
+          <a class="btn btn--solid gl__design" href="#/bespoke" data-gl-design><span class="gl__dl-full" data-gl-designl data-t="ui.bespoke.lab.design"></span><span class="gl__dl-short" data-gl-designs data-t="ui.bespoke.lab.designShort"></span><i data-icon="arrow" data-size="16"></i></a>
+          <p class="gl__note small" data-gl-note></p>
+        </div>
+      </div>
+      <div class="gl__panel">
+        <div class="gl__row gl__row--stone">
+          <div class="gl__rh"><h2 class="caps caps--sm" id="gl-l-stone" data-t="ui.bespoke.lab.stone"></h2><span class="gl__rv" data-gl-v="stone"></span></div>
+          <div class="gl__stones" role="radiogroup" aria-labelledby="gl-l-stone" data-gl-stones></div>
+          <p class="gl__ex small" data-gl-ex="stone" id="gl-ex-stone"></p>
+        </div>
+        <div class="gl__row">
+          <div class="gl__rh"><h2 class="caps caps--sm" id="gl-l-cut" data-t="ui.bespoke.lab.cut"></h2><span class="gl__rv" data-gl-v="cut"></span></div>
+          <div class="gl__cuts" role="radiogroup" aria-labelledby="gl-l-cut" data-gl-cuts></div>
+          <p class="gl__ex small" data-gl-ex="cut" id="gl-ex-cut"></p>
+        </div>
+        <div class="gl__row">
+          <div class="gl__rh"><h2 class="caps caps--sm"><label for="gl-carat" data-gl-l="carat" data-t="ui.bespoke.lab.carat"></label></h2><span class="gl__rv" data-gl-v="carat"></span></div>
+          <div data-gl-rg="carat"></div>
+          <p class="gl__ex small" data-gl-ex="carat" id="gl-ex-carat"></p>
+        </div>
+        <div class="gl__row">
+          <div class="gl__rh"><h2 class="caps caps--sm"><label for="gl-colour" data-gl-l="colour" data-t="ui.bespoke.lab.colour"></label></h2><span class="gl__rv" data-gl-v="colour"></span></div>
+          <div data-gl-rg="colour"></div>
+          <p class="gl__ex small" data-gl-ex="colour" id="gl-ex-colour"></p>
+        </div>
+        <div class="gl__row">
+          <div class="gl__rh"><h2 class="caps caps--sm"><label for="gl-clarity" data-gl-l="clarity" data-t="ui.bespoke.lab.clarity"></label></h2><span class="gl__rv" data-gl-v="clarity"></span></div>
+          <div data-gl-rg="clarity"></div>
+          <p class="gl__ex small" data-gl-ex="clarity" id="gl-ex-clarity"></p>
+        </div>
+        <p class="sr-only" aria-live="polite" data-gl-live></p>
+      </div>
+    </div>
+  </section>
+</template>
+
+<!-- ---- 60-story.html ---- -->
+<!-- Story area (atelier, journal, birthstones, gift finder, visit, client care). Its pages are rendered into <main> by
+     src/js/61-…68-story-*.js from AU.content (ui.story.*, timeline, journal, birthstones, care); it needs no static
+     markup of its own outside <main>. -->
+
+<!-- ---- 70-tryon.html ---- -->
+<div class="overlay tryon" id="tryon" data-overlay aria-hidden="true" data-view="intro" inert>
+  <div class="overlay__scrim tryon__scrim" data-close></div>
+  <div class="tryon__panel" role="dialog" aria-modal="true" data-t-aria-label="ui.tryon.dialog" tabindex="-1">
+
+    <!-- the top bar, over every view -->
+    <div class="tryon__bar">
+      <p class="tryon__mark"><span class="script" data-t="brand.name"></span><span class="tryon__mark-rule" aria-hidden="true"></span><span class="caps caps--sm" data-t="ui.tryon.eyebrow"></span></p>
+      <button class="icon-btn tryon__close" type="button" data-close data-t-aria-label="ui.tryon.close"><i data-icon="close"></i></button>
+    </div>
+
+    <!-- intro and fallback: the drawn hand on the left, the words on the right -->
+    <section class="tryon__sheet" data-tryon-sheet>
+      <figure class="tryon__figure">
+        <div class="tryon__art" data-tryon-art></div>
+        <figcaption class="tryon__cap">
+          <span class="caps caps--sm tryon__cap-kicker" data-tryon-kicker></span>
+          <span class="script tryon__cap-name" data-tryon-name></span>
+          <span class="tryon__cap-price" data-tryon-price></span>
+        </figcaption>
+      </figure>
+
+      <div class="tryon__copy">
+        <div class="tryon__pane" data-tryon-pane="intro">
+          <p class="eyebrow caps caps--sm" data-t="ui.tryon.kicker"></p>
+          <h2 class="script tryon__title" data-t="ui.tryon.title"></h2>
+          <p class="lede tryon__lede" data-t="ui.tryon.lede"></p>
+          <ol class="tryon__steps" data-tryon-steps></ol>
+          <div class="tryon__actions">
+            <button class="btn btn--solid tryon__allow" type="button" data-tryon-start><span class="tryon__ico" data-tryon-ico="camera"></span><span data-t="ui.tryon.allow"></span></button>
+            <button class="link caps caps--sm tryon__later" type="button" data-close data-t="ui.tryon.notNow"></button>
+          </div>
+          <p class="tryon__privacy small"><i data-icon="shield" data-size="16"></i><span data-t="ui.tryon.privacy"></span></p>
+        </div>
+
+        <div class="tryon__pane" data-tryon-pane="fallback">
+          <p class="eyebrow caps caps--sm" data-t="ui.tryon.fallbackKicker"></p>
+          <h2 class="script tryon__title" data-tryon-fb-title tabindex="-1"></h2>
+          <p class="lede tryon__lede" data-tryon-fb-text></p>
+          <div class="tryon__actions">
+            <a class="btn btn--solid tryon__open" href="#" target="_blank" rel="noopener" data-tryon-newtab><span data-t="ui.tryon.openTab"></span><i data-icon="arrow" data-size="16"></i></a>
+            <button class="link caps caps--sm" type="button" data-tryon-retry data-t="ui.tryon.retry"></button>
+          </div>
+          <p class="tryon__privacy small"><i data-icon="shield" data-size="16"></i><span data-t="ui.tryon.privacy"></span></p>
+        </div>
+
+        <div class="tryon__choose">
+          <p class="caps caps--sm tryon__choose-label" data-t="ui.tryon.choose"></p>
+          <div class="tryon__pieces" data-tryon-pieces="sheet"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- the mirror -->
+    <section class="tryon__live" data-tryon-live aria-hidden="true">
+      <div class="tryon__stage" data-tryon-stage></div>
+      <div class="tryon__veil" aria-hidden="true"></div>
+      <div class="tryon__guide" data-tryon-guide aria-hidden="true"></div>
+      <div class="tryon__hud">
+        <p class="caps caps--sm tryon__hud-kicker" data-tryon-kicker></p>
+        <p class="script tryon__hud-name" data-tryon-name></p>
+        <p class="tryon__hud-price"><span data-tryon-price></span><a class="link caps caps--sm tryon__view" href="#/boutique" data-tryon-view data-t="ui.tryon.viewPiece"></a></p>
+      </div>
+      <p class="tryon__status caps caps--sm" role="status" aria-live="polite"><span class="tryon__status-dot" aria-hidden="true"></span><span data-tryon-status></span></p>
+      <div class="tryon__dock">
+        <div class="tryon__pieces tryon__pieces--dock tryon__pieces--a" data-tryon-pieces="dock-a"></div>
+        <div class="tryon__pieces tryon__pieces--dock tryon__pieces--b" data-tryon-pieces="dock-b"></div>
+        <div class="tryon__pieces tryon__pieces--dock tryon__pieces--m" data-tryon-pieces="dock"></div>
+        <div class="tryon__shoot">
+          <button class="tryon__shutter" type="button" data-tryon-shutter data-t-aria-label="ui.tryon.shutter" disabled><span class="tryon__shutter-in" aria-hidden="true"></span></button>
+          <span class="caps caps--sm tryon__shoot-label" aria-hidden="true" data-t="ui.tryon.shutter"></span>
+        </div>
+      </div>
+      <div class="tryon__flash" aria-hidden="true"></div>
+    </section>
+
+    <!-- the photo, once taken -->
+    <section class="tryon__photo" data-tryon-photo aria-hidden="true">
+      <div class="tryon__photo-inner">
+        <div class="tryon__photo-frame"><img alt="" data-tryon-img decoding="async"></div>
+        <div class="tryon__photo-side">
+          <p class="eyebrow caps caps--sm" data-t="ui.tryon.photoKicker"></p>
+          <h2 class="script tryon__title" data-t="ui.tryon.photoTitle"></h2>
+          <p class="body tryon__photo-text" data-t="ui.tryon.photoText"></p>
+          <div class="tryon__actions">
+            <a class="btn btn--solid" href="#" download="aurelia-try-on.png" data-tryon-save><span class="tryon__ico" data-tryon-ico="download"></span><span data-t="ui.tryon.save"></span></a>
+            <button class="link caps caps--sm" type="button" data-tryon-back data-t="ui.tryon.retake"></button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ---- 85-main-open.html ---- -->
+<noscript><div style="max-width:760px;margin:0 auto;padding:140px 24px 72px;text-align:center;font-family:'Cormorant Infant',Georgia,serif"><h1 style="font-family:'Alex Brush',cursive;font-weight:400;font-size:56px;line-height:1.1;margin:0 0 20px">Grace Pendant</h1><p style="font-size:20px;line-height:1.6;opacity:.82;margin:0 0 28px">Grace Pendant. A round diamond that seems to float on a fine yellow-gold chain. 18k Yellow Gold · Diamond.</p><nav style="font-family:'Cormorant Garamond',Georgia,serif;text-transform:uppercase;letter-spacing:.24em;font-size:13px"><a href="/aurelia-showcase/" style="color:inherit;margin:0 14px 10px 0;display:inline-block">Aurelia</a><a href="/aurelia-showcase/collections" style="color:inherit;margin:0 14px 10px 0;display:inline-block">Collections</a><a href="/aurelia-showcase/boutique" style="color:inherit;margin:0 14px 10px 0;display:inline-block">Boutique</a><a href="/aurelia-showcase/bespoke" style="color:inherit;margin:0 14px 10px 0;display:inline-block">Bespoke</a><a href="/aurelia-showcase/atelier" style="color:inherit;margin:0 14px 10px 0;display:inline-block">Atelier</a><a href="/aurelia-showcase/journal" style="color:inherit;margin:0 14px 10px 0;display:inline-block">Journal</a><a href="/aurelia-showcase/visit" style="color:inherit;margin:0 14px 10px 0;display:inline-block">Visit</a></nav></div></noscript>
+<main id="main" tabindex="-1">
+
+<!-- ---- 86-main-close.html ---- -->
+</main>
+
+<!-- ---- 90-footer.html ---- -->
+<footer class="site-foot" aria-labelledby="ft-title">
+  <h2 class="sr-only" id="ft-title" data-t="brand.name">Aurelia</h2>
+  <div class="wrap">
+
+    <!-- the letter beside the link columns -->
+    <div class="ft__main">
+      <div class="ft__news">
+        <p class="eyebrow caps" data-reveal="fade" data-t="ui.shell.footer.letter">The letter</p>
+        <h3 class="script t-h3 ft__news-title" data-reveal="words" data-t="footer.newsletter.title">Letters from the atelier</h3>
+        <p class="body ft__news-text" data-reveal="up" data-delay="150" data-t="footer.newsletter.text">New pieces, the stories behind them, and the occasional invitation.</p>
+        <form class="ft__form" data-ft-form novalidate data-reveal="up" data-delay="250">
+          <div class="ft__form-in">
+            <label class="caps caps--sm ft__label" for="ft-email" data-t="ui.shell.footer.email">Your email</label>
+            <div class="ft__row">
+              <input class="ft__input" id="ft-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="name@example.com" data-t-placeholder="ui.shell.footer.placeholder" aria-describedby="ft-err">
+              <button class="icon-btn ft__send" type="submit" aria-label="Join the list" data-t-aria-label="ui.shell.footer.join"><i data-icon="arrow" data-size="20"></i><span class="ft__spin" aria-hidden="true"></span></button>
+            </div>
+            <p class="field__err ft__err" id="ft-err" aria-live="polite"></p>
+          </div>
+          <div class="ft__thanks" data-ft-thanks aria-hidden="true">
+            <p class="ft__thanks-line"><span class="ft__thanks-ico" data-ft-glint></span><span data-t="ui.shell.footer.thanks">Thank you — you are on the list.</span></p>
+            <p class="small ft__note" data-ft-note hidden></p>
+          </div>
+          <p class="sr-only" role="status" data-ft-status></p>
+        </form>
+      </div>
+
+      <div class="ft__cols" data-stagger="80">
+        <div class="ft__links" data-ft-links></div>
+        <div class="ft__col ft__col--contact" data-reveal="up">
+          <h3 class="caps caps--sm ft__h" data-t="ui.shell.footer.contact">Contact</h3>
+          <ul class="ft__list" data-ft-contact></ul>
+          <!-- phones: the atelier's address and hours, two lines under the contact (the signature row's house block is
+               the wide layout's place for them) -->
+          <div class="ft__where" data-ft-where></div>
+          <div class="ft__appear">
+            <h3 class="caps caps--sm ft__h" id="ft-mode-h" data-t="ui.shell.footer.appearance">Appearance</h3>
+            <button class="ft__mode" type="button" data-mode-toggle data-ft-mode aria-pressed="true">
+              <span class="ft__mode-track" aria-hidden="true">
+                <span class="ft__mode-knob"></span>
+                <i data-icon="moon" data-size="13"></i><i data-icon="sun" data-size="13"></i>
+              </span>
+              <span class="caps caps--sm ft__mode-text" data-t="ui.shell.footer.darkMode">Dark mode</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- the signature: the wordmark, written once by the pen, and the house beside it -->
+    <div class="ft__sign">
+      <div class="ft__mark" data-ft-mark>
+        <svg class="ft__svg" data-ft-svg viewBox="0 0 1000 300" preserveAspectRatio="xMinYMax meet" role="img" aria-label="Aurelia" data-t-aria-label="brand.name" focusable="false">
+          <defs>
+            <linearGradient id="ft-fill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" class="ft__stop ft__stop--a"/>
+              <stop offset=".62" class="ft__stop ft__stop--b"/>
+              <stop offset="1" class="ft__stop ft__stop--c"/>
+            </linearGradient>
+          </defs>
+          <text class="ft__glyphs ft__word" data-ft-word x="500" y="220" text-anchor="middle" data-t="brand.name">Aurelia</text>
+          <g class="ft__pen"><text class="ft__glyphs ft__ink" x="500" y="220" text-anchor="middle" data-t="brand.name">Aurelia</text></g>
+        </svg>
+      </div>
+      <div class="ft__house" data-reveal="up">
+        <p class="ft__lead" data-ft-brand-line>Fine Jewelry, handcrafted since <span class="num">1984</span></p>
+        <div class="ft__place" data-ft-place></div>
+      </div>
+    </div>
+
+    <div class="ft__base">
+      <p class="small ft__legal">© <span class="num" data-ft-year>2026</span> <span data-t="footer.legal">Aurelia Fine Jewelry. All pieces handcrafted.</span></p>
+      <nav class="ft__legal-nav" aria-label="Legal" data-t-aria-label="ui.shell.footer.legalNav">
+        <ul class="ft__legal-list" data-ft-legal></ul>
+      </nav>
+      <a class="link caps caps--sm ft__top" href="#main" data-ft-top><span data-t="ui.shell.footer.top">Back to top</span> <i data-icon="arrow" data-size="14"></i></a>
+    </div>
+
+  </div>
+</footer>
+
+<script src="/aurelia-showcase/_app/00-core.b8f87975a3.js"></script>
+<script>(function (l) { var A = window.AU; if (A && l && A.lang !== l) { A.lang = l; document.documentElement.setAttribute('lang', l); } })(window.AU_URL_LANG);</script>
+<script src="/aurelia-showcase/_app/01-content.a0337e33fd.js"></script>
+<script src="/aurelia-showcase/_app/02-content-bespoke.c725265f02.js"></script>
+<script src="/aurelia-showcase/_app/02-content-shell.a5a2a859ed.js"></script>
+<script src="/aurelia-showcase/_app/02-content-shop.cd0d154c3a.js"></script>
+<script src="/aurelia-showcase/_app/02-content-story.df18cb500b.js"></script>
+<script src="/aurelia-showcase/_app/03-router.c308e62949.js"></script>
+<script src="/aurelia-showcase/_app/05-assets.6003bf6c2a.js"></script>
+<script src="/aurelia-showcase/_app/06-atmos.86f5068191.js"></script>
+<script src="/aurelia-showcase/_app/09-lang-de.7f817718bd.js"></script>
+<script src="/aurelia-showcase/_app/09-lang-fr.9d77f72643.js"></script>
+<script src="/aurelia-showcase/_app/10-shell.c486006b14.js"></script>
+<script src="/aurelia-showcase/_app/11-home.1b18af38a8.js"></script>
+<script src="/aurelia-showcase/_app/40-shop.6fb17e4131.js"></script>
+<script src="/aurelia-showcase/_app/41-shop-list.a1500a3507.js"></script>
+<script src="/aurelia-showcase/_app/42-shop-piece.092b0015cf.js"></script>
+<script src="/aurelia-showcase/_app/43-shop-compare.d810a30581.js"></script>
+<script src="/aurelia-showcase/_app/44-shop-checkout.1d08b785de.js"></script>
+<script src="/aurelia-showcase/_app/50-bespoke.863fd1533b.js"></script>
+<script src="/aurelia-showcase/_app/51-size.77b2fad4de.js"></script>
+<script src="/aurelia-showcase/_app/52-stack.fcb7d84914.js"></script>
+<script src="/aurelia-showcase/_app/53-gemlab.e5fc81d2d0.js"></script>
+<script src="/aurelia-showcase/_app/60-story.1d5da18776.js"></script>
+<script src="/aurelia-showcase/_app/61-story-atelier.e240b05822.js"></script>
+<script src="/aurelia-showcase/_app/62-story-years.8820569528.js"></script>
+<script src="/aurelia-showcase/_app/63-story-voices.789fb1c733.js"></script>
+<script src="/aurelia-showcase/_app/64-story-journal.1f0302c7ac.js"></script>
+<script src="/aurelia-showcase/_app/65-story-birthstones.26b5d93293.js"></script>
+<script src="/aurelia-showcase/_app/66-story-gifts.5e8585fe43.js"></script>
+<script src="/aurelia-showcase/_app/67-story-visit.ad09070ff1.js"></script>
+<script src="/aurelia-showcase/_app/68-story-care.5f846fc81a.js"></script>
+<script src="/aurelia-showcase/_app/70-tryon.22c571e492.js"></script>
+<script type="module" src="/aurelia-showcase/_app/gl.d6c2ee88c8.js"></script>
+<a class="njord-back" href="/" onclick="event.preventDefault();window.location.href='/'" aria-label="Back to NJORD">&larr; NJORD</a><style>.njord-back{position:fixed;left:16px;bottom:16px;z-index:99999;padding:9px 16px;border:1px solid rgba(255,255,255,.4);border-radius:999px;background:rgba(20,10,10,.7);backdrop-filter:blur(8px);color:#fff;font:500 12px/1 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.12em;text-decoration:none;text-transform:uppercase}.njord-back:hover{border-color:#fff}</style></body>
+</html>

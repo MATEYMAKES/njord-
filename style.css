@@ -25,9 +25,11 @@
      diamond-blue — still light enough for dark text. Pulse's burgundy
      and Meridian's deep blue are dark enough to need light text instead
      — recomputed per background, not assumed. */
-  --aurelia-bg: #D4AF37; --aurelia-ink: #1A1204; --aurelia-accent: #1A1204;
+  --aurelia-bg: #C8102E; --aurelia-ink: #FFF1EC; --aurelia-accent: #FFF1EC;
   --pulse-bg: #7A1B33; --pulse-ink: #F6ECE8; --pulse-accent: #F6ECE8;
   --meridian-bg: #1F4C78; --meridian-ink: #E9F1F8; --meridian-accent: #E9F1F8;
+  --metalium-bg: #120C0D; --metalium-ink: #FCFFF3; --metalium-accent: #FF0013;
+  --vyron-bg: #16100B; --vyron-ink: #F1E4D3; --vyron-accent: #C48A4A; --vyron-art: #B07A44;
 
   /* --- type --- */
   --f-display: 'Bricolage Grotesque', 'Helvetica Neue', Arial, sans-serif;
@@ -1435,7 +1437,7 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
   position: relative; z-index: 1;
   display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap;
   max-width: var(--maxw); margin-inline: auto; width: 100%;
-  padding: 0 var(--gutter) clamp(3rem,6vw,4.5rem);
+  padding: 0 var(--gutter) clamp(5rem,9vw,6.5rem);
 }
 .project-modal__cta{
   border: 1px solid currentColor;
@@ -1496,11 +1498,32 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
 .project-modal--meridian .project-modal__sitelink{ border-color: var(--meridian-accent); }
 .project-modal--meridian .project-modal__sitelink:hover{ background: var(--meridian-accent); color: var(--meridian-bg); }
 
+.project-modal--metalium{ background: var(--metalium-bg); color: var(--metalium-ink); font-family: 'Archivo', sans-serif; }
+.project-modal--metalium .project-modal__title{ font-family: 'Archivo', sans-serif; font-weight: 900; letter-spacing: -0.01em; }
+.project-modal--metalium .project-modal__eyebrow, .project-modal--metalium .project-modal__highlight-num{ color: var(--metalium-accent); }
+.project-modal--metalium .project-modal__cta{ border-color: var(--metalium-accent); }
+.project-modal--metalium .project-modal__cta:hover{ background: var(--metalium-accent); color: var(--metalium-ink); }
+.project-modal--metalium .project-modal__sitelink{ border-color: var(--metalium-accent); }
+.project-modal--metalium .project-modal__sitelink:hover{ background: var(--metalium-accent); color: var(--metalium-ink); }
+
+.project-modal--vyron{ background: var(--vyron-bg); color: var(--vyron-ink); font-family: 'Bricolage Grotesque', sans-serif; }
+.project-modal--vyron .project-modal__title{ font-weight: 800; letter-spacing: -0.02em; }
+.project-modal--vyron .project-modal__cta{ border-color: var(--vyron-accent); }
+.project-modal--vyron .project-modal__cta:hover{ background: var(--vyron-accent); color: var(--vyron-bg); }
+.project-modal--vyron .project-modal__sitelink{ border-color: var(--vyron-accent); }
+.project-modal--vyron .project-modal__sitelink:hover{ background: var(--vyron-accent); color: var(--vyron-bg); }
+
 @media (max-width: 860px){
   .project-modal__highlights{ grid-template-columns: 1fr; }
 }
 @media (max-width: 720px){
-  .project-modal__sitelink-wrap{ display: none; }
+  /* the right-middle placement has no room on a phone — sit in the flow
+     under the process button instead */
+  .project-modal__sitelink-wrap{
+    position: static; transform: none; align-items: flex-start;
+    padding: 0 var(--gutter) clamp(2.5rem, 8vw, 3.5rem);
+  }
+  .project-modal__cta-row{ padding-bottom: 1.25rem; }
 }
 
 body.modal-open{ overflow: hidden; }
@@ -1515,6 +1538,7 @@ body.modal-open{ overflow: hidden; }
    setZones and ascii-engine.js's 'chaos'/'infinity' cases).
    ================================================================ */
 .identity-anchor{ display: block; width: 0; height: 0; }
+.cloud-anchor{ display: block; width: 0; height: 0; }
 .identity-word-row{
   margin-top: clamp(2rem, 6vw, 4rem);
   display: flex;

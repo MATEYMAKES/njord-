@@ -187,6 +187,79 @@ function lerp(a, b, t){ return a + (b - a) * t; }
 // cycle/slot does something without needing a dedicated PRNG instance per
 // particle; same trick as GLSL's classic sin-based hash.
 function hash(n){ const s = Math.sin(n * 12.9898) * 43758.5453; return s - Math.floor(s); }
+/* Spinning V (VYRON). Two square-section bars meeting at a bottom apex,
+   sampled on their four long faces, rotating about the vertical axis and
+   lit like the ring (faces turning toward the viewer glow, backs dim).
+   Pure function of (i, t), shared by the organism and the portrait. */
+function veePoint(i, t){
+  const h = (k) => hash(i * 1.7 + k * 31.1);
+  const bar = i % 2;
+  const ax = bar ? 0.58 : -0.58, ay = -0.72;      // top end of this bar
+  const bx = 0, by = 0.72;                          // shared bottom apex
+  const dx = bx - ax, dy = by - ay, len = Math.hypot(dx, dy);
+  const nx = dy / len, ny = -dx / len;              // in-plane normal
+  const s = h(1);
+  const W = 0.15, D = 0.15;                         // bar width / depth
+  const face = Math.floor(h(2) * 4);
+  let u = h(3) - 0.5, v = h(4) - 0.5, fnx = 0, fny = 0, fnz = 0;
+  if(face === 0){ u = 0.5; fnx = nx; fny = ny; }
+  else if(face === 1){ u = -0.5; fnx = -nx; fny = -ny; }
+  else if(face === 2){ v = 0.5; fnz = 1; }
+  else { v = -0.5; fnz = -1; }
+  const px = ax + dx * s + nx * u * W, py = ay + dy * s + ny * u * W, pz = v * D;
+  const angle = t * 0.6;
+  const rp = rotate3({ x: px, y: py, z: pz }, angle, 0.12);
+  const rn = rotate3({ x: fnx, y: fny, z: fnz }, angle, 0.12);
+  const proj = project3(rp, 2.6);
+  const light = Math.max(0, rn.x * 0.3 + rn.y * 0.5 + rn.z * 0.8);
+  const vis = smoothstep(-0.3, 0.1, rp.z);
+  return { x: proj.x * 0.75, y: proj.y * 0.75, i: (0.16 + light * 0.95) * (0.2 + 0.8 * vis) };
+}
+
+/* Welding sparks (METALIUM). A pure function of (i, t), so the organism
+   and the standalone project-page portrait share one definition. A torch
+   drifts slowly along a steel plate (seamX); ~13% of particles are the
+   plate itself, glowing hottest near the torch, ~7% are the arc core, and
+   the rest are sparks, each re-rolling its own angle/speed every cycle,
+   thrown upward in a fan and pulled back down by gravity. y grows
+   downward on screen, like every other formation here. */
+function sparksPoint(i, t){
+  // groups of 4 particles share one spark's trajectory, each lagging a
+  // few frames behind the previous one, so a spark reads as a short
+  // streak instead of a lone dot
+  const g = Math.floor(i / 4), trail = i % 4;
+  const h = (k) => hash(g * 1.7 + k * 31.1);
+  const seamX = Math.sin(t * 0.45) * 0.55;
+  const OY = 0.22;
+  const PY = OY + 0.03; // plate surface: the arc sits ON it as a half-dome
+  const role = h(1);
+  if(role < 0.14){
+    const hi = (k) => hash(i * 1.7 + k * 31.1);
+    const x = (hi(2) - 0.5) * 2.0;
+    const heat = Math.exp(-Math.abs(x - seamX) * 3.2);
+    return { x, y: PY + (hi(3) - 0.5) * 0.02, i: 0.14 + heat * 0.85 };
+  }
+  if(role < 0.2){
+    const hi = (k) => hash(i * 1.7 + k * 31.1);
+    const a = hi(4) * Math.PI * 2, r = hi(5) * 0.05;
+    const flick = 0.7 + 0.3 * Math.sin(t * 23 + i);
+    return { x: seamX + Math.cos(a) * r, y: PY - Math.abs(Math.sin(a)) * r * 0.9, i: 0.85 * flick + 0.1 };
+  }
+  const P = 0.6 + h(6) * 1.2;
+  const cyc = (t - trail * 0.045) / P + h(7);
+  const n = Math.floor(cyc), u = cyc - n;
+  const hc = (k) => hash((g + n * 131) * 1.7 + k * 31.1);
+  const ang = -Math.PI / 2 + (hc(8) - 0.5) * Math.PI * 0.95;
+  const spd = 0.4 + hc(9) * 0.85;
+  const d = u * 1.1;
+  const sx = seamX; // origin follows the torch (trail ignores its small drift)
+  return {
+    x: sx + Math.cos(ang) * spd * d * 0.9,
+    y: PY + Math.sin(ang) * spd * d + 0.95 * d * d,
+    i: (Math.pow(1 - u, 1.2) * (0.4 + 0.6 * hc(10)) + 0.05) * (1 - trail * 0.2),
+  };
+}
+
 // Catmull-Rom spline through 4 control points — used by the roadmap
 // formation's path so it reads as genuinely curved rather than a
 // piecewise-straight line between jittered points.
@@ -799,7 +872,15 @@ export class AsciiOrganism{
         if(B === last && B.name === 'mascot' && raw >= 0.75){
           return { a: B.name, b: B.name, t: 0, anchorX: B.anchorX, anchorY: B.anchorY };
         }
-        const t = smoothstep(0, 1, raw);
+        // Between two PROJECT formations the blend doesn't run across the
+        // whole gap (that left long in-between stretches where neither
+        // artwork, nor its sound, was ever fully present). It holds each
+        // artwork complete for the first/last ~38% of the gap and does
+        // the smooth hand-over in the middle ~24%, so one project is
+        // always fully formed and the transition still eases.
+        const PROJ_FORMS = this._projForms || (this._projForms = new Set(['diamond', 'wave', 'network', 'sparks', 'vee']));
+        const dwell = PROJ_FORMS.has(A.name) && PROJ_FORMS.has(B.name) && A.name !== B.name;
+        const t = dwell ? smoothstep(0, 1, Math.max(0, Math.min(1, (raw - 0.38) / 0.24))) : smoothstep(0, 1, raw);
         const seg = { a: A.name, b: B.name, t, anchorX: lerp(A.anchorX, B.anchorX, t), anchorY: lerp(A.anchorY, B.anchorY, t) };
         if(A.name === B.name && rangedNames.has(A.name)){
           seg.localT = Math.max(0, Math.min(1, raw)); // linear, not smoothstepped — exact scroll correspondence for typing
@@ -909,7 +990,7 @@ export class AsciiOrganism{
         return {
           x: x * 0.85, y: y * 0.6,
           i: (line === 0 ? 0.28 : 0.16) + Math.abs(wave) * 0.62,
-          c: 1,
+          c: 0, // neutral: follows the theme ink (white in dark mode, black in light)
         };
       }
       // 'network' (Meridian's own project color, at its original compact
@@ -947,6 +1028,14 @@ export class AsciiOrganism{
           y: (this.nodePosY[k] + Math.cos(t * 0.35 + this.jitterSeed[i]) * 0.22) * NET_SCALE,
           i: 0.12 + 0.08 * Math.sin(t + this.jitterSeed[i]), c: 0.4,
         };
+      }
+      case 'vee': {
+        const p = veePoint(i, t);
+        return { x: p.x, y: p.y, i: p.i, c: 1 };
+      }
+      case 'sparks': {
+        const p = sparksPoint(i, t);
+        return { x: p.x, y: p.y, i: p.i, c: 1 };
       }
       case 'lock': {
         const angle = this.jitterSeed[i];
@@ -1482,8 +1571,8 @@ export class AsciiOrganism{
     // own acid-signal-green, not a bug like the yellow-flash one above: this
     // is the one formation actually meant to carry the site's own identity
     // color, since it represents NJORD describing itself rather than a client
-    const ACCENTS = { diamond: [212, 175, 55], wave: [122, 27, 51], network: [31, 76, 120], 'network-large': [0, 0, 0], globe: [203, 255, 61], constellation: [203, 255, 61], roadmap: [203, 255, 61], mascot: [203, 255, 61] };
-    const FORM_C = { globe: 0, diamond: 1, wave: 1, network: 0.4, 'network-large': 0.4, constellation: 0.55, roadmap: 0.5, mascot: 1 };
+    const ACCENTS = { vee: [139, 90, 43], sparks: [255, 0, 19], diamond: [200, 16, 46], wave: [122, 27, 51], network: [31, 76, 120], 'network-large': [0, 0, 0], globe: [203, 255, 61], constellation: [203, 255, 61], roadmap: [203, 255, 61], mascot: [203, 255, 61] };
+    const FORM_C = { vee: 1, sparks: 1, globe: 0, diamond: 1, wave: 0, network: 0.4, 'network-large': 0.4, constellation: 0.55, roadmap: 0.5, mascot: 1 };
     const cwA = (FORM_C[seg.a] ?? 0) * (1 - seg.t);
     const cwB = (FORM_C[seg.b] ?? 0) * seg.t;
     const cwSum = cwA + cwB;
@@ -1899,6 +1988,12 @@ export class FormationPortrait{
         const yv = Math.sin(xs * freq + t * speed + this.phase[i] * 0.2) * amp * breathe;
         x = xs * 0.95; y = yv;
         inten = 0.18 + Math.abs(Math.sin(xs * freq + t * speed + this.phase[i] * 0.2)) * 0.7;
+      } else if(this.name === 'vee'){
+        const vp = veePoint(i, t);
+        x = vp.x; y = vp.y; inten = vp.i;
+      } else if(this.name === 'sparks'){
+        const sp = sparksPoint(i, t);
+        x = sp.x; y = sp.y; inten = sp.i;
       } else if(this.name === 'network'){
         const role = this.role[i];
         if(role === 1){

@@ -65,12 +65,12 @@ const translations = {
   'hosting.titleLeft': { en: 'Hosting', sq: 'Hosting' },
   'hosting.titleRight': { en: 'Security.', sq: 'Siguri.' },
   'hosting.body': {
-    en: 'We host your website on servers within Kosovo for the best possible speed, while keeping it secure around the clock.',
-    sq: 'E hostojmë webfaqen tuaj në servera brenda Kosovës për shpejtësinë më të mirë, duke e mbajtur të sigurt në çdo moment.',
+    en: 'We host your website on fast, managed servers and keep it secure around the clock.',
+    sq: 'E hostojmë webfaqen tuaj në servera të shpejtë e të menaxhuar, duke e mbajtur të sigurt në çdo moment.',
   },
   'hosting.provides': {
-    en: 'Local servers — Uptime monitoring — SSL & backups — Threat protection',
-    sq: 'Servera lokalë — Monitorim 24/7 — SSL & backup — Mbrojtje nga kërcënimet',
+    en: 'Managed servers — Uptime monitoring — SSL & backups — Threat protection',
+    sq: 'Servera të menaxhuar — Monitorim 24/7 — SSL & backup — Mbrojtje nga kërcënimet',
   },
 
   'maintenance.eyebrow': { en: '04 / Maintenance', sq: '04 / Mirëmbajtja' },
@@ -85,8 +85,8 @@ const translations = {
   },
 
   'work.cta': { en: 'See more', sq: 'Shiko më shumë' },
-  'work.eyebrow': { en: 'Concept Work — 03 Projects', sq: 'Projekte Koncept — 03 Projekte' },
-  'work.h2': { en: 'Three worlds, three languages.', sq: 'Tre botë, tre gjuhë.' },
+  'work.eyebrow': { en: 'Concept Work — 05 Projects', sq: 'Projekte Koncept — 05 Projekte' },
+  'work.h2': { en: 'Five worlds, five languages.', sq: 'Pesë botë, pesë gjuhë.' },
   'work.note': {
     en: 'Concept projects that show how we think and what we can build — each with its own design, character and experience. Client work is added here as it launches.',
     sq: 'Projekte koncept që tregojnë si mendojmë dhe çfarë mund të ndërtojmë — secili me dizajn, karakter dhe përvojë të vetën. Punët me klientë shtohen këtu sapo të lansohen.',
@@ -120,6 +120,24 @@ const translations = {
   'work.meridian.tag2': { en: 'UI System', sq: 'Sistem UI' },
   'work.meridian.tag3': { en: 'Data Viz', sq: 'Vizualizim të Dhënash' },
 
+  'work.metalium.aria': { en: 'Enter METALIUM project', sq: 'Hyr te projekti METALIUM' },
+  'work.metalium.desc': {
+    en: 'A one-page site for a steel and metal fabrication company: bold, industrial, with a steel weight calculator built in.',
+    sq: 'Një faqe njëfaqëshe për një kompani konstruksionesh çeliku dhe përpunimi metali: e fortë, industriale, me kalkulator peshe çeliku të integruar.',
+  },
+  'work.metalium.tag1': { en: 'Web Design', sq: 'Dizajn Web' },
+  'work.metalium.tag2': { en: 'Bilingual Site', sq: 'Faqe Dygjuhëshe' },
+  'work.metalium.tag3': { en: 'Steel Calculator', sq: 'Kalkulator Çeliku' },
+
+  'work.vyron.aria': { en: 'Enter VYRON project', sq: 'Hyr te projekti VYRON' },
+  'work.vyron.desc': {
+    en: 'Brand identity and website for an advanced flooring company: bronze on charcoal, calm motion, systems from ARDEX, Gerflor and HAFRO.',
+    sq: 'Identiteti i brendit dhe faqja për një kompani dyshemesh të avansuara: bronz mbi qymyr, lëvizje e qetë, sisteme nga ARDEX, Gerflor dhe HAFRO.',
+  },
+  'work.vyron.tag1': { en: 'Brand Identity', sq: 'Identitet Brendi' },
+  'work.vyron.tag2': { en: 'Web Design', sq: 'Dizajn Web' },
+  'work.vyron.tag3': { en: 'One-Page Site', sq: 'Faqe Njëfaqëshe' },
+
   'services.eyebrow': { en: 'Capabilities', sq: 'Aftësitë' },
   'services.h2': { en: 'What we do.', sq: 'Çfarë bëjmë.' },
   'services.note': {
@@ -141,10 +159,10 @@ const translations = {
     en: 'Custom systems — bookings, sales, anything your business runs on.',
     sq: 'Sisteme të personalizuara — rezervime, shitje, çka i nevojitet biznesit tuaj.',
   },
-  'services.04.title': { en: 'Local Hosting', sq: 'Hosting Lokal' },
+  'services.04.title': { en: 'Managed Hosting', sq: 'Hosting i Menaxhuar' },
   'services.04.desc': {
-    en: 'Hosted on local servers for near-instant load times.',
-    sq: 'Hostuar në serverë lokalë, për kohë ngarkimi pothuajse të menjëhershme.',
+    en: 'Hosted on managed servers for fast load times.',
+    sq: 'Hostuar në serverë të menaxhuar, për kohë ngarkimi të shpejta.',
   },
   'services.05.title': { en: 'SEO & Ongoing Support', sq: 'SEO & Përkrahje e Vazhdueshme' },
   'services.05.desc': {
@@ -181,8 +199,8 @@ const translations = {
   },
   'process.s4.title': { en: 'Launch & care', sq: 'Lansimi & kujdesi' },
   'process.s4.body': {
-    en: 'We put the site live on servers in Kosovo, then keep it updated, backed up and supported.',
-    sq: 'E publikojmë webfaqen në serverë në Kosovë, pastaj e mbajmë të përditësuar, me backup dhe mbështetje.',
+    en: 'We put the site live on fast, secure servers, then keep it updated, backed up and supported.',
+    sq: 'E publikojmë webfaqen në serverë të shpejtë e të sigurt, pastaj e mbajmë të përditësuar, me backup dhe mbështetje.',
   },
 
   'faq.eyebrow': { en: 'Questions', sq: 'Pyetje' },
@@ -203,8 +221,8 @@ const translations = {
   },
   'faq.q4': { en: 'Where is my website hosted?', sq: 'Ku hostohet webfaqja ime?' },
   'faq.a4': {
-    en: 'On servers inside Kosovo, with SSL, backups and 24/7 monitoring.',
-    sq: 'Në serverë brenda Kosovës, me SSL, backup dhe monitorim 24/7.',
+    en: 'On fast, secure servers that we manage for you, with SSL, backups and 24/7 monitoring.',
+    sq: 'Në serverë të shpejtë e të sigurt që i menaxhojmë ne për ju, me SSL, backup dhe monitorim 24/7.',
   },
   'faq.q5': { en: 'What happens after launch?', sq: 'Çfarë ndodh pas lansimit?' },
   'faq.a5': {
@@ -382,7 +400,8 @@ const translations = {
   'modal.ctaNote': { en: 'Full case study — in progress', sq: 'Studimi i plotë i rastit — në progres' },
   'modal.concept': { en: 'Concept', sq: 'Koncept' },
   'modal.back': { en: 'Back', sq: 'Kthehu' },
-  'modal.sitelink': { en: 'Visit live site', sq: 'Vizito faqen live' },
+  'modal.sitelink': { en: 'View live site', sq: 'Shiko faqen live' },
+  'modal.process': { en: 'View our process', sq: 'Shiko procesin tonë' },
   'modal.sitelinkNote': { en: 'Live site — coming soon', sq: 'Faqja live — së shpejti' },
 
   'project.aurelia.tagline': { en: 'Jewelry, presented like art.', sq: 'Bizhuteri, të paraqitura si art.' },
@@ -417,6 +436,28 @@ const translations = {
   'project.meridian.highlight1': { en: 'One accent blue, spent only where it matters', sq: 'Një blu e vetme aksenti, përdorur vetëm aty ku ka rëndësi' },
   'project.meridian.highlight2': { en: 'Type sized for scanning fast-moving numbers', sq: 'Shkronja të përmasuara për skanimin e numrave që lëvizin shpejt' },
   'project.meridian.highlight3': { en: 'A single chart system, shared across every screen', sq: 'Një sistem i vetëm grafikësh, i ndarë në çdo ekran' },
+
+  'project.metalium.tagline': { en: 'Steel, shown the way it is made.', sq: 'Çeliku, i paraqitur ashtu siç bëhet.' },
+  'project.metalium.description': {
+    en: 'METALIUM builds steel structures and metal fabrication projects, and its site had to feel as solid as the work. A black-and-bone page with a single signal red, full-bleed photography of the workshop and the weld, sparks that fly across the images, and a logo intro that plays once. The whole page runs in Albanian and English, with a steel weight calculator and a quote form next to the service list.',
+    sq: 'METALIUM ndërton konstruksione çeliku dhe projekte të përpunimit të metalit, dhe faqja e saj duhej të ndihej po aq e fortë sa puna. Një faqe në të zezë dhe të bardhë kocke me një të kuqe sinjali të vetme, fotografi që mbulojnë të gjithë ekranin nga punishtja dhe saldimi, shkëndija që fluturojnë mbi imazhet dhe një hyrje e logos që luhet vetëm një herë. E gjithë faqja funksionon në shqip dhe anglisht, me kalkulator peshe çeliku dhe formular oferte pranë listës së shërbimeve.',
+  },
+  'project.metalium.discipline': { en: 'Web Design, Front-End Build', sq: 'Dizajn Web, Zhvillim Front-End' },
+  'project.metalium.deliverables': { en: 'One-Page Site (AL/EN), Steel Weight Calculator, Quote Form', sq: 'Faqe Njëfaqëshe (SQ/EN), Kalkulator Peshe Çeliku, Formular Oferte' },
+  'project.metalium.highlight1': { en: 'One signal red on black and bone, used sparingly', sq: 'Një e kuqe sinjali në të zezë dhe të bardhë kocke, e përdorur me kursim' },
+  'project.metalium.highlight2': { en: 'Sparks that fly across the workshop photography', sq: 'Shkëndija që fluturojnë mbi fotografitë e punishtes' },
+  'project.metalium.highlight3': { en: 'A steel weight calculator built into the page', sq: 'Një kalkulator peshe çeliku i integruar në faqe' },
+
+  'project.vyron.tagline': { en: 'Flooring, shown with restraint.', sq: 'Dyshemeja, e paraqitur me thjeshtësi.' },
+  'project.vyron.description': {
+    en: 'VYRON brings together premium materials, technical systems and professional execution on site, so its identity and its website had to feel exact. A charcoal, warm-white and bronze palette taken from the monogram, one typeface, long pauses between sections, and motion that stays calm: a V that draws itself, headlines that rise out of a mask, photographs that wipe in. The site runs in Albanian and English and lays out the ARDEX, Gerflor and HAFRO systems plainly, with a direct way to ask for a quote.',
+    sq: 'VYRON bashkon materiale premium, sisteme teknike dhe ekzekutim profesional në terren, ndaj identiteti dhe faqja e saj duhej të ndiheshin të sakta. Një paletë qymyr, e bardhë e ngrohtë dhe bronz e marrë nga monograma, një shkronjë e vetme, pauza të gjata mes seksioneve dhe lëvizje që mbetet e qetë: një V që vizaton veten, tituj që ngrihen nga një maskë, fotografi që shfaqen me një fshirje. Faqja funksionon në shqip dhe anglisht dhe i paraqet qartë sistemet ARDEX, Gerflor dhe HAFRO, me një mënyrë të drejtpërdrejtë për të kërkuar ofertë.',
+  },
+  'project.vyron.discipline': { en: 'Brand Identity, Web Design, Front-End Build', sq: 'Identitet Brendi, Dizajn Web, Zhvillim Front-End' },
+  'project.vyron.deliverables': { en: 'Logo & Brand Manual, Brand Applications, One-Page Site (AL/EN)', sq: 'Logo dhe Manual Brendi, Aplikime të Brendit, Faqe Njëfaqëshe (SQ/EN)' },
+  'project.vyron.highlight1': { en: 'Bronze on charcoal, taken straight from the monogram', sq: 'Bronz mbi qymyr, marrë drejt nga monograma' },
+  'project.vyron.highlight2': { en: 'A V that draws itself, then gets out of the way', sq: 'Një V që vizaton veten, pastaj tërhiqet' },
+  'project.vyron.highlight3': { en: 'Montserrat in two weights, light and bold', sq: 'Montserrat në dy peshë, e lehtë dhe e trashë' },
 };
 
 export function getLang(){

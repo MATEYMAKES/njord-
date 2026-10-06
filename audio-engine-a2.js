@@ -449,6 +449,193 @@ class NetworkVoice{
 }
 
 /* ----------------------------------------------------------------
+   METALIUM — a welding bench: a thin sawtooth arc hum with a fast
+   flutter, a constant spit of short band-passed noise crackles (the
+   sparks), and a rare inharmonic bell-metal clang.
+   ---------------------------------------------------------------- */
+class MetaliumVoice{
+  constructor(ctx, dest, rnd){
+    this.ctx = ctx; this.rnd = rnd;
+    this.bus = ctx.createGain();
+    this.bus.gain.value = 0.0001;
+    this.bus.connect(dest);
+    this._weight = 0; this.energy = 0;
+
+    this.hum = ctx.createOscillator();
+    this.hum.type = 'sawtooth';
+    this.hum.frequency.value = 100;
+    this.humFilter = ctx.createBiquadFilter();
+    this.humFilter.type = 'lowpass';
+    this.humFilter.frequency.value = 420;
+    this.humFilter.Q.value = 1.2;
+    this.humGain = ctx.createGain();
+    this.humGain.gain.value = 0.0001;
+    this.hum.connect(this.humFilter); this.humFilter.connect(this.humGain); this.humGain.connect(this.bus);
+    this.hum.start();
+
+    this.flutter = ctx.createOscillator();
+    this.flutter.frequency.value = 7.3;
+    this.flutterGain = ctx.createGain();
+    this.flutterGain.gain.value = 0.005;
+    this.flutter.connect(this.flutterGain); this.flutterGain.connect(this.humGain.gain);
+    this.flutter.start();
+
+    this.noise = makeNoiseBuffer(ctx, 1, rnd);
+    this.scheduler = new Scheduler(ctx, (t) => this._tick(t));
+    this.scheduler.start();
+  }
+  _tick(time){
+    if(this._weight > 0.02){
+      const burst = 1 + Math.floor(this.rnd() * 3);
+      for(let k = 0; k < burst; k++) this._crackle(time + k * range(this.rnd, 0.008, 0.03));
+      if(this.rnd() < 0.06) this._clang(time + range(this.rnd, 0, 0.1));
+    }
+    return range(this.rnd, 0.05, 0.28) / (0.6 + this._weight * 0.8 + this.energy * 0.6);
+  }
+  _crackle(time){
+    const ctx = this.ctx;
+    const src = ctx.createBufferSource();
+    src.buffer = this.noise;
+    const bp = ctx.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.frequency.value = range(this.rnd, 2500, 8000);
+    bp.Q.value = 1.5;
+    const g = ctx.createGain();
+    const peak = (0.08 + this.rnd() * 0.14) * this._weight;
+    g.gain.setValueAtTime(0.0001, time);
+    g.gain.linearRampToValueAtTime(peak, time + 0.001);
+    g.gain.exponentialRampToValueAtTime(0.0001, time + range(this.rnd, 0.012, 0.045));
+    src.connect(bp); bp.connect(g); g.connect(this.bus);
+    src.start(time, this.rnd() * 0.9);
+    src.stop(time + 0.06);
+  }
+  _clang(time){
+    const ctx = this.ctx;
+    const base = degreeHz(pick(this.rnd, [0, 2, 4]), 2);
+    const ratios = [1, 2.76, 5.4, 8.93];
+    const amps = [1, 0.5, 0.28, 0.14];
+    const decay = range(this.rnd, 0.9, 1.6);
+    ratios.forEach((r, k) => {
+      const o = ctx.createOscillator();
+      o.type = 'sine';
+      o.frequency.value = base * r;
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0.0001, time);
+      g.gain.linearRampToValueAtTime(0.04 * amps[k] * this._weight, time + 0.003);
+      g.gain.exponentialRampToValueAtTime(0.0001, time + decay / (1 + k * 0.5));
+      o.connect(g); g.connect(this.bus);
+      o.start(time); o.stop(time + decay + 0.05);
+    });
+  }
+  setWeight(w){
+    this._weight = w;
+    const now = this.ctx.currentTime;
+    this.bus.gain.setTargetAtTime(0.0001 + w * 0.9, now, 0.5);
+    this.humGain.gain.setTargetAtTime(0.0001 + w * 0.028, now, 0.6);
+  }
+  setEnergy(pointerSpeed, turbulence){ this.energy = Math.max(pointerSpeed, turbulence); }
+  dispose(){
+    this.scheduler.stop();
+    try{ this.hum.stop(); this.flutter.stop(); }catch(e){}
+  }
+}
+
+/* ----------------------------------------------------------------
+   VYRON — warm and heavy: a low sawtooth/triangle drone a fifth apart,
+   a brown-noise rumble underneath, the whole thing slowly panning
+   left-right like the V turning, and a soft low knock now and then.
+   ---------------------------------------------------------------- */
+class VyronVoice{
+  constructor(ctx, dest, rnd){
+    this.ctx = ctx; this.rnd = rnd;
+    this.bus = ctx.createGain();
+    this.bus.gain.value = 0.0001;
+    this._weight = 0; this.energy = 0;
+
+    this.filter = ctx.createBiquadFilter();
+    this.filter.type = 'lowpass';
+    this.filter.frequency.value = 260;
+    this.filter.Q.value = 0.9;
+    this.bus.connect(this.filter);
+    this.pan = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
+    if(this.pan){ this.filter.connect(this.pan); this.pan.connect(dest); }
+    else this.filter.connect(dest);
+
+    this.o1 = ctx.createOscillator(); this.o1.type = 'sawtooth'; this.o1.frequency.value = 55;
+    this.o2 = ctx.createOscillator(); this.o2.type = 'triangle'; this.o2.frequency.value = 82.4; this.o2.detune.value = 4;
+    this.droneGain = ctx.createGain();
+    this.droneGain.gain.value = 0.0001;
+    this.o1.connect(this.droneGain); this.o2.connect(this.droneGain); this.droneGain.connect(this.bus);
+    this.o1.start(); this.o2.start();
+
+    this.swell = ctx.createOscillator();
+    this.swell.frequency.value = 0.12;
+    this.swellGain = ctx.createGain();
+    this.swellGain.gain.value = 0.008;
+    this.swell.connect(this.swellGain); this.swellGain.connect(this.droneGain.gain);
+    this.swell.start();
+
+    if(this.pan){
+      this.spin = ctx.createOscillator();
+      this.spin.frequency.value = 0.22;
+      this.spinGain = ctx.createGain();
+      this.spinGain.gain.value = 0.85;
+      this.spin.connect(this.spinGain); this.spinGain.connect(this.pan.pan);
+      this.spin.start();
+    }
+
+    const n = Math.floor(ctx.sampleRate * 2);
+    const buf = ctx.createBuffer(1, n, ctx.sampleRate);
+    const d = buf.getChannelData(0);
+    let last = 0;
+    for(let i = 0; i < n; i++){
+      const white = rnd() * 2 - 1;
+      last = (last + 0.02 * white) / 1.02;
+      d[i] = last * 3.5;
+    }
+    this.rumble = ctx.createBufferSource();
+    this.rumble.buffer = buf; this.rumble.loop = true;
+    this.rumbleFilter = ctx.createBiquadFilter();
+    this.rumbleFilter.type = 'lowpass';
+    this.rumbleFilter.frequency.value = 140;
+    this.rumbleGain = ctx.createGain();
+    this.rumbleGain.gain.value = 0.0001;
+    this.rumble.connect(this.rumbleFilter); this.rumbleFilter.connect(this.rumbleGain); this.rumbleGain.connect(this.bus);
+    this.rumble.start();
+
+    this.scheduler = new Scheduler(ctx, (t) => this._tick(t));
+    this.scheduler.start();
+  }
+  _tick(time){
+    if(this._weight > 0.02 && this.rnd() < 0.8){
+      const o = this.ctx.createOscillator();
+      o.type = 'sine';
+      o.frequency.setValueAtTime(range(this.rnd, 62, 74), time);
+      o.frequency.exponentialRampToValueAtTime(38, time + 0.3);
+      const g = this.ctx.createGain();
+      g.gain.setValueAtTime(0.0001, time);
+      g.gain.linearRampToValueAtTime(0.2 * this._weight, time + 0.008);
+      g.gain.exponentialRampToValueAtTime(0.0001, time + 0.45);
+      o.connect(g); g.connect(this.bus);
+      o.start(time); o.stop(time + 0.5);
+    }
+    return range(this.rnd, 1.4, 3.2) / (0.6 + this._weight * 0.6 + this.energy * 0.5);
+  }
+  setWeight(w){
+    this._weight = w;
+    const now = this.ctx.currentTime;
+    this.bus.gain.setTargetAtTime(0.0001 + w * 0.95, now, 0.8);
+    this.droneGain.gain.setTargetAtTime(0.0001 + w * 0.05, now, 0.9);
+    this.rumbleGain.gain.setTargetAtTime(0.0001 + w * 0.16, now, 0.9);
+  }
+  setEnergy(pointerSpeed, turbulence){ this.energy = Math.max(pointerSpeed, turbulence); }
+  dispose(){
+    this.scheduler.stop();
+    try{ this.o1.stop(); this.o2.stop(); this.swell.stop(); this.rumble.stop(); if(this.spin) this.spin.stop(); }catch(e){}
+  }
+}
+
+/* ----------------------------------------------------------------
    GenerativeAudio — identical public API to A1's (attachOrganism,
    enable, disable, toggle, destroy, getPulseWaveform) so it's a
    drop-in replacement for whichever import main.js points at.
@@ -596,7 +783,9 @@ export class GenerativeAudio{
     this.aurelia = new AureliaVoice(ctx, this.master, this.rnd);
     this.pulse = new PulseVoice(ctx, this.master, this.rnd);
     this.network = new NetworkVoice(ctx, this.master, this.rnd);
-    this._voices = [this.globe, this.cloud, this.aurelia, this.pulse, this.network];
+    this.metalium = new MetaliumVoice(ctx, this.master, this.rnd);
+    this.vyron = new VyronVoice(ctx, this.master, this.rnd);
+    this._voices = [this.globe, this.cloud, this.aurelia, this.pulse, this.network, this.metalium, this.vyron];
 
     this._pulseAnalyser = ctx.createAnalyser();
     this._pulseAnalyser.fftSize = 256;
@@ -626,6 +815,8 @@ export class GenerativeAudio{
     this.aurelia.setWeight(weightOf('diamond'));
     this.pulse.setWeight(weightOf('wave'));
     this.network.setWeight(weightOf('network'));
+    this.metalium.setWeight(weightOf('sparks'));
+    this.vyron.setWeight(weightOf('vee'));
     this.cloud.setWeight(cloudWeight, turbulence);
 
     this.masterFilter.frequency.setTargetAtTime(6800 + pointerSpeed * 3600, this.ctx.currentTime, 0.6);

@@ -1,0 +1,1852 @@
+<!doctype html>
+<html lang="sq">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Metalium | Metal Meets Power</title>
+<meta name="description" content="Metalium projekton, prodhon dhe monton konstruksione çeliku, punime metalike sipas porosisë, porta, parmakë, shkallë dhe fasada. Një ekip, nga vizatimi i parë deri te buloni i fundit.">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="fonts/poppins.css">
+<style>
+/* Layout: three acts on full-bleed bands (black intro, white what-and-how, black proof-and-contact) over one 1240px column.
+   Rules, ticks, buttons and cut corners all reuse the 59° slant of the Metalium logomark; the red bracket rules and the
+   corner glow come straight from the brand manual. One deliberate look, so no light/dark theme switch. */
+:root{
+  color-scheme:dark;
+  /* colour */
+  --black:#000000;                 /* brand black */
+  --red:#FF0013;                   /* brand red */
+  --bone:#FCFFF3;                  /* the logo's off-white on dark */
+  --white:#FFFFFF;                 /* paper bands */
+  --coal:#120C0D;                  /* raised surface on black, biased to the red */
+  --ash:#B9BBB3;                   /* running text on black */
+  --slate:#56585B;                 /* running text on white */
+  --mist:#ECEDE9;                  /* photo ground on white while a photo loads */
+  --rule-on-dark:rgba(252,255,243,.2);
+  --rule-on-light:rgba(0,0,0,.18);
+  /* type: Poppins stands in for the manual's Nexa Light / Nexa Bold pairing */
+  --font-display:"Poppins","Nexa","Avenir Next","Century Gothic","Segoe UI",system-ui,sans-serif;
+  --font-body:"Poppins","Nexa","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --font-util:"Poppins","Nexa","Avenir Next","Segoe UI",system-ui,sans-serif;
+  /* geometry */
+  --skew:-30.77deg;                /* logomark slant, 59.23° from horizontal */
+  --gutter:clamp(20px,5vw,64px);
+  --ch:clamp(36px,7vw,110px);      /* height of the slanted step where a black band meets a white one */
+  --ck:calc(var(--ch)*.5955);      /* how far that step leans: the logomark slant again */
+  --top-h:84px;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--black);scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:
+  radial-gradient(circle clamp(350px,64vw,1040px) at 100% 100%,
+    rgba(255,0,19,1) 0%,rgba(255,0,19,.95) 10%,rgba(255,0,19,.85) 20%,rgba(255,0,19,.71) 30%,rgba(255,0,19,.57) 40%,
+    rgba(255,0,19,.42) 50%,rgba(255,0,19,.28) 60%,rgba(255,0,19,.155) 70%,rgba(255,0,19,.057) 80%,rgba(255,0,19,0) 92%) no-repeat,
+  var(--black);color:var(--bone);font-family:var(--font-body);font-size:1.0625rem;line-height:1.65;font-weight:400;-webkit-font-smoothing:antialiased;overflow-x:clip}
+img,svg{display:block}
+h1,h2,h3,p,ul,ol,dl,dd,figure{margin:0}
+ul,ol{padding:0;list-style:none}
+a{color:inherit}
+[hidden]{display:none !important}
+:focus-visible{outline:2px solid var(--red);outline-offset:4px}
+[id]{scroll-margin-top:var(--top-h)}
+
+.wrap{width:min(100% - 2*var(--gutter),1240px);margin-inline:auto}
+.band{background:var(--bg);color:var(--fg)}
+.band--dark{--bg:var(--black);--fg:var(--bone);--muted:var(--ash);--line:var(--rule-on-dark)}
+.band--light{--bg:var(--white);--fg:var(--black);--muted:var(--slate);--line:var(--rule-on-light)}
+.section{padding-block:clamp(72px,10vw,144px)}
+
+/* where a black band meets a white one, the edge takes one step up on the logomark's slant, with a red bar beside it.
+   The step is painted by the lower band, over the empty bottom padding of the band above. */
+.cut{position:relative}
+.cut::before,.cut::after{content:"";position:absolute;height:var(--ch);pointer-events:none}
+.cut::before{left:0;right:0;bottom:calc(100% - 1px);background:var(--bg)}
+.cut--r::before{clip-path:polygon(var(--cx) 100%,calc(var(--cx) + var(--ck)) 0,100% 0,100% 100%)}
+.cut--l::before{clip-path:polygon(0 0,calc(var(--cx) + var(--ck)) 0,var(--cx) 100%,0 100%)}
+.cut::after{bottom:100%;width:calc(var(--ch)*.11);background:var(--red);transform:skewX(var(--skew))}
+.cut--r::after{left:calc(var(--cx) + var(--ck)/2 - var(--ch)*.3)}
+.cut--l::after{left:calc(var(--cx) + var(--ck)/2 + var(--ch)*.19)}
+
+.skip{position:absolute;left:var(--gutter);top:-80px;z-index:60;padding:10px 16px;background:var(--bone);color:var(--black);font-weight:500;text-decoration:none}
+.skip:focus{top:calc(env(safe-area-inset-top,0px) + 10px)}
+
+/* ---------- type ---------- */
+.display{font-family:var(--font-display);font-weight:300;font-size:clamp(2.6rem,10.4vw,7.25rem);line-height:1.02;letter-spacing:-.045em}
+.display span,.display b{display:block}
+.display b,.title b{font-weight:700}
+/* the bold line is welded on at load: an outline that fills behind a moving torch point, then cools */
+.display b{position:relative}
+.display b.is-welding{padding:.12em 0 .24em;margin:-.12em 0 -.24em;color:transparent;-webkit-text-stroke:1px rgba(252,255,243,.4);-webkit-background-clip:text;background-clip:text;
+  background-image:linear-gradient(90deg,var(--bone) calc(var(--wx) - 30px),#fff calc(var(--wx) - 9px),#ffc46b var(--wx),rgba(255,120,30,0) calc(var(--wx) + 3px));background-repeat:no-repeat}
+.display b.is-welding::after{content:"";position:absolute;left:var(--wx);top:52%;width:12px;height:12px;margin:-6px;border-radius:50%;background:#fff;
+  box-shadow:0 0 10px 4px rgba(255,214,150,.95),0 0 44px 16px rgba(255,120,30,.55)}
+.display b.is-welded{animation:cool 1.1s ease-out both}
+@keyframes cool{from{text-shadow:0 0 26px rgba(255,150,50,.7),0 0 2px #fff}to{text-shadow:0 0 26px rgba(255,150,50,0),0 0 2px rgba(255,255,255,0)}}
+/* one spark thrown by the torch or by a red button: a short streak that flies and fades */
+.spk{position:absolute;left:var(--x);top:var(--y);z-index:3;width:2px;height:var(--l,12px);margin-left:-1px;border-radius:2px;background:linear-gradient(#fff,#ffb14a 35%,rgba(255,90,20,0));pointer-events:none;transform-origin:50% 0;animation:spk var(--t,.6s) cubic-bezier(.15,.6,.35,1) both}
+@keyframes spk{from{opacity:1;transform:translate(0,0) rotate(var(--r)) scaleY(.35)}55%{opacity:1}to{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(var(--r)) scaleY(1)}}
+.title b{display:block}
+.title{font-family:var(--font-display);font-weight:300;font-size:clamp(2rem,4.7vw,4rem);line-height:1.08;letter-spacing:-.04em;text-wrap:balance}
+.lead{font-size:clamp(1.06rem,1.45vw,1.3rem);line-height:1.6;font-weight:300}
+.band--light .lead{font-weight:400}
+.util{font-family:var(--font-util);font-size:.7rem;line-height:1.5;font-weight:400;letter-spacing:.2em;text-transform:uppercase}
+
+/* section label with the manual's bracket rule */
+.sec-head{display:grid;justify-items:center;gap:12px;margin-bottom:clamp(28px,4.4vw,56px)}
+.sec-label{font-weight:700;font-size:1rem;line-height:1;text-transform:lowercase;color:var(--muted)}
+.sec-bracket{justify-self:stretch;height:18px;border:1px solid var(--red);border-bottom:0}
+.sec-top{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(20px,5vw,80px);align-items:end}
+.sec-top .lead{color:var(--muted)}
+
+/* ---------- buttons and links ---------- */
+.btn{position:relative;isolation:isolate;display:inline-flex;align-items:center;justify-content:center;min-height:52px;margin-inline:15px;padding:0 30px;border:0;background:none;color:var(--bone);font:500 .95rem/1.2 var(--font-body);letter-spacing:.01em;text-decoration:none;white-space:nowrap;cursor:pointer}
+.btn::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--red);transform:skewX(var(--skew));transition:transform .3s cubic-bezier(.2,.7,.2,1)}
+.btn:hover::before{transform:skewX(var(--skew)) scaleX(1.06)}
+.btn:focus-visible{outline:none}
+.btn:focus-visible::before{outline:2px solid var(--bone);outline-offset:3px}
+.btn--sm{min-height:44px;margin-inline:13px;padding:0 22px;font-size:.88rem}
+.more{display:inline-flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--red);font-weight:500;font-size:.95rem;text-decoration:none}
+.more::after{content:"";width:9px;height:9px;margin-top:-5px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg);transition:transform .3s cubic-bezier(.2,.7,.2,1)}
+.more:hover::after{transform:translateY(4px) rotate(45deg)}
+
+/* ---------- header ---------- */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;height:var(--top-h);color:var(--bone);transition:background-color .3s,box-shadow .3s}
+.top.is-solid,.top.is-open{background:rgba(0,0,0,.94);box-shadow:0 1px 0 var(--rule-on-dark)}
+/* how far down the page: a red line that grows along the header's lower edge */
+.top__prog{position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--red);transform:scaleX(0);transform-origin:0 50%;pointer-events:none}
+.top__in{position:relative;height:100%;display:flex;align-items:center;gap:clamp(12px,calc(3.4vw - 15px),34px)}
+.top__brand{flex:none;margin-right:auto}
+.logo-h{--h:40px;height:var(--h);width:calc(var(--h)*6.289);color:var(--bone);--logo-mark:var(--red);--logo-tag:var(--bone)}
+.nav{display:flex;align-items:center;gap:clamp(16px,calc(4vw - 26px),34px);font-size:.92rem}
+.nav a{position:relative;padding:8px 0;text-decoration:none;white-space:nowrap}
+.nav a::after{content:"";position:absolute;left:0;right:0;bottom:2px;height:2px;background:var(--red);transform:scaleX(0);transform-origin:left;transition:transform .3s cubic-bezier(.2,.7,.2,1)}
+.nav a:hover::after,.nav a:focus-visible::after,.nav a.is-here::after{transform:scaleX(1)}
+.nav .nav__cta{display:none}
+.top__tools{display:flex;align-items:center;gap:clamp(8px,1.4vw,18px)}
+.lang{display:flex;align-items:center;font-size:.8rem;letter-spacing:.12em}
+.lang__b{min-width:38px;min-height:38px;padding:8px 6px;border:0;background:none;color:var(--ash);font:inherit;letter-spacing:inherit;cursor:pointer}
+.lang__b[aria-pressed="true"]{color:var(--bone);font-weight:700}
+.lang__b + .lang__b{position:relative;margin-left:8px}
+.lang__b + .lang__b::before{content:"";position:absolute;left:-5px;top:50%;width:1px;height:16px;background:var(--red);transform:translateY(-50%) rotate(30.77deg)}
+.burger{display:none;place-content:center;gap:7px;width:44px;height:44px;padding:0;border:0;background:none;color:var(--bone);cursor:pointer}
+.burger span{display:block;width:26px;height:2px;background:currentColor;transition:transform .3s}
+.top.is-open .burger span:first-child{transform:translateY(4.5px) rotate(45deg)}
+.top.is-open .burger span:last-child{transform:translateY(-4.5px) rotate(-45deg)}
+
+/* ---------- hero ---------- */
+.hero{position:relative;isolation:isolate;display:flex;align-items:flex-end;min-height:clamp(600px,88vh,880px);margin-top:calc(-1*var(--top-h));overflow:hidden}
+.hero__photo{position:absolute;top:0;left:0;z-index:-2;width:120%;max-width:none;height:100%;object-fit:cover;object-position:50% 34%}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:
+  linear-gradient(90deg,rgba(0,0,0,.92) 0%,rgba(0,0,0,.66) 36%,rgba(0,0,0,0) 72%),
+  linear-gradient(0deg,var(--black) 0%,rgba(0,0,0,0) 46%),
+  linear-gradient(180deg,rgba(0,0,0,.72) 0%,rgba(0,0,0,0) 26%)}
+.hero__in{padding-top:calc(var(--top-h) + 56px);padding-bottom:clamp(28px,4.5vw,52px)}
+.hero__lead{max-width:31em;margin-top:clamp(20px,2.6vw,32px)}
+.hero__actions{display:flex;flex-wrap:wrap;align-items:center;gap:16px 34px;margin-top:clamp(26px,3.4vw,40px)}
+/* live sparks: a canvas laid exactly over a photo, adding light to it */
+.sparks{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;mix-blend-mode:screen}
+.hero__sparks{right:auto;bottom:auto;z-index:-2;width:120%}
+.motion{display:grid;place-items:center;width:40px;height:40px;margin-left:auto;padding:0;border:1px solid var(--line);background:rgba(0,0,0,.4);color:var(--fg);cursor:pointer}
+.motion svg{width:14px;height:14px;fill:currentColor}
+.motion__play,.motion[aria-pressed="true"] .motion__pause{display:none}
+.motion[aria-pressed="true"] .motion__play{display:block}
+.scope{display:flex;align-items:center;gap:clamp(10px,1.6vw,20px);margin-top:clamp(44px,7vw,96px)}
+.scope li{display:flex;align-items:center;gap:clamp(10px,1.6vw,20px);white-space:nowrap}
+.scope li + li{flex:1}
+.scope li + li::before{content:"";flex:1;min-width:14px;height:1px;background:var(--red);transform-origin:left}
+
+/* ---------- about ---------- */
+.about{padding-top:clamp(56px,8vw,120px);padding-bottom:clamp(44px,6vw,84px)}
+/* the tagline as a slow band of outlined type, closing the black opening act */
+.tape{overflow:hidden;padding-bottom:calc(var(--ch) + clamp(24px,3.6vw,56px));background:var(--black);color:var(--bone)}
+.tape__track{display:flex;width:max-content}
+.tape__g{display:flex;flex:none;align-items:center;gap:.3em;padding-right:.3em;font:700 clamp(3.4rem,12.5vw,11rem)/1.05 var(--font-display);letter-spacing:-.045em;text-transform:uppercase;white-space:nowrap}
+.tape__w{color:transparent;-webkit-text-stroke:1.5px rgba(252,255,243,.6)}
+.tape__w--fill{color:var(--bone);-webkit-text-stroke:0}
+.tape__m{flex:none;width:1.55em;height:.618em;color:var(--red)}
+@keyframes tape{to{transform:translateX(-50%)}}
+.about__grid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(28px,5vw,80px);align-items:end}
+.about__copy .lead{max-width:33em;margin-top:clamp(20px,2.6vw,32px);color:var(--muted)}
+.about__fig img{width:100%;height:auto;filter:brightness(.84) contrast(1.08);-webkit-mask-image:linear-gradient(180deg,#000 60%,rgba(0,0,0,0) 100%),linear-gradient(90deg,rgba(0,0,0,0) 0%,#000 26%);-webkit-mask-composite:source-in;mask-image:linear-gradient(180deg,#000 60%,rgba(0,0,0,0) 100%),linear-gradient(90deg,rgba(0,0,0,0) 0%,#000 26%);mask-composite:intersect}
+.values{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:clamp(40px,6vw,88px);border-top:1px solid var(--line)}
+.value{padding:clamp(22px,2.6vw,34px) clamp(18px,2.6vw,36px) 0 0}
+.value + .value{padding-left:clamp(18px,2.6vw,36px);border-left:1px solid var(--line)}
+.value h3{display:flex;align-items:center;gap:14px;font-size:1.3rem;font-weight:700;line-height:1.2;letter-spacing:-.02em}
+.value h3::before{content:"";flex:none;width:17px;height:13px;margin-left:4px;background:var(--red);transform:skewX(var(--skew))}
+.value p{max-width:26em;margin-top:10px;color:var(--muted)}
+
+/* ---------- services ---------- */
+.svc-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:clamp(40px,6vw,80px);border-top:1px solid var(--line)}
+.svc{padding-block:clamp(26px,3.6vw,48px);border-bottom:1px solid var(--line)}
+.svc:nth-child(odd){padding-right:clamp(20px,3.6vw,52px);border-right:1px solid var(--line)}
+.svc:nth-child(even){padding-left:clamp(20px,3.6vw,52px)}
+.svc h3{font-size:clamp(1.3rem,2vw,1.7rem);font-weight:700;line-height:1.15;letter-spacing:-.025em}
+.svc__d{margin-top:12px;color:var(--muted)}
+/* one photo per listed example: the list under the photo picks which one shows */
+.svc__fig{position:relative;width:100%;aspect-ratio:3/2;margin-top:clamp(18px,2.2vw,28px);overflow:hidden;background:var(--mist);cursor:pointer;clip-path:polygon(0 0,100% 0,100% calc(100% - 48px),calc(100% - 28.6px) 100%,0 100%)}
+.svc__fig img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0}
+.svc__fig img.is-prev{z-index:1;opacity:1}                 /* the outgoing photo stays underneath while the new one wipes in */
+.svc__fig img.is-on{z-index:2;opacity:1}
+.svc__fig img.is-in{animation:wipe .6s cubic-bezier(.5,0,.2,1) both}
+.svc__fig::after{content:"";position:absolute;top:-2%;bottom:-2%;left:-22%;z-index:3;width:3px;background:var(--red);transform:skewX(var(--skew));pointer-events:none}
+.svc__fig.is-wiping::after{animation:wipe-line .6s cubic-bezier(.5,0,.2,1) both}
+/* the technical drawing: lies over the photo while it is pointed at, or pinned with the corner button */
+.plan{position:absolute;inset:0;z-index:4;color:var(--bone);background:
+  linear-gradient(rgba(252,255,243,.075) 1px,rgba(252,255,243,0) 1px) 50% 50%/100% 26px,
+  linear-gradient(90deg,rgba(252,255,243,.075) 1px,rgba(252,255,243,0) 1px) 50% 50%/26px 100%,
+  rgba(0,0,0,.74);-webkit-backdrop-filter:grayscale(1) contrast(1.05);backdrop-filter:grayscale(1) contrast(1.05);
+  opacity:0;visibility:hidden;transition:opacity .35s ease,visibility 0s .35s;pointer-events:none}
+.svc__fig.is-plan .plan{opacity:1;visibility:visible;transition:opacity .35s ease}
+.plan .dwg{position:absolute;left:14px;top:12px;width:calc(100% - 28px);height:calc(100% - 68px);overflow:visible}
+.plan__cap{position:absolute;left:16px;right:58px;bottom:10px;display:flex;flex-wrap:wrap;gap:0 14px;padding-top:7px;border-top:1px solid rgba(252,255,243,.3);color:var(--ash);opacity:0;transition:opacity .4s ease}
+.plan__cap b{color:var(--bone);font-weight:700}
+.svc__fig.is-plan .plan__cap{opacity:1;transition-delay:.5s}
+/* a steel section in a drawing: hatched cut, dash-dot axes, red dimension lines with slanted ticks */
+.dwg__cut{fill:url(#hatch-bone);stroke:var(--bone);stroke-width:1.1;stroke-linejoin:round}
+.dwg__axis{fill:none;stroke:var(--bone);stroke-width:.5;stroke-dasharray:9 2.5 1.5 2.5;opacity:.5}
+.dwg__dim{fill:none;stroke:var(--red);stroke-width:.8}
+.dwg__tick{fill:none;stroke:var(--red);stroke-width:1.4}
+.dwg text{font:700 9.5px var(--font-util);fill:var(--red)}
+@media (max-width:899px){.plan .dwg text{font-size:11.5px}}
+/* drawn in: the outline first, then its hatch, then the dimensions */
+.plan .dwg__cut{stroke-dasharray:1;stroke-dashoffset:1;fill-opacity:0;transition:stroke-dashoffset 0s .35s,fill-opacity 0s .35s}
+.plan .dwg__dim{stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 0s .35s}
+.plan .dwg__axis,.plan .dwg__tick,.plan .dwg text{opacity:0;transition:opacity 0s .35s}
+.is-plan .plan .dwg__cut{stroke-dashoffset:0;fill-opacity:1;transition:stroke-dashoffset .8s cubic-bezier(.5,0,.2,1) .08s,fill-opacity .45s ease .62s}
+.is-plan .plan .dwg__dim{stroke-dashoffset:0;transition:stroke-dashoffset .7s cubic-bezier(.5,0,.2,1) .5s}
+.is-plan .plan .dwg__axis{opacity:.5;transition:opacity .4s ease .1s}
+.is-plan .plan .dwg__tick,.is-plan .plan .dwg text{opacity:1;transition:opacity .3s ease 1.05s}
+.plan-btn{position:absolute;top:10px;right:10px;z-index:5;display:grid;place-items:center;width:40px;height:40px;padding:0;border:1px solid rgba(252,255,243,.5);background:rgba(0,0,0,.55);color:var(--bone);cursor:pointer;transition:background-color .2s,border-color .2s}
+.plan-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.4}
+.plan-btn:hover{border-color:var(--bone)}
+.plan-btn[aria-pressed="true"]{border-color:var(--red);background:var(--red)}
+.plan-btn:focus-visible{outline:2px solid var(--bone);outline-offset:2px}
+@keyframes wipe{from{clip-path:polygon(0 0,0 0,-39.7% 100%,0 100%)}to{clip-path:polygon(0 0,139.7% 0,100% 100%,0 100%)}}
+@keyframes wipe-line{from{left:-19.85%}to{left:119.85%}}
+.picks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 18px;margin-top:14px}
+.pick{display:flex;align-items:baseline;gap:11px;width:100%;min-height:40px;padding:8px 0;border:0;background:none;color:var(--muted);font:500 .92rem/1.4 var(--font-body);text-align:left;cursor:pointer;transition:color .2s}
+.pick::before{content:"";flex:none;width:10px;height:8px;margin-left:3px;border:1.5px solid currentColor;transform:skewX(var(--skew));transition:background-color .2s,border-color .2s}
+.pick:hover,.pick[aria-pressed="true"]{color:var(--fg)}
+.pick[aria-pressed="true"]::before{border-color:var(--red);background:var(--red)}
+@media (min-width:900px){
+  @supports (grid-template-rows:subgrid){
+    .svc{display:grid;grid-row:span 4;grid-template-rows:subgrid}   /* titles, text, photos and lists line up across both columns */
+  }
+}
+
+/* ---------- steel weight calculator: a black instrument panel on the white band ---------- */
+.calc{padding-top:0}
+.calc__grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(28px,5vw,80px);align-items:start}
+.calc__copy .lead{max-width:27em;margin-top:clamp(18px,2.4vw,28px);color:var(--muted)}
+.calc__copy .note{margin-top:clamp(20px,2.6vw,30px)}
+.calc__panel{--fg:var(--bone);--muted:var(--ash);--line:var(--rule-on-dark);position:relative;display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) minmax(0,1fr);gap:24px 26px;padding:clamp(22px,3.2vw,44px);background:var(--black);color:var(--fg);
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 60px),calc(100% - 35.7px) 100%,0 100%)}
+.calc__panel > *{min-width:0}
+.calc__fams{grid-column:1 / -1;margin:0;padding:0;border:0}
+.calc__fams legend{padding:0;margin-bottom:10px;color:var(--muted)}
+.fams{display:flex;flex-wrap:wrap;gap:8px 2px;margin-left:-3px}
+.fam{position:relative;cursor:pointer}
+.fam input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.fam span{position:relative;isolation:isolate;display:grid;place-items:center;min-height:44px;margin-inline:11px;padding:0 15px;color:var(--muted);font-weight:500;font-size:.92rem;line-height:1.2;white-space:nowrap;transition:color .2s}
+.fam span::before{content:"";position:absolute;inset:0;z-index:-1;border:1px solid var(--line);transform:skewX(var(--skew));transition:background-color .2s,border-color .2s}
+.fam:hover span{color:var(--fg)}
+.fam input:checked + span{color:var(--bone)}
+.fam input:checked + span::before{border-color:var(--red);background:var(--red)}
+.fam input:focus-visible + span::before{outline:2px solid var(--bone);outline-offset:3px}
+.calc__out{grid-column:1 / -1;display:grid;grid-template-columns:minmax(0,236px) minmax(0,1fr);gap:clamp(16px,3vw,40px);align-items:center;padding-top:22px;border-top:1px solid var(--line)}
+.calc__dwg{width:100%;height:auto;overflow:visible}
+.calc__dwg text{font-size:10.5px}
+.calc__res .util{color:var(--muted)}
+.calc__kg{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 .22em;margin-top:2px;font:700 clamp(2.5rem,5.6vw,4.4rem)/1.05 var(--font-display);letter-spacing:-.045em;font-variant-numeric:tabular-nums}
+.calc__kg span{color:var(--red);font-size:.42em;letter-spacing:-.02em}
+.calc__sum{margin-top:8px;font-weight:500;font-variant-numeric:tabular-nums}
+.calc__dims{margin-top:2px;color:var(--muted);font-size:.88rem;font-variant-numeric:tabular-nums}
+.calc__panel .form__foot{padding-right:36px}
+
+/* ---------- process: a dimension chain ---------- */
+.process{padding-top:0}
+.cmark{width:100%;height:auto}
+.cmark__guides{fill:none;stroke:var(--red);stroke-width:1;vector-effect:non-scaling-stroke;opacity:.8}
+.cmark__hatch{fill:var(--fg)}
+.cmark__outline{fill:none;stroke:var(--fg);stroke-width:1;vector-effect:non-scaling-stroke;opacity:.22}
+.proc-top .cmark{max-width:400px;margin-left:auto}
+.chain{position:relative;--p:1;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));margin-top:clamp(72px,8vw,112px)}
+/* the red dimension line: drawn across as the page scrolls (--p runs 0..1), with a hot point at its tip */
+.chain::before{content:"";position:absolute;left:0;top:-1px;width:calc(var(--p)*100%);height:3px;background:var(--red)}
+.chain::after{content:"";position:absolute;left:calc(var(--p)*100%);top:0;z-index:2;width:9px;height:9px;margin:-4px 0 0 -4.5px;border-radius:50%;background:#fff;box-shadow:0 0 0 2.5px var(--red),0 0 16px 6px rgba(255,0,19,.5);opacity:0;transition:opacity .3s}
+.chain.is-drawing::after{opacity:1}
+.chain.is-live li{border-top-color:var(--line)}
+.chain.is-live li > *{opacity:.26;transition:opacity .5s ease}
+.chain.is-live li.is-on > *{opacity:1}
+.chain.is-live li::before,.chain.is-live li:last-child::after{background:rgba(0,0,0,.3);transition:background-color .3s}
+.chain.is-live li.is-on::before,.chain.is-live.is-done li:last-child::after{background:var(--red)}
+.chain li{position:relative;padding:30px clamp(14px,1.8vw,26px) 6px;border-top:1px solid var(--fg);border-left:1px solid var(--line)}
+.chain li:last-child{border-right:1px solid var(--line)}
+.chain li::before,.chain li:last-child::after{content:"";position:absolute;top:-11px;width:2px;height:21px;background:var(--red);transform:rotate(30.77deg)}
+.chain li::before{left:-1.5px}
+.chain li:last-child::after{right:-1.5px}
+.chain__n{position:absolute;top:-32px;left:0;right:0;color:var(--red);font-weight:700;text-align:center}
+.chain h3{font-size:1.12rem;font-weight:700;line-height:1.25;letter-spacing:-.015em}
+.chain p{margin-top:10px;color:var(--muted);font-size:.95rem;line-height:1.6}
+
+/* ---------- projects ---------- */
+.projects{padding-bottom:clamp(40px,5vw,72px)}
+.note{padding:12px 16px;border:1px dashed var(--line);color:var(--muted);font-size:.88rem;line-height:1.55}
+.proj-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:clamp(30px,3.6vw,56px) clamp(16px,2.4vw,32px);margin-top:clamp(40px,6vw,80px)}
+.proj{min-width:0}
+.proj--wide{grid-column:span 7}
+.proj--narrow{grid-column:span 5}
+.proj__img{position:relative;height:clamp(230px,31vw,440px);background:var(--coal);clip-path:polygon(0 0,100% 0,100% calc(100% - 60px),calc(100% - 35.7px) 100%,0 100%)}
+.proj__img img{width:100%;height:100%;object-fit:cover}
+/* the roof photo has no sparks of its own: a band of light crosses the lit roof behind the trusses, then rests */
+.sweep{position:absolute;inset:0;overflow:hidden;pointer-events:none;mix-blend-mode:color-dodge;transition:opacity .5s}
+.sweep::before{content:"";position:absolute;top:-12%;bottom:-12%;left:0;width:58%;background:linear-gradient(90deg,rgba(150,140,132,0),rgba(150,140,132,.85) 50%,rgba(150,140,132,0));transform:translateX(-150%) skewX(var(--skew))}
+@keyframes sweep{0%{transform:translateX(-150%) skewX(var(--skew))}62%,100%{transform:translateX(215%) skewX(var(--skew))}}
+.is-paused .sweep{opacity:0}
+.proj__cap{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 16px;align-items:start;padding-top:16px}
+.proj__cap h3{font-size:1.15rem;font-weight:700;line-height:1.25;letter-spacing:-.015em}
+.proj__cap .util{grid-column:1;color:var(--muted)}
+.chip{grid-column:2;grid-row:1 / span 2;padding:5px 9px;border:1px dashed var(--line);color:var(--muted);font-size:.64rem;line-height:1.4;letter-spacing:.18em;text-transform:uppercase;white-space:nowrap}
+
+/* ---------- contact and footer sit on the manual's corner glow, painted on the page itself ---------- */
+.glow{--fg:var(--bone);--muted:var(--ash);--line:var(--rule-on-dark);color:var(--fg)}
+.glow :focus-visible{outline-color:var(--bone)}
+.contact{padding-bottom:clamp(64px,8vw,120px)}
+.contact__grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:clamp(32px,6vw,96px);align-items:start}
+.contact__copy .lead{max-width:28em;margin-top:clamp(18px,2.4vw,28px);color:var(--muted)}
+.facts{margin-top:clamp(28px,4vw,48px);border-top:1px solid var(--line)}
+.facts div{display:grid;grid-template-columns:110px minmax(0,1fr);gap:16px;padding:14px 0;border-bottom:1px solid var(--line)}
+.facts dt{padding-top:5px;color:var(--muted)}
+.facts dd{font-weight:500;overflow-wrap:anywhere}
+.contact__copy .note{margin-top:22px}
+.form{position:relative;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 28px;padding:clamp(22px,3.2vw,44px);background:rgba(0,0,0,.74);border:1px solid var(--line)}
+.field{display:grid;gap:8px;min-width:0}
+.field--wide{grid-column:1 / -1}
+.field label{color:var(--muted)}
+.field input,.field select,.field textarea{width:100%;padding:10px 0;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;color:var(--fg);font:400 1rem/1.5 var(--font-body);-webkit-appearance:none;appearance:none}
+.field textarea{min-height:118px;resize:vertical}
+.field select{padding-right:28px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23FCFFF3' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 4px center}
+.field option{background:var(--black);color:var(--bone)}
+.field input:focus-visible,.field select:focus-visible,.field textarea:focus-visible{outline:none;border-bottom-color:var(--red);box-shadow:0 1px 0 0 var(--red)}
+.field ::placeholder{color:rgba(252,255,243,.45)}
+/* a weld seam runs once around the form when it is submitted: a torch point, a hot line behind it that cools */
+.seam{position:absolute;left:-1px;top:-1px;width:calc(100% + 2px);height:calc(100% + 2px);overflow:visible;pointer-events:none;opacity:0}
+.seam path{fill:none}
+.seam__glow{stroke:rgba(255,130,40,.6);stroke-width:8;filter:blur(5px)}
+.seam__line{stroke:#ffd9a0;stroke-width:2}
+.form.is-welding .seam,.form.is-welded .seam{opacity:1}
+.form.is-welded .seam__glow{opacity:0;transition:opacity 1.6s ease-out}
+.form.is-welded .seam__line{stroke:rgba(252,255,243,.62);stroke-width:1;transition:stroke 1.6s ease-out,stroke-width 1.6s ease-out}
+.seam__torch{position:absolute;left:0;top:0;z-index:3;width:12px;height:12px;margin:-6px;border-radius:50%;background:#fff;box-shadow:0 0 10px 4px rgba(255,214,150,.95),0 0 40px 14px rgba(255,120,30,.55);pointer-events:none;opacity:0}
+.form.is-welding .seam__torch{opacity:1}
+.form__foot{grid-column:1 / -1;display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px}
+.form__status{flex:1 1 240px;min-width:0;font-size:.9rem;line-height:1.5}
+
+.foot{padding-top:clamp(36px,5vw,64px);border-top:1px solid var(--line);overflow:hidden}
+.foot__grid{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:14px 40px}
+.foot__nav{display:flex;flex-wrap:wrap;gap:10px 30px;font-size:.95rem}
+.foot__nav a{padding:6px 0;text-decoration:none}
+.foot__nav a:hover{text-decoration:underline;text-decoration-color:var(--red);text-underline-offset:6px}
+.foot__base{display:flex;flex-wrap:wrap;gap:8px 28px;font-size:.82rem}
+.foot__base a{text-decoration:underline;text-underline-offset:4px}
+/* 18.04 % of the width tall; the feet of the letters run off the page */
+.foot__big{margin-top:clamp(30px,4.6vw,64px)}
+.foot__big svg{width:100%;height:auto;margin-bottom:-2.1%;color:var(--bone);transform:translateY(calc((1 - var(--fp,1))*46%))}
+
+/* ---------- intro: the logomark is assembled on black, then the curtain is cut away on the slant ---------- */
+.curtain{display:none}
+@keyframes piece{from{opacity:0;transform:translate(var(--px),var(--py))}to{opacity:1;transform:none}}
+@keyframes cooldown{from{fill:#fff6e0}to{fill:var(--red)}}
+@keyframes curtain{from{clip-path:polygon(0 0,300% 0,300% 100%,-59.55vh 100%)}to{clip-path:polygon(calc(100% + 59.55vh) 0,300% 0,300% 100%,100% 100%);visibility:hidden}}
+@keyframes curtain-edge{0%{left:-29.78vh;opacity:0}6%{opacity:1}100%{left:calc(100% + 29.78vh);opacity:1}}
+
+/* ---------- motion: one load sequence in the hero ---------- */
+@keyframes rise{from{opacity:0;transform:translateY(.3em)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes draw{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes settle{from{transform:scale(1.06)}to{transform:scale(1)}}
+@media (prefers-reduced-motion:no-preference){
+  :root{--id:.85s}                      /* how long the hero's own entrance waits for the curtain */
+  :root.no-intro{--id:0s}
+  .curtain{position:fixed;inset:0;z-index:90;display:grid;place-items:center;background:var(--black);pointer-events:none;animation:curtain .56s .8s cubic-bezier(.6,0,.2,1) both}
+  .no-intro .curtain{display:none}
+  .curtain__mark{width:clamp(170px,27vw,330px);height:auto;overflow:visible}
+  .curtain__mark path{animation:piece .42s cubic-bezier(.2,.75,.2,1) var(--pd,0s) both,cooldown .5s ease-out calc(var(--pd,0s) + .26s) both}
+  .curtain__edge{position:absolute;top:0;bottom:0;left:-29.78vh;width:max(5px,.45vw);background:var(--red);transform:skewX(var(--skew));animation:curtain-edge .56s .8s cubic-bezier(.6,0,.2,1) both}
+  .intro .display > *{animation:rise .9s cubic-bezier(.2,.7,.2,1) var(--id,0s) both}
+  .intro .display > b{animation-delay:calc(var(--id,0s) + .12s)}
+  .tape__track{animation:tape var(--tape-t,75s) linear infinite}
+  .is-paused .tape__track{animation-play-state:paused}
+  .intro .hero__lead,.intro .hero__actions{animation:fade .9s calc(var(--id,0s) + .4s) both}
+  .intro .scope li + li::before{animation:draw 1.1s calc(var(--id,0s) + .55s) cubic-bezier(.2,.7,.2,1) both}
+  .intro .hero__photo,.intro .hero__sparks{animation:settle 1.8s cubic-bezier(.2,.7,.2,1) var(--id,0s) both}
+  .sweep::before{animation:sweep 14s linear 1.5s infinite}
+  .is-paused .sweep::before{animation-play-state:paused}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{transition-duration:.01ms !important}
+  .svc__fig img.is-in,.svc__fig.is-wiping::after,.display b.is-welded{animation:none}
+}
+
+/* ---------- panels slide in as the page scrolls ----------
+   The script marks a panel .rv only if it starts below the screen, so the page is complete without script,
+   for reduced motion, and for whatever is already in view. .rv-in plays the slide; both classes are removed after. */
+.rv{opacity:0;transform:translate3d(var(--rx,0px),var(--ry,44px),0)}
+.rv.rv-in{opacity:1;transform:none;transition:opacity .7s ease var(--rd,0s),transform .9s cubic-bezier(.16,.8,.24,1) var(--rd,0s)}
+.rv-left{--rx:-72px;--ry:0px}
+.rv-right{--rx:72px;--ry:0px}
+
+/* ---------- narrower screens ---------- */
+@media (max-width:1079px){
+  :root{--top-h:72px}
+  .logo-h{--h:min(34px,calc((100vw - 2*var(--gutter) - 152px)/6.289))}   /* 152px: language switch, menu button and the gaps */
+  .burger{display:grid}
+  .top__cta{display:none}
+  .nav{position:absolute;left:calc(-1*var(--gutter));right:calc(-1*var(--gutter));top:100%;display:grid;gap:0;padding:6px var(--gutter) 26px;background:var(--black);border-bottom:1px solid var(--rule-on-dark);font-size:1.2rem;visibility:hidden;opacity:0;transform:translateY(-8px);transition:opacity .25s,transform .25s,visibility 0s .25s}
+  .top.is-open .nav{visibility:visible;opacity:1;transform:none;transition:opacity .25s,transform .25s}
+  .nav a{padding:15px 0;border-bottom:1px solid var(--rule-on-dark)}
+  .nav a::after{display:none}
+  .nav a.is-here{font-weight:700}
+  .nav .nav__cta{display:inline-flex;justify-self:start;margin-top:24px;padding:0 30px;border-bottom:0;font-size:.95rem}
+}
+@media (min-width:900px) and (max-width:1199px){
+  .picks{grid-template-columns:minmax(0,1fr)}
+}
+@media (min-width:600px) and (max-width:899px){
+  /* tablet: text and example list on the left, the photo beside them */
+  .svc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);grid-template-rows:auto auto 1fr;grid-template-areas:"t f" "d f" "p f";column-gap:clamp(22px,4.4vw,40px)}
+  .svc h3{grid-area:t}
+  .svc__d{grid-area:d}
+  .svc .svc__fig{grid-area:f;align-self:start;margin-top:0}
+  .svc .picks{grid-area:p;align-self:start}
+}
+@media (max-width:899px){
+  .rv-left,.rv-right{--rx:0px;--ry:40px}
+  .sec-top,.about__grid,.contact__grid,.calc__grid{grid-template-columns:minmax(0,1fr)}
+  .about__fig{max-width:460px;margin-left:auto}
+  .svc-grid{grid-template-columns:minmax(0,1fr)}
+  .svc:nth-child(odd),.svc:nth-child(even){padding-inline:0;border-right:0}
+  .picks{grid-template-columns:minmax(0,1fr)}
+  .pick{min-height:44px}
+  .proc-top .cmark{max-width:300px;margin-left:0}
+  .chain{grid-template-columns:minmax(0,1fr);margin-top:44px;margin-left:10px;border-left:1px solid var(--fg)}
+  .chain.is-live{border-left-color:var(--line)}
+  .chain::before{left:-2px;top:0;width:3px;height:calc(var(--p)*100%)}
+  .chain::after{left:-.5px;top:calc(var(--p)*100%)}
+  .chain li,.chain li:last-child{padding:0 0 30px 34px;border:0}
+  .chain li:last-child{padding-bottom:0}
+  .chain li::before{left:-1.5px;top:-4px;transform:rotate(59.23deg)}
+  .chain li:last-child::after{display:none}
+  .chain__n{position:static;display:block;margin-bottom:4px;text-align:left}
+  .proj--wide,.proj--narrow{grid-column:1 / -1}
+}
+@media (max-width:720px){
+  .hero__photo{width:100%;height:64%;object-position:60% 50%}
+  .hero__sparks{width:100%;height:64%}
+  .hero::after{background:
+    linear-gradient(0deg,var(--black) 38%,rgba(0,0,0,0) 64%),
+    linear-gradient(180deg,rgba(0,0,0,.72) 0%,rgba(0,0,0,0) 22%)}
+  .values{grid-template-columns:minmax(0,1fr)}
+  .value,.value + .value{padding:22px 0;border-left:0}
+  .value + .value{border-top:1px solid var(--line)}
+  .value:last-child{padding-bottom:0}
+  .util{letter-spacing:.14em}
+  .tape__track{--tape-t:48s}
+}
+@media (max-width:560px){
+  .form{grid-template-columns:minmax(0,1fr)}
+  .calc__panel{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 20px;clip-path:polygon(0 0,100% 0,100% calc(100% - 40px),calc(100% - 23.8px) 100%,0 100%)}
+  .calc__panel .field--size{grid-column:1 / -1}
+  .calc__out{grid-template-columns:minmax(0,1fr)}
+  .calc__dwg{max-width:210px}
+  .facts div{grid-template-columns:minmax(0,1fr);gap:2px}
+  .proj__img{clip-path:polygon(0 0,100% 0,100% calc(100% - 40px),calc(100% - 23.8px) 100%,0 100%)}
+}
+</style>
+</head>
+<body>
+
+<!-- shared SVG: logo lockups traced from the brand manual -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="logo-h" viewBox="0 0 932.98 148.36"><path style="fill:var(--logo-mark,#FF0013)" d="M244 121.55L304.78 121.55L268.58 60.75L207.78 60.75ZM217.56 60.8L156.77 60.8L192.98 0L253.77 0ZM157.8 60.8L121.59 0L72.36 0L0 121.59L60.8 121.59L97 60.8L96.94 60.8L96.98 60.73L97.02 60.8L97 60.8L133.2 121.59L194 121.59Z"/><path fill="currentColor" d="M342.3 10.27L364.28 10.27L389.58 56.86L414.73 10.27L436.73 10.27L436.73 106.48L414.73 106.48L414.73 53.42L394.67 90.53L384.36 90.53L364.28 53.42L364.28 106.48L342.3 106.48ZM490.09 62.5C493.39 62.5 495.58 60.44 495.58 57.83C495.58 55.34 493.39 53.56 490.09 53.56L475.66 53.56C471.25 53.56 468.38 55.77 468.38 59.06L468.38 62.5ZM468.38 83.11C468.38 86.42 470.98 88.61 474.69 88.61L511.25 88.61L511.25 106.48L483.36 106.48C459.98 106.48 447.75 93.3 447.75 72.11C447.75 50.27 459.44 35.69 481.42 35.69C502.05 35.69 513.45 43.11 513.45 58.23C513.45 73.36 503.83 80.36 488.72 80.36L468.38 80.36ZM543.72 37.75L565.7 37.75L565.7 55.62L543.72 55.62L543.72 83.11C543.72 87.23 546.33 88.61 550.03 88.61L567.5 88.61L567.5 106.48L559.25 106.48C535.33 106.48 523.09 94.81 523.09 78.98L523.09 10.12L543.72 10.12ZM616.31 90.67C619.33 90.67 621.25 88.47 621.25 85.17L621.25 59.06C621.25 55.77 619.33 53.56 616.31 53.56L597.89 53.56C594.58 53.56 592.39 55.77 592.39 59.06L592.39 85.17C592.39 88.47 594.58 90.67 597.89 90.67ZM650.13 106.48L640.08 106.48C631.16 106.48 622.63 102.22 621.39 93.97C617.69 102.5 611.5 108.55 602 108.55C582.34 108.55 571.77 93.97 571.77 72.12C571.77 50.27 582.34 35.69 602 35.69C611.36 35.69 617.55 41.59 621.25 49.98L621.25 37.75L641.88 37.75L641.88 83.11C641.88 86.41 644.08 88.61 647.38 88.61L650.13 88.61ZM683.95 88.61L695.36 88.61L695.36 106.48L692.61 106.48C669.25 106.48 657 93.28 657 72.12L657 3.39L677.63 3.39L677.63 83.11C677.63 86.41 680.23 88.61 683.95 88.61M700.88 37.75L721.48 37.75L721.48 106.48L700.88 106.48ZM700.19 7.5C700.19 4.2 702.38 2 705.67 2L716.67 2C719.97 2 722.17 4.2 722.17 7.5L722.17 18.5C722.17 21.8 719.97 24 716.67 24L705.67 24C702.38 24 700.19 21.8 700.19 18.5ZM733.88 37.75L754.48 37.75L754.48 85.17C754.48 88.47 756.69 90.67 759.98 90.67L777.03 90.67C780.06 90.67 781.98 88.47 781.98 85.17L781.98 37.75L802.61 37.75L802.61 106.48L781.98 106.48L781.98 94.39C778 102.64 770.58 108.55 757.64 108.55C743.08 108.55 733.88 98.78 733.88 85.05ZM816.36 106.48L816.36 37.75L836.98 37.75L836.98 49.7C840.42 41.45 846.2 35.69 854.17 35.69C864.63 35.69 871.48 41.33 874.23 49.98C878.22 41.59 884.55 35.69 892.66 35.69C906.41 35.69 913.97 45.45 913.97 59.2L913.97 106.48L893.34 106.48L893.34 59.06C893.34 55.77 891.16 53.56 887.84 53.56L880.42 53.56C877.41 53.56 875.48 55.77 875.48 59.06L875.48 106.48L854.86 106.48L854.86 59.06C854.86 55.77 852.66 53.56 849.36 53.56L841.94 53.56C838.91 53.56 836.98 55.77 836.98 59.06L836.98 106.48ZM923.7 20.36L923.7 23.66C925.05 23.66 925.19 23.66 925.86 23.66C926.83 23.66 927.39 22.94 927.39 22.02C927.39 21.08 926.83 20.36 925.84 20.36C925.03 20.36 924.88 20.36 923.7 20.36M925.84 19.61C926.58 19.61 927.19 19.92 927.56 20.38C928.33 21.28 928.34 22.73 927.58 23.64C927.33 23.94 927 24.17 926.59 24.3L928.05 27.11L927.17 27.11L925.78 24.41C925.19 24.41 924.98 24.41 923.7 24.41L923.7 27.23L922.95 27.23L922.95 19.61C924.22 19.61 924.5 19.61 925.84 19.61M925.38 16.58C921.59 16.58 918.52 19.66 918.52 23.44C918.52 27.23 921.59 30.31 925.38 30.31C929.16 30.31 932.23 27.23 932.23 23.44C932.23 19.66 929.16 16.58 925.38 16.58M925.38 31.05C921.19 31.05 917.77 27.64 917.77 23.44C917.77 19.25 921.19 15.83 925.38 15.83C929.56 15.83 932.98 19.25 932.98 23.44C932.98 27.64 929.56 31.05 925.38 31.05"/><path style="fill:var(--logo-tag,currentColor)" d="M652.13 143.06L658.55 130.88L660.63 130.88L660.63 147.97L658.72 147.97L658.72 134.16L652.59 145.8L651.66 145.8L645.52 134.16L645.52 147.97L643.61 147.97L643.61 130.88L645.7 130.88ZM664.7 130.89L676.39 130.89L676.39 132.45L666.09 132.45L666.09 138.64L675.3 138.64L675.3 140.22L666.09 140.2L666.09 146.41L676.64 146.41L676.64 147.97L664.19 147.97L664.19 130.89ZM686.42 130.89L692.11 130.89L692.11 132.45L686.42 132.45L686.42 147.97L684.52 147.97L684.52 132.45L678.84 132.45L678.84 130.89ZM696.39 141.66L703.67 141.66L700.03 133.27ZM701.06 130.89L708.5 147.97L706.42 147.97L704.36 143.22L695.7 143.22L693.64 147.97L691.56 147.97L698.98 130.89ZM713.03 146.41L722.83 146.41L722.83 147.97L711.13 147.97L711.11 146.41L711.11 130.89L713.02 130.89ZM741.2 143.06L747.63 130.88L749.7 130.88L749.72 147.97L747.81 147.97L747.81 134.16L741.67 145.8L740.73 145.8L734.61 134.16L734.61 147.97L732.7 147.97L732.7 130.88L734.78 130.88ZM753.78 130.89L765.48 130.89L765.48 132.45L755.17 132.45L755.17 138.64L764.38 138.64L764.38 140.22L755.17 140.2L755.17 146.41L765.73 146.41L765.73 147.97L753.27 147.97L753.27 130.89ZM769.31 130.89L781.02 130.89L781.02 132.45L770.7 132.45L770.72 138.64L779.92 138.64L779.92 140.22L770.72 140.2L770.72 146.41L781.27 146.41L781.27 147.97L768.81 147.97L768.8 146.41L768.81 140.2L768.8 138.64L768.8 130.89ZM791.05 130.89L796.73 130.89L796.73 132.45L791.05 132.45L791.05 147.97L789.14 147.97L789.14 132.45L783.45 132.45L783.45 130.89ZM812.5 133.53L810.98 134.69C809.64 132.95 807.8 132.47 805.64 132.48C803.17 132.48 801.19 133.72 801.19 135.39C801.19 136.88 803.03 137.67 804.73 138.09C809.97 139.39 809.39 139.23 810 139.39C812.58 140.09 813.8 142.5 813.13 144.59C812.45 146.69 810.13 148.34 806.63 148.34C804.44 148.34 801.61 147.67 799.16 145.19L800.52 143.86C802.58 145.94 804.81 146.45 806.63 146.45C809.53 146.45 810.94 145.16 811.31 144C811.69 142.84 811.27 141.7 809.5 141.23C808.91 141.08 804.27 139.94 804.27 139.94C802.53 139.5 801.05 138.77 800.13 137.61C799.2 136.45 799.05 134.77 799.95 133.27C800.89 131.67 803.02 130.58 805.64 130.58C808.39 130.58 810.73 131.23 812.5 133.53M825.39 132.8L825.39 141.19C828.81 141.19 829.17 141.19 830.88 141.19C833.36 141.19 834.78 139.34 834.78 136.98C834.78 134.64 833.34 132.78 830.84 132.78C828.77 132.78 828.36 132.8 825.39 132.8M825.39 143.09L825.39 147.97L823.48 147.97C823.52 144.03 823.48 130.89 823.48 130.89C823.48 130.89 827.42 130.89 830.84 130.89C834.36 130.89 836.67 133.62 836.69 136.98C836.69 140.36 834.38 143.09 830.88 143.09C829.17 143.09 828.81 143.09 825.39 143.09M848.72 146.38C852.48 146.38 855.55 143.31 855.55 139.47C855.55 135.62 852.48 132.56 848.72 132.56C844.95 132.55 841.91 135.62 841.91 139.47C841.91 143.31 844.95 146.38 848.72 146.38M854.89 133.17C856.53 134.84 857.45 137.11 857.45 139.47C857.45 141.83 856.53 144.09 854.89 145.77C853.25 147.42 851.03 148.36 848.72 148.36C846.41 148.36 844.19 147.42 842.55 145.77C840.91 144.09 840 141.83 840 139.47C840 134.55 843.91 130.58 848.72 130.58C851.03 130.58 853.25 131.5 854.89 133.17M862.11 130.89L866.63 144.83L870.83 130.89L872.34 130.89L876.55 144.83L881.06 130.89L883.06 130.89L877.53 147.97L875.5 147.97L871.58 134.97L867.67 147.97L865.64 147.97L860.11 130.89ZM886.69 130.89L898.39 130.89L898.39 132.45L888.08 132.45L888.09 138.64L897.3 138.64L897.3 140.22L888.09 140.2L888.09 146.41L898.64 146.41L898.64 147.97L886.19 147.97L886.17 146.41L886.19 140.2L886.17 138.64L886.17 130.89ZM903.64 132.8L903.64 141.19C907.08 141.19 907.42 141.19 909.13 141.19C911.61 141.19 913.05 139.34 913.05 136.98C913.03 134.64 911.59 132.78 909.09 132.78C907.03 132.78 906.61 132.8 903.64 132.8M909.09 130.89C910.97 130.89 912.52 131.67 913.48 132.83C915.42 135.12 915.45 138.83 913.52 141.14C912.88 141.89 912.03 142.48 911 142.81L914.16 147.97L911.92 147.97L908.94 143.09C907.44 143.09 906.92 143.09 903.66 143.09L903.66 147.97L901.73 147.97L901.73 130.89C904.95 130.89 905.69 130.89 909.09 130.89"/></symbol>
+    <symbol id="logo-w" viewBox="0 119.34 562.7 101.49"><path fill="currentColor" d="M0 127.2L20.95 127.2L45.05 171.59L69.02 127.2L89.97 127.2L89.97 218.88L69.02 218.88L69.02 168.31L49.89 203.67L40.06 203.67L20.95 168.31L20.95 218.88L0 218.88ZM140.8 176.97C143.94 176.97 146.03 175 146.03 172.5C146.03 170.16 143.94 168.45 140.8 168.45L127.05 168.45C122.84 168.45 120.11 170.55 120.11 173.69L120.11 176.97ZM120.11 196.61C120.11 199.75 122.59 201.84 126.12 201.84L160.95 201.84L160.95 218.86L134.38 218.86C112.11 218.86 100.45 206.3 100.45 186.12C100.45 165.31 111.59 151.42 132.55 151.42C152.19 151.42 163.06 158.5 163.06 172.91C163.06 187.31 153.89 193.98 139.48 193.98L120.11 193.98ZM191.88 153.39L212.83 153.39L212.83 170.42L191.88 170.42L191.88 196.61C191.88 200.53 194.36 201.84 197.91 201.84L214.53 201.84L214.53 218.88L206.67 218.88C183.89 218.88 172.23 207.73 172.23 192.67L172.23 127.06L191.88 127.06ZM261.03 203.81C263.92 203.81 265.75 201.72 265.75 198.56L265.75 173.69C265.75 170.55 263.92 168.45 261.03 168.45L243.48 168.45C240.34 168.45 238.25 170.55 238.25 173.69L238.25 198.56C238.25 201.72 240.34 203.81 243.48 203.81ZM293.25 218.88L283.69 218.88C275.17 218.88 267.06 214.81 265.88 206.95C262.34 215.08 256.45 220.83 247.42 220.83C228.69 220.83 218.59 206.95 218.59 186.12C218.59 165.31 228.69 151.42 247.42 151.42C256.31 151.42 262.22 157.06 265.75 165.05L265.75 153.39L285.39 153.39L285.39 196.61C285.39 199.75 287.48 201.84 290.62 201.84L293.25 201.84ZM325.47 201.84L336.34 201.84L336.34 218.88L333.73 218.88C311.47 218.88 299.81 206.3 299.81 186.12L299.81 120.66L319.45 120.66L319.45 196.61C319.45 199.75 321.94 201.84 325.47 201.84M341.59 153.39L361.23 153.39L361.23 218.88L341.59 218.88ZM340.94 124.58C340.94 121.44 343.03 119.34 346.17 119.34L356.66 119.34C359.8 119.34 361.89 121.44 361.89 124.58L361.89 135.05C361.89 138.2 359.8 140.3 356.66 140.3L346.17 140.3C343.03 140.3 340.94 138.2 340.94 135.05ZM373.03 153.39L392.67 153.39L392.67 198.56C392.67 201.72 394.77 203.81 397.91 203.81L414.16 203.81C417.03 203.81 418.86 201.72 418.86 198.56L418.86 153.39L438.52 153.39L438.52 218.88L418.86 218.88L418.86 207.34C415.06 215.2 408 220.83 395.69 220.83C381.81 220.83 373.03 211.53 373.03 198.44ZM451.61 218.88L451.61 153.39L471.27 153.39L471.27 164.78C474.53 156.92 480.03 151.42 487.63 151.42C497.58 151.42 504.14 156.8 506.75 165.05C510.55 157.06 516.58 151.42 524.3 151.42C537.39 151.42 544.59 160.72 544.59 173.81L544.59 218.88L524.95 218.88L524.95 173.69C524.95 170.55 522.86 168.45 519.72 168.45L512.64 168.45C509.77 168.45 507.92 170.55 507.92 173.69L507.92 218.88L488.28 218.88L488.28 173.69C488.28 170.55 486.19 168.45 483.05 168.45L475.97 168.45C473.09 168.45 471.27 170.55 471.27 173.69L471.27 218.88ZM553.88 136.81L553.88 139.95C555.16 139.95 555.28 139.97 555.92 139.97C556.86 139.97 557.39 139.27 557.39 138.39C557.39 137.52 556.84 136.81 555.91 136.81C555.14 136.81 554.98 136.81 553.88 136.81M555.91 136.11C556.61 136.11 557.19 136.41 557.56 136.84C558.28 137.69 558.28 139.08 557.56 139.95C557.33 140.23 557.02 140.45 556.63 140.58L558.02 143.25L557.17 143.25L555.84 140.67C555.3 140.67 555.09 140.67 553.88 140.67L553.88 143.36L553.16 143.36L553.16 136.11C554.36 136.11 554.63 136.11 555.91 136.11M555.47 133.22C551.86 133.22 548.94 136.16 548.94 139.75C548.94 143.36 551.86 146.3 555.47 146.3C559.08 146.3 562 143.36 562 139.75C562 136.16 559.08 133.22 555.47 133.22M555.47 147C551.47 147 548.22 143.75 548.22 139.75C548.22 135.77 551.47 132.52 555.47 132.52C559.47 132.52 562.7 135.77 562.7 139.75C562.7 143.75 559.47 147 555.47 147"/></symbol>
+    <symbol id="logo-m" viewBox="0 0 501.31 200.0"><path fill="currentColor" d="M401.34 199.92L501.31 199.92L441.76 99.92L341.76 99.92ZM357.85 100L257.85 100L317.42 0L417.4 0ZM259.55 100L200 0L119.02 0L0 200L100 200L159.55 100L159.44 100L159.52 99.9L159.57 100L159.55 100L219.1 200L319.1 200Z"/></symbol>
+    <pattern id="hatch-bone" width="4.5" height="4.5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <path d="M0 0V4.5" stroke="#FCFFF3" stroke-width=".7" opacity=".7"/>
+    </pattern>
+  </defs>
+</svg>
+
+<!-- intro, once per visit: the three bars of the logomark slide together, then the black is cut away. Runs on CSS alone. -->
+<div class="curtain" id="curtain" aria-hidden="true">
+  <svg class="curtain__mark" viewBox="0 0 501.31 200" focusable="false">
+    <path style="--px:-61px;--py:103px" d="M259.55 100L200 0L119.02 0L0 200L100 200L159.55 100L219.1 200L319.1 200Z"/>
+    <path style="--px:61px;--py:-103px;--pd:.09s" d="M357.85 100L257.85 100L317.42 0L417.4 0Z"/>
+    <path style="--px:61px;--py:103px;--pd:.18s" d="M401.34 200L501.31 200L441.76 100L341.76 100Z"/>
+  </svg>
+  <i class="curtain__edge"></i>
+</div>
+<script>
+(function () {   // skip the intro on a repeat load in the same visit, and for reduced motion
+  var seen = false, c = document.getElementById('curtain');
+  try { seen = sessionStorage.getItem('metalium-intro') === '1'; sessionStorage.setItem('metalium-intro', '1'); } catch (e) {}
+  if (seen || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+    document.documentElement.classList.add('no-intro');
+    if (c && c.parentNode) c.parentNode.removeChild(c);
+  }
+})();
+</script>
+
+<a class="skip" href="#main" data-i18n="skip">Kalo te përmbajtja</a>
+
+<header class="top" id="top">
+  <span class="top__prog" id="prog" aria-hidden="true"></span>
+  <div class="wrap top__in">
+    <a class="top__brand" href="#hero" data-i18n-attr="aria-label:brand.home" aria-label="Metalium, kreu i faqes">
+      <svg class="logo-h" viewBox="0 0 932.98 148.36" aria-hidden="true" focusable="false"><use href="#logo-h"/></svg>
+    </a>
+    <nav class="nav" id="menu" data-i18n-attr="aria-label:nav.label" aria-label="Menyja kryesore">
+      <a href="#about" data-i18n="nav.about">Rreth nesh</a>
+      <a href="#services" data-i18n="nav.services">Shërbimet</a>
+      <a href="#process" data-i18n="nav.process">Procesi</a>
+      <a href="#projects" data-i18n="nav.projects">Projektet</a>
+      <a href="#contact" data-i18n="nav.contact">Kontakti</a>
+      <a class="btn nav__cta" href="#contact" data-i18n="cta.quote">Kërkoni ofertë</a>
+    </nav>
+    <div class="top__tools">
+      <div class="lang" role="group" data-i18n-attr="aria-label:lang.label" aria-label="Gjuha">
+        <button class="lang__b" id="lang-sq" type="button" data-lang="sq" aria-pressed="true" title="Shqip">AL</button>
+        <button class="lang__b" id="lang-en" type="button" data-lang="en" aria-pressed="false" title="English">EN</button>
+      </div>
+      <a class="btn btn--sm top__cta" href="#contact" data-i18n="cta.quote">Kërkoni ofertë</a>
+      <button class="burger" id="burger" type="button" aria-controls="menu" aria-expanded="false" data-i18n-attr="aria-label:menu.toggle" aria-label="Hap ose mbyll menynë"><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero band band--dark intro" id="hero">
+    <picture>
+      <source media="(max-width: 720px)" srcset="img/hero-sm.webp">
+      <img class="hero__photo" src="img/hero.webp" width="2000" height="1367" alt="Saldator me helmetë mbrojtëse duke salduar një tra çeliku në lartësi, me shkëndija përreth" data-i18n-attr="alt:hero.alt" fetchpriority="high">
+    </picture>
+    <canvas class="sparks hero__sparks" data-sparks="hero" aria-hidden="true"></canvas>
+    <div class="wrap hero__in">
+      <h1 class="display" data-i18n="hero.title"><span>Çelik që</span> <b>qëndron fort.</b></h1>
+      <p class="lead hero__lead" data-i18n="hero.lead">Metalium projekton, prodhon dhe monton konstruksione çeliku, punime metalike sipas porosisë, porta, parmakë, shkallë dhe fasada. Një ekip, nga vizatimi i parë deri te buloni i fundit.</p>
+      <div class="hero__actions">
+        <a class="btn" href="#contact" data-i18n="cta.quote">Kërkoni ofertë</a>
+        <a class="more" href="#services" data-i18n="hero.more">Shikoni shërbimet</a>
+        <button class="motion" id="motion" type="button" aria-pressed="false" hidden data-i18n-attr="aria-label:motion.pause;title:motion.pause" aria-label="Ndalo animacionet" title="Ndalo animacionet">
+          <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path class="motion__pause" d="M3.5 2.5h3.2v11H3.5zM9.3 2.5h3.2v11H9.3z"/><path class="motion__play" d="M4.5 2.5l9 5.5-9 5.5z"/></svg>
+        </button>
+      </div>
+      <ul class="scope util">
+        <li data-i18n="scope.1">Projektim</li>
+        <li><span data-i18n="scope.2">Prodhim</span></li>
+        <li><span data-i18n="scope.3">Montim</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section about band band--dark" id="about">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-label" data-i18n="about.label">rreth nesh</span><span class="sec-bracket" aria-hidden="true"></span></div>
+      <div class="about__grid">
+        <div class="about__copy">
+          <h2 class="title" data-i18n="about.title">Forcë, saktësi dhe inovacion <b>në konstruksionet metalike.</b></h2>
+          <p class="lead" data-i18n="about.lead">Metalium është ndërtuar mbi idenë se metali takon fuqinë. Ndërtojmë konstruksione çeliku, përpunojmë metal dhe ofrojmë zgjidhje të avancuara ndërtimore. Çdo projekt e bëjmë që të qëndrojë fort.</p>
+        </div>
+        <figure class="about__fig">
+          <img src="img/welder.webp" width="1012" height="948" alt="Saldator duke salduar profile çeliku" data-i18n-attr="alt:about.alt" loading="lazy" decoding="async">
+        </figure>
+      </div>
+      <ul class="values">
+        <li class="value"><h3 data-i18n="val.1.t">Forcë</h3><p data-i18n="val.1.d">Konstruksione të qëndrueshme, të dimensionuara për ngarkesën që mbajnë.</p></li>
+        <li class="value"><h3 data-i18n="val.2.t">Saktësi</h3><p data-i18n="val.2.d">Inxhinieri moderne dhe punim sipas vizatimit, me tolerancë milimetrike.</p></li>
+        <li class="value"><h3 data-i18n="val.3.t">Inovacion</h3><p data-i18n="val.3.d">Teknologji bashkëkohore prodhimi dhe zgjidhje të reja për çdo objekt.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="tape" aria-hidden="true">
+    <div class="tape__track">
+      <div class="tape__g"><span class="tape__w">Metal Meets</span><span class="tape__w tape__w--fill">Power</span><svg class="tape__m" viewBox="0 0 501.31 200" focusable="false"><use href="#logo-m"/></svg></div>
+      <div class="tape__g"><span class="tape__w">Metal Meets</span><span class="tape__w tape__w--fill">Power</span><svg class="tape__m" viewBox="0 0 501.31 200" focusable="false"><use href="#logo-m"/></svg></div>
+      <div class="tape__g"><span class="tape__w">Metal Meets</span><span class="tape__w tape__w--fill">Power</span><svg class="tape__m" viewBox="0 0 501.31 200" focusable="false"><use href="#logo-m"/></svg></div>
+      <div class="tape__g"><span class="tape__w">Metal Meets</span><span class="tape__w tape__w--fill">Power</span><svg class="tape__m" viewBox="0 0 501.31 200" focusable="false"><use href="#logo-m"/></svg></div>
+    </div>
+  </div>
+
+  <section class="section services band band--light cut cut--r" id="services" style="--cx:62%">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-label" data-i18n="svc.label">shërbimet</span><span class="sec-bracket" aria-hidden="true"></span></div>
+      <div class="sec-top">
+        <h2 class="title" data-i18n="svc.title">Çfarë <b>ndërtojmë.</b></h2>
+        <p class="lead" data-i18n="svc.intro">Katër fusha pune, një standard, nga një hallë e tërë deri te një parmak ballkoni. Zgjidhni një shembull për ta parë.</p>
+      </div>
+      <div class="svc-grid">
+
+        <article class="svc">
+          <h3 data-i18n="svc.1.t">Konstruksione çeliku</h3>
+          <p class="svc__d" data-i18n="svc.1.d">Konstruksione mbajtëse për objekte industriale dhe komerciale, nga themeli deri te çatia.</p>
+          <figure class="svc__fig">
+            <img class="is-on" src="img/svc-halls.webp" width="960" height="640" alt="Korniza të kuqe çeliku të një halle industriale në ndërtim" data-i18n-attr="alt:svc.1.a.alt" loading="lazy" decoding="async">
+            <img src="img/svc-warehouse.webp" width="1080" height="720" alt="Depo e veshur me llamarinë gri, me dyer të mëdha të kaltra" data-i18n-attr="alt:svc.1.b.alt" loading="lazy" decoding="async" aria-hidden="true">
+            <img src="img/svc-commercial.webp" width="1080" height="720" alt="Skelet çeliku i një objekti shumëkatësh përballë qiellit" data-i18n-attr="alt:svc.1.c.alt" loading="lazy" decoding="async" aria-hidden="true">
+            <img src="img/svc-roof.webp" width="1080" height="720" alt="Trarë të kuq çeliku të çatisë, të parë nga poshtë" data-i18n-attr="alt:svc.1.e.alt" loading="lazy" decoding="async" aria-hidden="true">
+            <div class="plan">
+              <svg class="dwg" viewBox="0 0 170 176" aria-hidden="true" focusable="false"><path class="dwg__axis" d="M80 10V150M30 80H130"/><path class="dwg__cut" pathLength="1" d="M42 22H118V32H89Q83 32 83 38V122Q83 128 89 128H118V138H42V128H71Q77 128 77 122V38Q77 32 71 32H42Z"/><path class="dwg__dim" pathLength="1" d="M124 22H152M124 138H152M146 22V138M42 144V166M118 144V166M42 160H118"/><path class="dwg__tick" d="M142.5 28L149.5 16M142.5 144L149.5 132M38.5 166L45.5 154M114.5 166L121.5 154"/><text x="155" y="84">h</text><text x="80" y="174" text-anchor="middle">b</text></svg>
+              <p class="plan__cap util"><span data-i18n="plan.cap">Prerje tërthore</span><b data-i18n="svc.1.spec">IPE · HEA · HEB</b></p>
+            </div>
+            <button class="plan-btn" type="button" aria-pressed="false" data-i18n-attr="aria-label:plan.show;title:plan.show" aria-label="Shfaq vizatimin teknik" title="Shfaq vizatimin teknik"><svg viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M4 3.5h10M4 14.5h10M9 3.5v11"/></svg></button>
+          </figure>
+          <ul class="picks">
+            <li><button class="pick" type="button" aria-pressed="true" data-i18n="svc.1.a">Halla industriale</button></li>
+            <li><button class="pick" type="button" aria-pressed="false" data-i18n="svc.1.b">Depo</button></li>
+            <li><button class="pick" type="button" aria-pressed="false" data-i18n="svc.1.c">Objekte komerciale</button></li>
+            <li><button class="pick" type="button" aria-pressed="false" data-i18n="svc.1.e">Konstruksione çatie</button></li>
+          </ul>
+        </article>
+
+        <article class="svc">
+          <h3 data-i18n="svc.2.t">Përpunim i metalit</h3>
+          <p class="svc__d" data-i18n="svc.2.d">Pjesë dhe elemente metalike të prodhuara sipas vizatimit ose mostrës suaj.</p>
+          <figure class="svc__fig">
+            <img class="is-on" src="img/svc-cutting.webp" width="1080" height="720" alt="Prerje me plazmë e formave në një fletë çeliku" data-i18n-attr="alt:svc.2.a.alt" loading="lazy" decoding="async">
+            <img src="img/svc-bending.webp" width="853" height="569" alt="Dorë me dorëzë të kuqe duke futur llamarinën në presën lakuese" data-i18n-attr="alt:svc.2.b.alt" loading="lazy" decoding="async" aria-hidden="true">
+            <img src="img/svc-welding.webp" width="1080" height="720" alt="Saldim me dorë i një tubi çeliku, me shkëndija" data-i18n-attr="alt:svc.2.c.alt" loading="lazy" decoding="async" aria-hidden="true">
+            <img src="img/svc-custom.webp" width="970" height="647" alt="Mbajtëse prej llamarine të lakuar mbi vizatimet e saj teknike" data-i18n-attr="alt:svc.2.e.alt" loading="lazy" decoding="async" aria-hidden="true">
+            <div class="plan">
+              <svg class="dwg" viewBox="0 0 170 176" aria-hidden="true" focusable="false"><path class="dwg__axis" d="M56 120H72M64 112V128"/><path class="dwg__cut" pathLength="1" d="M46 26V120A18 18 0 0 0 64 138H138V130H64A10 10 0 0 1 54 120V26Z"/><path class="dwg__dim" pathLength="1" d="M64 92A28 28 0 0 1 92 120M46 20V8M54 20V8M34 12H66M46 144V166M138 144V166M46 160H138"/><path class="dwg__tick" d="M42.5 18L49.5 6M50.5 18L57.5 6M42.5 166L49.5 154M134.5 166L141.5 154"/><text x="89" y="97">90°</text><text x="70" y="15.5">t</text><text x="92" y="174" text-anchor="middle">a</text></svg>
+              <p class="plan__cap util"><span data-i18n="plan.cap">Prerje tërthore</span><b data-i18n="svc.2.spec">Llamarinë · pllakë · profil</b></p>
+            </div>
+            <button class="plan-btn" type="button" aria-pressed="false" data-i18n-attr="aria-label:plan.show;title:plan.show" aria-label="Shfaq vizatimin teknik" title="Shfaq vizatimin teknik"><svg viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M4 3.5h10M4 14.5h10M9 3.5v11"/></svg></button>
+          </figure>
+          <ul class="picks">
+            <li><button class="pick" type="button" aria-pressed="true" data-i18n="svc.2.a">Prerje</button></li>
+            <li><button class="pick" type="button" aria-pressed="false" data-i18n="svc.2.b">Lakim</button></li>
+            <li><button class="pick" type="button" aria-pressed="false" data-i18n="svc.2.c">Saldim</button></li>
+            <li><button class="pick" type="button" aria-pressed="false" data-i18n="svc.2.e">Pjesë sipas porosisë</button></li>
+          </ul>
+        </article>
+
+        <article class="svc">
+          <h3 data-i18n="svc.3.t">Dyer, porta dhe parmakë</h3>
+          <p class="svc__d" data-i18n="svc.3.d">Dyer, porta dhe rrethoja të sigurta, të punuara sipas masave të objektit tuaj.</p>
+          <figure class="svc__fig">
+            <img class="is-on" src="img/svc-doors.webp" width="1080" height="720" alt="Derë çeliku gri në një mur me llamarinë të valëzuar" data-i18n-attr="alt:svc.3.a.alt" loading="lazy" decoding="async">
+            <img src="img/svc-gates.webp" width="1080" height="720" alt="Portë rrëshqitëse metalike me motiv të prerë me laser dhe motor" data-i18n-attr="alt:svc.3.b.alt" loading="lazy" decoding="async" aria-hidden="true">
+            <img src="img/svc-fences.webp" width="1080" height="720" alt="Rrethojë e zezë metalike me shufra vertikale para një muri me tulla dhe llamarinë" data-i18n-attr="alt:svc.3.c.alt" loading="lazy" decoding="async" aria-hidden="true">
+            <img src="img/svc-railings.webp" width="1080" height="720" alt="Ballkone të harkuara me parmakë metalikë të kaltër" data-i18n-attr="alt:svc.3.e.alt" loading="lazy" decoding="async" aria-hidden="true">
+            <div class="plan">
+              <svg class="dwg" viewBox="0 0 170 176" aria-hidden="true" focusable="false"><path class="dwg__axis" d="M80 12V136M18 74H142"/><path class="dwg__cut" pathLength="1" fill-rule="evenodd" d="M42 26H118A10 10 0 0 1 128 36V112A10 10 0 0 1 118 122H42A10 10 0 0 1 32 112V36A10 10 0 0 1 42 26ZM44 34H116A4 4 0 0 1 120 38V110A4 4 0 0 1 116 114H44A4 4 0 0 1 40 110V38A4 4 0 0 1 44 34Z"/><path class="dwg__dim" pathLength="1" d="M134 26H158M134 122H158M152 26V122M32 128V166M128 128V166M32 160H128"/><path class="dwg__tick" d="M148.5 32L155.5 20M148.5 128L155.5 116M28.5 166L35.5 154M124.5 166L131.5 154"/><text x="160" y="78">b</text><text x="80" y="174" text-anchor="middle">b</text></svg>
+              <p class="plan__cap util"><span data-i18n="plan.cap">Prerje tërthore</span><b data-i18n="svc.3.spec">Tub katror · tub drejtkëndor</b></p>
+            </div>
+            <button class="plan-btn" type="button" aria-pressed="false" data-i18n-attr="aria-label:plan.show;title:plan.show" aria-label="Shfaq vizatimin teknik" title="Shfaq vizatimin teknik"><svg viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M4 3.5h10M4 14.5h10M9 3.5v11"/></svg></button>
+          </figure>
+          <ul class="picks">
+            <li><button class="pick" type="button" aria-pressed="true" data-i18n="svc.3.a">Dyer metalike</button></li>
+            <li><button class="pick" type="button" aria-pressed="false" data-i18n="svc.3.b">Porta oborri</button></li>
+            <li><button class="pick" type="button" aria-pressed="false" data-i18n="svc.3.c">Rrethoja</button></li>
+            <li><button class="pick" type="button" aria-pressed="false" data-i18n="svc.3.e">Parmakë dhe kangjella</button></li>
+          </ul>
+        </article>
+
+        <article class="svc">
+          <h3 data-i18n="svc.4.t">Shkallë, streha dhe fasada</h3>
+          <p class="svc__d" data-i18n="svc.4.d">Shkallë, mbulesa dhe konstruksione fasade që e kompletojnë objektin.</p>
+          <figure class="svc__fig">
+            <img class="is-on" src="img/svc-stairs.webp" width="767" height="511" alt="Shkallë spirale të zeza prej çeliku në një ambient të ndritshëm" data-i18n-attr="alt:svc.4.a.alt" loading="lazy" decoding="async">
+            <img src="img/svc-canopy.webp" width="863" height="575" alt="Veturë e parkuar nën një strehë metalike të harkuar" data-i18n-attr="alt:svc.4.b.alt" loading="lazy" decoding="async" aria-hidden="true">
+            <img src="img/svc-pergola.webp" width="1080" height="720" alt="Pergolë metalike e errët me çati me lamela mbi një kënd uljeje në kopsht" data-i18n-attr="alt:svc.4.c.alt" loading="lazy" decoding="async" aria-hidden="true">
+            <img src="img/svc-facade.webp" width="1080" height="720" alt="Lidhje çeliku të kuqe të montuara në fasadën e një objekti" data-i18n-attr="alt:svc.4.e.alt" loading="lazy" decoding="async" aria-hidden="true">
+            <div class="plan">
+              <svg class="dwg" viewBox="0 0 170 176" aria-hidden="true" focusable="false"><path class="dwg__axis" d="M30 82H136"/><path class="dwg__cut" pathLength="1" d="M52 24H116V31L68 36.5Q60 37.5 60 46V118Q60 126.5 68 127.5L116 133V140H52Z"/><path class="dwg__dim" pathLength="1" d="M122 24H152M122 140H152M146 24V140M52 146V166M116 146V166M52 160H116"/><path class="dwg__tick" d="M142.5 30L149.5 18M142.5 146L149.5 134M48.5 166L55.5 154M112.5 166L119.5 154"/><text x="155" y="86">h</text><text x="84" y="174" text-anchor="middle">b</text></svg>
+              <p class="plan__cap util"><span data-i18n="plan.cap">Prerje tërthore</span><b data-i18n="svc.4.spec">UPN · UPE</b></p>
+            </div>
+            <button class="plan-btn" type="button" aria-pressed="false" data-i18n-attr="aria-label:plan.show;title:plan.show" aria-label="Shfaq vizatimin teknik" title="Shfaq vizatimin teknik"><svg viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M4 3.5h10M4 14.5h10M9 3.5v11"/></svg></button>
+          </figure>
+          <ul class="picks">
+            <li><button class="pick" type="button" aria-pressed="true" data-i18n="svc.4.a">Shkallë metalike</button></li>
+            <li><button class="pick" type="button" aria-pressed="false" data-i18n="svc.4.b">Streha</button></li>
+            <li><button class="pick" type="button" aria-pressed="false" data-i18n="svc.4.c">Pergola</button></li>
+            <li><button class="pick" type="button" aria-pressed="false" data-i18n="svc.4.e">Nënkonstruksione fasadash</button></li>
+          </ul>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section calc band band--light" id="calc" data-nav="services">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-label" data-i18n="calc.label">llogaritësi</span><span class="sec-bracket" aria-hidden="true"></span></div>
+      <div class="calc__grid">
+        <div class="calc__copy">
+          <h2 class="title" data-i18n="calc.title">Sa peshon <b>çeliku juaj?</b></h2>
+          <p class="lead" data-i18n="calc.lead">Zgjidhni profilin, shkruani gjatësinë dhe numrin e copëve. Pesha del menjëherë dhe mund ta shtoni te kërkesa për ofertë.</p>
+          <p class="note" data-i18n="calc.note">Peshë teorike sipas tabelave standarde të profileve (EN 10365, EN 10219), pa lidhje, pllaka dhe bulona. Pesha reale ndryshon pak brenda tolerancave të prodhimit.</p>
+        </div>
+        <form class="calc__panel" id="calc-form" novalidate>
+          <fieldset class="calc__fams">
+            <legend class="util" data-i18n="calc.family">Profili</legend>
+            <div class="fams">
+              <label class="fam"><input type="radio" name="family" value="IPE" checked><span>IPE</span></label>
+              <label class="fam"><input type="radio" name="family" value="HEA"><span>HEA</span></label>
+              <label class="fam"><input type="radio" name="family" value="HEB"><span>HEB</span></label>
+              <label class="fam"><input type="radio" name="family" value="UPN"><span>UPN</span></label>
+              <label class="fam"><input type="radio" name="family" value="SHS"><span data-i18n="calc.shs">Tub katror</span></label>
+            </div>
+          </fieldset>
+          <div class="field field--size">
+            <label class="util" for="c-size" data-i18n="calc.size">Madhësia</label>
+            <select id="c-size" name="size"></select>
+          </div>
+          <div class="field">
+            <label class="util" for="c-len" data-i18n="calc.len">Gjatësia (m)</label>
+            <input id="c-len" name="length" type="text" inputmode="decimal" autocomplete="off" value="6">
+          </div>
+          <div class="field">
+            <label class="util" for="c-qty" data-i18n="calc.qty">Copë</label>
+            <input id="c-qty" name="pieces" type="text" inputmode="numeric" autocomplete="off" value="1">
+          </div>
+          <div class="calc__out">
+            <svg class="calc__dwg dwg" id="calc-dwg" viewBox="14 0 212 204" role="img" focusable="false" data-i18n-attr="aria-label:calc.dwg" aria-label="Prerja tërthore e profilit të zgjedhur, me përmasat në milimetra"></svg>
+            <div class="calc__res" aria-live="polite">
+              <p class="util" data-i18n="calc.total">Pesha gjithsej</p>
+              <p class="calc__kg"><output id="calc-kg" for="c-size c-len c-qty">–</output> <span>kg</span></p>
+              <p class="calc__sum" id="calc-sum"></p>
+              <p class="calc__dims" id="calc-dims"></p>
+            </div>
+          </div>
+          <div class="form__foot">
+            <button class="btn" type="submit" data-i18n="calc.add">Shtoje te kërkesa</button>
+            <p class="form__status" id="calc-status" role="status"></p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="section process band band--light" id="process">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-label" data-i18n="proc.label">procesi</span><span class="sec-bracket" aria-hidden="true"></span></div>
+      <div class="sec-top proc-top">
+        <h2 class="title" data-i18n="proc.title">Nga vizatimi <b>te montimi.</b></h2>
+        <svg class="cmark" viewBox="-64 -56 629.31 312" aria-hidden="true" focusable="false"><defs><clipPath id="cmark-clip"><path d="M401.34 200L501.31 200L441.76 100L341.76 100ZM357.85 100L257.85 100L317.42 0L417.4 0ZM259.55 100L200 0L119.02 0L0 200L100 200L159.55 100L219.1 200L319.1 200Z"/></clipPath><clipPath id="cmark-reveal"><polygon id="cmark-wipe" points="-300,-56 900,-56 900,256 -300,256"/></clipPath></defs><path class="cmark__guides" d="M0.00 -56 V256M119.02 -56 V256M200.00 -56 V256M259.55 -56 V256M319.10 -56 V256M417.40 -56 V256M501.31 -56 V256M-64 0 H565M-64 100 H565M-64 200 H565"/><path class="cmark__outline" d="M401.34 200L501.31 200L441.76 100L341.76 100ZM357.85 100L257.85 100L317.42 0L417.4 0ZM259.55 100L200 0L119.02 0L0 200L100 200L159.55 100L219.1 200L319.1 200Z"/><g clip-path="url(#cmark-reveal)"><path class="cmark__hatch" clip-path="url(#cmark-clip)" d="M-607.3 553.9L553.9 -821.6L557.2 -818.7L-602.1 558.2ZM-612.3 534.5L591.3 -803.9L593.7 -801.7L-609.1 537.4ZM-617.9 514.0L628.0 -785.1L628.8 -784.3L-617.0 514.9ZM-583.9 574.9L572.2 -804.7L573.5 -803.6L-582.2 576.3ZM-593.9 551.6L607.8 -788.5L608.1 -788.3L-593.2 552.2ZM-594.3 549.0L614.3 -784.9L615.8 -783.4L-591.8 551.3ZM-588.0 555.9L617.0 -781.2L621.2 -777.4L-582.6 560.8ZM-562.4 593.9L590.6 -788.3L597.1 -782.9L-555.1 600.0ZM-575.8 560.4L651.2 -756.6L652.6 -755.3L-572.4 563.6ZM-566.6 571.9L649.6 -755.2L655.7 -749.6L-560.3 577.6ZM-533.5 615.7L628.4 -759.1L629.0 -758.6L-532.6 616.5ZM-540.0 602.6L651.2 -746.8L653.6 -744.8L-537.3 605.0ZM-520.8 627.8L635.3 -751.9L636.1 -751.2L-519.8 628.6ZM-553.7 574.8L695.4 -721.3L697.8 -719.0L-551.0 577.4ZM-544.9 586.6L691.3 -721.8L694.9 -718.3L-540.6 590.7ZM-529.1 607.0L684.2 -722.6L685.6 -721.3L-526.2 609.6ZM-531.9 601.6L692.9 -717.4L701.8 -709.2L-522.3 610.6ZM-504.9 633.8L686.7 -715.2L689.4 -712.9L-498.5 639.5ZM-485.7 653.3L690.6 -709.1L691.2 -708.7L-484.8 654.1ZM-490.3 645.5L705.8 -699.6L706.1 -699.3L-489.6 646.2ZM-472.0 668.5L685.3 -710.1L688.3 -707.5L-467.4 672.4ZM-497.7 630.5L742.0 -674.6L744.9 -671.8L-494.5 633.5ZM-465.8 669.9L713.9 -689.6L717.1 -686.9L-462.5 672.8ZM-469.7 664.1L725.9 -681.4L732.2 -675.8L-459.7 673.1ZM-469.6 658.5L761.6 -654.6L762.9 -653.4L-468.0 659.9ZM-465.2 663.4L761.7 -653.7L764.1 -651.5L-460.1 668.1ZM-442.5 687.7L755.8 -655.4L756.6 -654.7L-441.6 688.5ZM-457.0 669.8L779.6 -638.2L782.0 -636.0L-450.5 675.9ZM-447.5 678.4L790.3 -628.4L791.9 -627.0L-444.9 680.9ZM-407.9 721.6L755.9 -651.6L756.9 -650.7L-406.8 722.5ZM-440.3 684.9L802.2 -617.5L804.1 -615.7L-435.3 689.6ZM-397.3 731.2L761.9 -645.8L765.4 -642.8L-387.6 739.4ZM-413.3 711.8L809.6 -609.0L815.3 -603.7L-407.6 717.1ZM-377.7 747.3L785.6 -626.3L790.6 -622.1L-371.7 752.4ZM-395.5 728.5L824.8 -594.8L830.0 -589.9L-388.9 734.5ZM-361.7 760.4L812.8 -603.6L816.8 -600.2L-357.3 764.2ZM-364.5 757.3L831.9 -587.5L835.1 -584.7L-360.3 761.1ZM-344.8 775.1L820.8 -596.6L826.7 -591.5L-337.6 781.2ZM-356.6 764.2L854.2 -567.7L858.7 -563.5L-351.5 768.9ZM-340.2 778.9L854.2 -567.7L855.9 -566.2L-337.7 781.2ZM-335.9 782.8L856.9 -565.3L861.4 -561.4L-331.1 786.9ZM-323.6 793.4L862.7 -560.4L863.1 -559.9L-322.6 794.3ZM-337.3 781.8L873.4 -550.2L882.0 -542.4L-328.1 790.2ZM-323.2 794.6L888.5 -536.4L891.4 -533.8L-319.9 797.6ZM-308.0 807.6L888.9 -536.9L891.2 -534.8L-303.7 811.4ZM-288.3 823.2L880.5 -545.7L885.8 -541.2L-281.8 828.7ZM-298.0 817.4L912.2 -515.0L913.9 -513.5L-294.8 820.3ZM-291.4 823.1L914.9 -513.0L917.8 -510.3L-286.1 827.8ZM-307.0 812.4L943.1 -482.7L946.2 -479.8L-298.6 820.4ZM-263.1 847.6L934.4 -496.3L935.1 -495.6L-261.7 848.9ZM-264.3 848.0L945.1 -485.3L945.4 -485.0L-263.5 848.7ZM-282.8 835.9L967.5 -458.9L968.1 -458.4L-282.1 836.7ZM-237.6 867.0L935.0 -498.7L940.4 -494.0L-232.1 871.7ZM-263.2 852.8L974.2 -454.4L974.6 -454.0L-262.1 853.8ZM-254.9 859.2L973.4 -456.6L975.3 -454.9L-251.7 862.1ZM-220.5 882.5L958.5 -477.7L961.7 -474.9L-215.1 887.1ZM-201.5 895.8L958.5 -480.6L964.7 -475.3L-194.0 902.2ZM-192.4 903.9L970.5 -470.1L973.7 -467.3L-186.9 908.5ZM-181.9 912.1L977.3 -465.0L981.4 -461.5L-175.6 917.4ZM-177.6 918.3L993.9 -448.3L995.0 -447.4L-176.2 919.5ZM-162.3 927.8L992.0 -453.4L993.5 -452.1L-160.7 929.1ZM-163.3 928.5L998.7 -446.2L1002.3 -443.2L-159.3 931.9ZM-178.2 923.8L1021.2 -418.5L1022.1 -417.6L-177.1 924.7ZM-204.9 910.8L1043.7 -385.7L1045.0 -384.6L-203.5 912.1ZM-199.0 914.5L1043.5 -387.9L1046.2 -385.3L-193.1 920.1ZM-155.2 940.7L1029.8 -414.3L1035.9 -408.9L-148.8 946.3ZM-176.6 933.6L1057.3 -377.0L1062.3 -372.3L-169.4 940.4ZM-146.5 952.9L1055.9 -386.7L1060.7 -382.3L-141.1 957.7ZM-115.9 970.4L1052.8 -398.6L1056.8 -395.2L-111.6 974.0ZM-132.3 965.5L1070.6 -373.5L1075.6 -369.1L-125.4 971.7ZM-116.8 976.9L1078.3 -369.2L1080.1 -367.6L-112.0 981.1ZM-94.0 990.5L1079.8 -374.1L1082.9 -371.5L-89.7 994.2ZM-103.9 990.5L1097.1 -350.3L1098.8 -348.8L-101.2 992.9ZM-104.0 992.7L1105.5 -340.5L1108.9 -337.4L-96.0 999.9ZM-92.4 1003.1L1116.0 -331.1L1119.6 -327.8L-85.8 1009.0ZM-107.9 1001.6L1134.5 -300.8L1140.1 -295.5L-101.4 1007.8ZM-57.7 1026.0L1127.6 -328.6L1128.1 -328.2L-56.8 1026.8ZM-52.1 1029.2L1129.3 -328.9L1130.5 -327.8L-49.2 1031.7ZM-60.7 1029.5L1141.2 -310.4L1143.3 -308.5L-57.4 1032.5ZM-82.0 1025.0L1158.2 -279.5L1160.5 -277.4L-77.3 1029.5ZM-24.0 1048.6L1144.5 -320.6L1148.2 -317.4L-19.1 1052.8Z"/></g></svg>
+      </div>
+      <ol class="chain">
+        <li><span class="chain__n util">01</span><h3 data-i18n="proc.1.t">Konsultim dhe matje</h3><p data-i18n="proc.1.d">Flasim për projektin, dalim në objekt dhe marrim masat.</p></li>
+        <li><span class="chain__n util">02</span><h3 data-i18n="proc.2.t">Projektim</h3><p data-i18n="proc.2.d">Përgatisim vizatimet teknike dhe ofertën para se të fillojë puna.</p></li>
+        <li><span class="chain__n util">03</span><h3 data-i18n="proc.3.t">Prodhim</h3><p data-i18n="proc.3.d">Presim, lakojmë dhe saldojmë elementet në punëtori.</p></li>
+        <li><span class="chain__n util">04</span><h3 data-i18n="proc.4.t">Mbrojtje e sipërfaqes</h3><p data-i18n="proc.4.d">Elementet mbrohen nga korrozioni me zinkim ose ngjyrosje.</p></li>
+        <li><span class="chain__n util">05</span><h3 data-i18n="proc.5.t">Montim</h3><p data-i18n="proc.5.d">Ekipi ynë e monton konstruksionin në objekt dhe ua dorëzon të përfunduar.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section projects band band--dark cut cut--l" id="projects" style="--cx:24%">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-label" data-i18n="proj.label">projektet</span><span class="sec-bracket" aria-hidden="true"></span></div>
+      <div class="sec-top">
+        <h2 class="title" data-i18n="proj.title">Punë <b>në çelik.</b></h2>
+        <p class="note" data-i18n="proj.note">Shembuj për dizajnin. Fotot janë nga manuali i brendit dhe do të zëvendësohen me projektet reale të Metalium.</p>
+      </div>
+      <div class="proj-grid">
+        <article class="proj proj--wide">
+          <div class="proj__img"><img src="img/roof-truss.webp" width="1400" height="933" alt="Çati me kapriata çeliku, e parë nga poshtë" data-i18n-attr="alt:proj.1.alt" loading="lazy" decoding="async"><span class="sweep" aria-hidden="true"></span></div>
+          <div class="proj__cap"><h3 data-i18n="proj.1.t">Konstruksion çatie</h3><span class="chip" data-i18n="proj.sample">Shembull</span><p class="util" data-i18n="proj.meta">Lokacioni · Viti</p></div>
+        </article>
+        <article class="proj proj--narrow">
+          <div class="proj__img"><img src="img/steel-glass.webp" width="1400" height="957" alt="Punëtorë duke salduar nën një konstruksion çeliku me xham" data-i18n-attr="alt:proj.2.alt" loading="lazy" decoding="async"><canvas class="sparks" data-sparks="glass" aria-hidden="true"></canvas></div>
+          <div class="proj__cap"><h3 data-i18n="proj.2.t">Konstruksion çeliku dhe xhami</h3><span class="chip" data-i18n="proj.sample">Shembull</span><p class="util" data-i18n="proj.meta">Lokacioni · Viti</p></div>
+        </article>
+        <article class="proj proj--narrow">
+          <div class="proj__img"><img src="img/fabrication.webp" width="1400" height="933" alt="Shkëndija gjatë përpunimit të metalit në makinë" data-i18n-attr="alt:proj.3.alt" loading="lazy" decoding="async"><canvas class="sparks" data-sparks="fabrication" aria-hidden="true"></canvas></div>
+          <div class="proj__cap"><h3 data-i18n="proj.3.t">Përpunim metali</h3><span class="chip" data-i18n="proj.sample">Shembull</span><p class="util" data-i18n="proj.meta">Lokacioni · Viti</p></div>
+        </article>
+        <article class="proj proj--wide">
+          <div class="proj__img"><img src="img/workshop.webp" width="1400" height="934" alt="Saldator duke salduar një kornizë çeliku në punëtori" data-i18n-attr="alt:proj.4.alt" loading="lazy" decoding="async"><canvas class="sparks" data-sparks="workshop" aria-hidden="true"></canvas></div>
+          <div class="proj__cap"><h3 data-i18n="proj.4.t">Saldim në punëtori</h3><span class="chip" data-i18n="proj.sample">Shembull</span><p class="util" data-i18n="proj.meta">Lokacioni · Viti</p></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section contact glow" id="contact">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-label" data-i18n="con.label">kontakti</span><span class="sec-bracket" aria-hidden="true"></span></div>
+      <div class="contact__grid">
+        <div class="contact__copy">
+          <h2 class="title" data-i18n="con.title">Keni një projekt? <b>Le të flasim.</b></h2>
+          <p class="lead" data-i18n="con.lead">Na tregoni çfarë ju duhet. Ju kthejmë përgjigje me një ofertë ose me pyetjet e para.</p>
+          <dl class="facts">
+            <div><dt class="util" data-i18n="con.addr.k">Adresa</dt><dd data-i18n="con.addr.v">[Rruga dhe numri, qyteti]</dd></div>
+            <div><dt class="util" data-i18n="con.tel.k">Telefoni</dt><dd data-i18n="con.tel.v">[+000 00 000 000]</dd></div>
+            <div><dt class="util" data-i18n="con.mail.k">Emaili</dt><dd data-i18n="con.mail.v">[info@domeni.com]</dd></div>
+            <div><dt class="util" data-i18n="con.hours.k">Orari</dt><dd data-i18n="con.hours.v">[E hënë – e shtunë, 00:00 – 00:00]</dd></div>
+          </dl>
+          <p class="note" data-i18n="con.note">Të dhënat në kllapa janë për t’u plotësuar.</p>
+        </div>
+        <form class="form" id="quote-form" novalidate>
+          <div class="field">
+            <label class="util" for="f-name" data-i18n="form.name">Emri dhe mbiemri</label>
+            <input id="f-name" name="name" type="text" autocomplete="name" required>
+          </div>
+          <div class="field">
+            <label class="util" for="f-contact" data-i18n="form.contact">Telefoni ose emaili</label>
+            <input id="f-contact" name="contact" type="text" autocomplete="tel" required>
+          </div>
+          <div class="field field--wide">
+            <label class="util" for="f-service" data-i18n="form.service">Shërbimi</label>
+            <select id="f-service" name="service">
+              <option value="" data-i18n="form.choose">Zgjidhni shërbimin</option>
+              <option value="structures" data-i18n="svc.1.t">Konstruksione çeliku</option>
+              <option value="fabrication" data-i18n="svc.2.t">Përpunim i metalit</option>
+              <option value="gates" data-i18n="svc.3.t">Dyer, porta dhe parmakë</option>
+              <option value="stairs" data-i18n="svc.4.t">Shkallë, streha dhe fasada</option>
+              <option value="other" data-i18n="form.other">Tjetër</option>
+            </select>
+          </div>
+          <div class="field field--wide">
+            <label class="util" for="f-message" data-i18n="form.msg">Përshkrimi i projektit</label>
+            <textarea id="f-message" name="message" rows="4" data-i18n-attr="placeholder:form.msg.ph" placeholder="Lloji i objektit, përmasat e përafërta, afati."></textarea>
+          </div>
+          <div class="form__foot">
+            <button class="btn" type="submit" data-i18n="form.send">Dërgoni kërkesën</button>
+            <p class="form__status" id="form-status" role="status" aria-live="polite"></p>
+          </div>
+          <svg class="seam" aria-hidden="true" focusable="false" preserveAspectRatio="none"><path class="seam__glow"/><path class="seam__line"/></svg>
+          <i class="seam__torch" aria-hidden="true"></i>
+        </form>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot glow">
+  <div class="wrap foot__grid">
+    <nav class="foot__nav" data-i18n-attr="aria-label:foot.nav" aria-label="Lidhjet në fund të faqes">
+      <a href="#about" data-i18n="nav.about">Rreth nesh</a>
+      <a href="#services" data-i18n="nav.services">Shërbimet</a>
+      <a href="#process" data-i18n="nav.process">Procesi</a>
+      <a href="#projects" data-i18n="nav.projects">Projektet</a>
+      <a href="#contact" data-i18n="nav.contact">Kontakti</a>
+    </nav>
+    <div class="foot__base">
+      <span data-i18n="foot.rights">© 2026 Metalium. Të gjitha të drejtat e rezervuara.</span>
+      <a href="#hero" data-i18n="foot.top">Kthehu lart</a>
+    </div>
+  </div>
+  <div class="wrap foot__big">
+    <svg viewBox="0 0 562.7 101.49" role="img" aria-label="Metalium" focusable="false"><use href="#logo-w"/></svg>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var I18N = {"sq":{"skip":"Kalo te përmbajtja","brand.home":"Metalium, kreu i faqes","nav.label":"Menyja kryesore","nav.about":"Rreth nesh","nav.services":"Shërbimet","nav.process":"Procesi","nav.projects":"Projektet","nav.contact":"Kontakti","cta.quote":"Kërkoni ofertë","lang.label":"Gjuha","menu.toggle":"Hap ose mbyll menynë","hero.title":"<span>Çelik që<\/span> <b>qëndron fort.<\/b>","hero.lead":"Metalium projekton, prodhon dhe monton konstruksione çeliku, punime metalike sipas porosisë, porta, parmakë, shkallë dhe fasada. Një ekip, nga vizatimi i parë deri te buloni i fundit.","hero.more":"Shikoni shërbimet","hero.alt":"Saldator me helmetë mbrojtëse duke salduar një tra çeliku në lartësi, me shkëndija përreth","scope.1":"Projektim","scope.2":"Prodhim","scope.3":"Montim","about.label":"rreth nesh","about.title":"Forcë, saktësi dhe inovacion <b>në konstruksionet metalike.<\/b>","about.lead":"Metalium është ndërtuar mbi idenë se metali takon fuqinë. Ndërtojmë konstruksione çeliku, përpunojmë metal dhe ofrojmë zgjidhje të avancuara ndërtimore. Çdo projekt e bëjmë që të qëndrojë fort.","about.alt":"Saldator duke salduar profile çeliku","val.1.t":"Forcë","val.1.d":"Konstruksione të qëndrueshme, të dimensionuara për ngarkesën që mbajnë.","val.2.t":"Saktësi","val.2.d":"Inxhinieri moderne dhe punim sipas vizatimit, me tolerancë milimetrike.","val.3.t":"Inovacion","val.3.d":"Teknologji bashkëkohore prodhimi dhe zgjidhje të reja për çdo objekt.","svc.label":"shërbimet","svc.title":"Çfarë <b>ndërtojmë.<\/b>","svc.intro":"Katër fusha pune, një standard, nga një hallë e tërë deri te një parmak ballkoni. Zgjidhni një shembull për ta parë.","svc.1.t":"Konstruksione çeliku","svc.1.d":"Konstruksione mbajtëse për objekte industriale dhe komerciale, nga themeli deri te çatia.","svc.1.a":"Halla industriale","svc.1.a.alt":"Korniza të kuqe çeliku të një halle industriale në ndërtim","svc.1.b":"Depo","svc.1.b.alt":"Depo e veshur me llamarinë gri, me dyer të mëdha të kaltra","svc.1.c":"Objekte komerciale","svc.1.c.alt":"Skelet çeliku i një objekti shumëkatësh përballë qiellit","svc.1.e":"Konstruksione çatie","svc.1.e.alt":"Trarë të kuq çeliku të çatisë, të parë nga poshtë","svc.2.t":"Përpunim i metalit","svc.2.d":"Pjesë dhe elemente metalike të prodhuara sipas vizatimit ose mostrës suaj.","svc.2.a":"Prerje","svc.2.a.alt":"Prerje me plazmë e formave në një fletë çeliku","svc.2.b":"Lakim","svc.2.b.alt":"Dorë me dorëzë të kuqe duke futur llamarinën në presën lakuese","svc.2.c":"Saldim","svc.2.c.alt":"Saldim me dorë i një tubi çeliku, me shkëndija","svc.2.e":"Pjesë sipas porosisë","svc.2.e.alt":"Mbajtëse prej llamarine të lakuar mbi vizatimet e saj teknike","svc.3.t":"Dyer, porta dhe parmakë","svc.3.d":"Dyer, porta dhe rrethoja të sigurta, të punuara sipas masave të objektit tuaj.","svc.3.a":"Dyer metalike","svc.3.a.alt":"Derë çeliku gri në një mur me llamarinë të valëzuar","svc.3.b":"Porta oborri","svc.3.b.alt":"Portë rrëshqitëse metalike me motiv të prerë me laser dhe motor","svc.3.c":"Rrethoja","svc.3.c.alt":"Rrethojë e zezë metalike me shufra vertikale para një muri me tulla dhe llamarinë","svc.3.e":"Parmakë dhe kangjella","svc.3.e.alt":"Ballkone të harkuara me parmakë metalikë të kaltër","svc.4.t":"Shkallë, streha dhe fasada","svc.4.d":"Shkallë, mbulesa dhe konstruksione fasade që e kompletojnë objektin.","svc.4.a":"Shkallë metalike","svc.4.a.alt":"Shkallë spirale të zeza prej çeliku në një ambient të ndritshëm","svc.4.b":"Streha","svc.4.b.alt":"Veturë e parkuar nën një strehë metalike të harkuar","svc.4.c":"Pergola","svc.4.c.alt":"Pergolë metalike e errët me çati me lamela mbi një kënd uljeje në kopsht","svc.4.e":"Nënkonstruksione fasadash","svc.4.e.alt":"Lidhje çeliku të kuqe të montuara në fasadën e një objekti","plan.show":"Shfaq vizatimin teknik","plan.cap":"Prerje tërthore","svc.1.spec":"IPE · HEA · HEB","svc.2.spec":"Llamarinë · pllakë · profil","svc.3.spec":"Tub katror · tub drejtkëndor","svc.4.spec":"UPN · UPE","calc.label":"llogaritësi","calc.title":"Sa peshon <b>çeliku juaj?<\/b>","calc.lead":"Zgjidhni profilin, shkruani gjatësinë dhe numrin e copëve. Pesha del menjëherë dhe mund ta shtoni te kërkesa për ofertë.","calc.note":"Peshë teorike sipas tabelave standarde të profileve (EN 10365, EN 10219), pa lidhje, pllaka dhe bulona. Pesha reale ndryshon pak brenda tolerancave të prodhimit.","calc.family":"Profili","calc.shs":"Tub katror","calc.size":"Madhësia","calc.len":"Gjatësia (m)","calc.qty":"Copë","calc.total":"Pesha gjithsej","calc.dwg":"Prerja tërthore e profilit të zgjedhur, me përmasat në milimetra","calc.add":"Shtoje te kërkesa","calc.added":"U shtua te përshkrimi i projektit, në formularin e kërkesës.","calc.bad":"Shkruani gjatësinë në metra dhe numrin e copëve.","calc.pc":"copë","calc.line":"Llogaritja e peshës: {p}, {l} m × {q} copë ≈ {w}","proc.label":"procesi","proc.title":"Nga vizatimi <b>te montimi.<\/b>","proc.1.t":"Konsultim dhe matje","proc.1.d":"Flasim për projektin, dalim në objekt dhe marrim masat.","proc.2.t":"Projektim","proc.2.d":"Përgatisim vizatimet teknike dhe ofertën para se të fillojë puna.","proc.3.t":"Prodhim","proc.3.d":"Presim, lakojmë dhe saldojmë elementet në punëtori.","proc.4.t":"Mbrojtje e sipërfaqes","proc.4.d":"Elementet mbrohen nga korrozioni me zinkim ose ngjyrosje.","proc.5.t":"Montim","proc.5.d":"Ekipi ynë e monton konstruksionin në objekt dhe ua dorëzon të përfunduar.","proj.label":"projektet","proj.title":"Punë <b>në çelik.<\/b>","proj.note":"Shembuj për dizajnin. Fotot janë nga manuali i brendit dhe do të zëvendësohen me projektet reale të Metalium.","proj.sample":"Shembull","proj.meta":"Lokacioni · Viti","proj.1.t":"Konstruksion çatie","proj.1.alt":"Çati me kapriata çeliku, e parë nga poshtë","proj.2.t":"Konstruksion çeliku dhe xhami","proj.2.alt":"Punëtorë duke salduar nën një konstruksion çeliku me xham","proj.3.t":"Përpunim metali","proj.3.alt":"Shkëndija gjatë përpunimit të metalit në makinë","proj.4.t":"Saldim në punëtori","proj.4.alt":"Saldator duke salduar një kornizë çeliku në punëtori","con.label":"kontakti","con.title":"Keni një projekt? <b>Le të flasim.<\/b>","con.lead":"Na tregoni çfarë ju duhet. Ju kthejmë përgjigje me një ofertë ose me pyetjet e para.","con.addr.k":"Adresa","con.addr.v":"[Rruga dhe numri, qyteti]","con.tel.k":"Telefoni","con.tel.v":"[+000 00 000 000]","con.mail.k":"Emaili","con.mail.v":"[info@domeni.com]","con.hours.k":"Orari","con.hours.v":"[E hënë – e shtunë, 00:00 – 00:00]","con.note":"Të dhënat në kllapa janë për t’u plotësuar.","form.name":"Emri dhe mbiemri","form.contact":"Telefoni ose emaili","form.service":"Shërbimi","form.choose":"Zgjidhni shërbimin","form.other":"Tjetër","form.msg":"Përshkrimi i projektit","form.msg.ph":"Lloji i objektit, përmasat e përafërta, afati.","form.send":"Dërgoni kërkesën","form.demo":"Formulari është ende demonstrim dhe kërkesa nuk u dërgua. Do të lidhet me emailin e Metalium kur faqja të publikohet.","foot.rights":"© 2026 Metalium. Të gjitha të drejtat e rezervuara.","foot.top":"Kthehu lart","foot.nav":"Lidhjet në fund të faqes","motion.pause":"Ndalo animacionet"},"en":{"skip":"Skip to content","brand.home":"Metalium, top of page","nav.label":"Main menu","nav.about":"About","nav.services":"Services","nav.process":"Process","nav.projects":"Projects","nav.contact":"Contact","cta.quote":"Request a quote","lang.label":"Language","menu.toggle":"Open or close the menu","hero.title":"<span>Steel that<\/span> <b>stands strong.<\/b>","hero.lead":"Metalium designs, fabricates and installs steel structures, custom metalwork, gates, railings, stairs and facades. One team, from the first drawing to the last bolt.","hero.more":"See our services","hero.alt":"Welder in a protective helmet welding a steel beam at height, with sparks flying","scope.1":"Design","scope.2":"Fabrication","scope.3":"Installation","about.label":"about us","about.title":"Strength, precision and innovation <b>in metal construction.<\/b>","about.lead":"Metalium is built on the idea that metal meets power. We build steel structures, fabricate metal and deliver advanced construction solutions. Every project is made to stand strong.","about.alt":"Welder joining steel sections","val.1.t":"Strength","val.1.d":"Durable structures, sized for the loads they carry.","val.2.t":"Precision","val.2.d":"Modern engineering and work built to the drawing, to millimetre tolerance.","val.3.t":"Innovation","val.3.d":"Current fabrication technology and new solutions for every build.","svc.label":"services","svc.title":"What <b>we build.<\/b>","svc.intro":"Four lines of work, one standard, from a complete hall to a single balcony railing. Pick an example to see it.","svc.1.t":"Steel structures","svc.1.d":"Load-bearing structures for industrial and commercial buildings, from the foundation to the roof.","svc.1.a":"Industrial halls","svc.1.a.alt":"Red steel frames of an industrial hall under construction","svc.1.b":"Warehouses","svc.1.b.alt":"Warehouse clad in grey metal sheeting, with large blue doors","svc.1.c":"Commercial buildings","svc.1.c.alt":"Steel frame of a multi-storey building against the sky","svc.1.e":"Roof structures","svc.1.e.alt":"Red steel roof beams seen from below","svc.2.t":"Metal fabrication","svc.2.d":"Metal parts and components made to your drawing or sample.","svc.2.a":"Cutting","svc.2.a.alt":"Plasma cutter cutting shapes out of a steel sheet","svc.2.b":"Bending","svc.2.b.alt":"Hand in a red glove feeding sheet metal into a press brake","svc.2.c":"Welding","svc.2.c.alt":"Welding a steel pipe by hand, with sparks","svc.2.e":"Custom-made parts","svc.2.e.alt":"Bent sheet-metal bracket lying on its technical drawings","svc.3.t":"Doors, gates & railings","svc.3.d":"Secure doors, gates and fencing, made to the measurements of your site.","svc.3.a":"Metal doors","svc.3.a.alt":"Grey steel door in a corrugated metal wall","svc.3.b":"Gates","svc.3.b.alt":"Sliding metal gate with a laser-cut pattern and a motor","svc.3.c":"Fences","svc.3.c.alt":"Black metal fence with vertical bars in front of a brick and metal wall","svc.3.e":"Railings and balustrades","svc.3.e.alt":"Curved balconies with blue metal railings","svc.4.t":"Stairs, canopies & facades","svc.4.d":"Stairs, coverings and facade structures that complete a building.","svc.4.a":"Metal stairs","svc.4.a.alt":"Black steel spiral staircase in a bright interior","svc.4.b":"Canopies","svc.4.b.alt":"Car parked under a curved metal carport","svc.4.c":"Pergolas","svc.4.c.alt":"Dark metal pergola with a louvred roof over garden seating","svc.4.e":"Facade substructures","svc.4.e.alt":"Red steel bracing fixed across a building facade","plan.show":"Show the technical drawing","plan.cap":"Cross-section","svc.1.spec":"IPE · HEA · HEB","svc.2.spec":"Sheet · plate · section","svc.3.spec":"Square tube · rectangular tube","svc.4.spec":"UPN · UPE","calc.label":"calculator","calc.title":"How much does <b>your steel weigh?<\/b>","calc.lead":"Pick a section, enter the length and the number of pieces. The weight appears at once, and you can add it to your quote request.","calc.note":"Theoretical weight from the standard section tables (EN 10365, EN 10219), without connections, plates and bolts. Actual weight varies slightly within rolling tolerances.","calc.family":"Section","calc.shs":"Square tube","calc.size":"Size","calc.len":"Length (m)","calc.qty":"Pieces","calc.total":"Total weight","calc.dwg":"Cross-section of the selected profile, with dimensions in millimetres","calc.add":"Add to my request","calc.added":"Added to the project description in the request form.","calc.bad":"Enter the length in metres and the number of pieces.","calc.pc":"pcs","calc.line":"Weight estimate: {p}, {l} m × {q} pcs ≈ {w}","proc.label":"process","proc.title":"From drawing <b>to installation.<\/b>","proc.1.t":"Consultation and survey","proc.1.d":"We talk through the project, visit the site and take measurements.","proc.2.t":"Design","proc.2.d":"We prepare the technical drawings and the quote before work starts.","proc.3.t":"Fabrication","proc.3.d":"We cut, bend and weld the components in the workshop.","proc.4.t":"Surface protection","proc.4.d":"Components are protected against corrosion by galvanizing or painting.","proc.5.t":"Installation","proc.5.d":"Our team installs the structure on site and hands it over finished.","proj.label":"projects","proj.title":"Work <b>in steel.<\/b>","proj.note":"Samples for the design. The photos come from the brand manual and will be replaced with Metalium’s real projects.","proj.sample":"Sample","proj.meta":"Location · Year","proj.1.t":"Roof structure","proj.1.alt":"Steel truss roof seen from below","proj.2.t":"Steel and glass structure","proj.2.alt":"Workers welding under a steel and glass structure","proj.3.t":"Metal fabrication","proj.3.alt":"Sparks from metal being machined","proj.4.t":"Workshop welding","proj.4.alt":"Welder joining a steel frame in the workshop","con.label":"contact","con.title":"Have a project? <b>Let’s talk.<\/b>","con.lead":"Tell us what you need. We reply with a quote or with our first questions.","con.addr.k":"Address","con.addr.v":"[Street and number, city]","con.tel.k":"Phone","con.tel.v":"[+000 00 000 000]","con.mail.k":"Email","con.mail.v":"[info@domain.com]","con.hours.k":"Hours","con.hours.v":"[Monday – Saturday, 00:00 – 00:00]","con.note":"Details in brackets are still to be filled in.","form.name":"Full name","form.contact":"Phone or email","form.service":"Service","form.choose":"Choose a service","form.other":"Other","form.msg":"Project description","form.msg.ph":"Type of building, approximate dimensions, deadline.","form.send":"Send request","form.demo":"This form is still a demo and your request was not sent. It will be connected to Metalium’s inbox when the site goes live.","foot.rights":"© 2026 Metalium. All rights reserved.","foot.top":"Back to top","foot.nav":"Footer links","motion.pause":"Pause the animations"}};
+  var root = document.documentElement;
+  var top = document.getElementById('top');
+  var burger = document.getElementById('burger');
+  var status = document.getElementById('form-status');
+  var KEY = 'metalium-lang';
+  var lang = 'sq';
+  var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var introMs = calm || root.classList.contains('no-intro') ? 0 : 850;      // the hero's entrance waits for the intro curtain (--id in the styles)
+  var onLang = [];                                                          // parts of the page that write their own text
+
+  // always open at the start of the page: never at a scroll position restored from an earlier visit, reload or update
+  var moved = false;
+  ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(function (ev) {
+    window.addEventListener(ev, function () { moved = true; }, { passive: true, capture: true });
+  });
+  function toTop() {
+    if (moved || !(window.scrollY || root.scrollTop)) return;
+    if (location.hash.length > 1 && document.getElementById(location.hash.slice(1))) return;   // a link straight to a section keeps working
+    try { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); } catch (e) { window.scrollTo(0, 0); }
+  }
+  try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (e) {}
+  toTop();
+  document.addEventListener('DOMContentLoaded', toTop);
+  window.addEventListener('load', function () { toTop(); window.setTimeout(toTop, 250); window.setTimeout(toTop, 900); });
+  window.addEventListener('pageshow', toTop);
+
+  function setLang(next, remember) {
+    var dict = I18N[next];
+    if (!dict) return;
+    lang = next;
+    root.lang = next;
+    document.querySelectorAll('[data-i18n]').forEach(function (el) {
+      var v = dict[el.getAttribute('data-i18n')];
+      if (v != null) el.innerHTML = v;
+    });
+    document.querySelectorAll('[data-i18n-attr]').forEach(function (el) {
+      el.getAttribute('data-i18n-attr').split(';').forEach(function (pair) {
+        var parts = pair.split(':');
+        var v = dict[parts[1]];
+        if (v != null) el.setAttribute(parts[0], v);
+      });
+    });
+    document.querySelectorAll('[data-lang]').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-lang') === next));
+    });
+    if (remember) { try { localStorage.setItem(KEY, next); } catch (e) {} }
+    onLang.forEach(function (fn) { fn(); });
+  }
+
+  var curtain = document.getElementById('curtain');
+  if (curtain) {
+    var dropCurtain = function () { if (curtain && curtain.parentNode) curtain.parentNode.removeChild(curtain); curtain = null; };
+    curtain.addEventListener('animationend', function (e) { if (e.target === curtain) dropCurtain(); });
+    window.setTimeout(dropCurtain, 2600);
+  }
+
+  // language: saved choice, or #en in the link, otherwise Albanian as written in the page
+  var start = 'sq';
+  try { var saved = localStorage.getItem(KEY); if (saved && I18N[saved]) start = saved; } catch (e) {}
+  if (location.hash === '#en') start = 'en';
+  if (location.hash === '#sq') start = 'sq';
+  setLang(start, false);
+
+  document.querySelectorAll('[data-lang]').forEach(function (b) {
+    b.addEventListener('click', function () { setLang(b.getAttribute('data-lang'), true); });
+  });
+
+  // as the page moves: the header turns solid, the red line under it shows how far down the page is,
+  // the menu marks the section on screen, and the big footer wordmark rises into place
+  var prog = document.getElementById('prog'), foot = document.querySelector('.foot'), big = document.querySelector('.foot__big svg');
+  var menuLinks = [].slice.call(document.querySelectorAll('#menu a[href^="#"]:not(.btn)'));
+  var spied = [].slice.call(document.querySelectorAll('main > section[id]'));
+  var here = null, queued = false;
+  function onScroll() {
+    queued = false;
+    var y = window.scrollY || root.scrollTop || 0, vh = window.innerHeight, max = root.scrollHeight - vh;
+    top.classList.toggle('is-solid', y > 24);
+    if (prog) prog.style.transform = 'scaleX(' + (max > 0 ? Math.max(0, Math.min(1, y / max)) : 0).toFixed(4) + ')';
+    var id = '', line = top.offsetHeight + vh * 0.32;
+    spied.forEach(function (sec) { if (sec.getBoundingClientRect().top <= line) id = sec.getAttribute('data-nav') || sec.id; });
+    if (max > 0 && y >= max - 2 && spied.length) id = spied[spied.length - 1].id;      // the end of the page belongs to the last section
+    if (id !== here) {
+      here = id;
+      menuLinks.forEach(function (a) {
+        var on = a.getAttribute('href') === '#' + id;
+        a.classList.toggle('is-here', on);
+        if (on) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current');
+      });
+    }
+    if (big && foot && !calm) {
+      var r = foot.getBoundingClientRect();
+      big.style.setProperty('--fp', (max > 0 && y >= max - 2 ? 1 : Math.max(0, Math.min(1, (vh - r.top) / (r.height || 1)))).toFixed(3));
+    }
+  }
+  function queueScroll() { if (!queued) { queued = true; window.requestAnimationFrame(onScroll); } }
+  window.addEventListener('scroll', queueScroll, { passive: true });
+  window.addEventListener('resize', queueScroll);
+  onScroll();
+
+  // phone menu
+  function setMenu(open) {
+    top.classList.toggle('is-open', open);
+    burger.setAttribute('aria-expanded', String(open));
+  }
+  burger.addEventListener('click', function () { setMenu(!top.classList.contains('is-open')); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setMenu(false); });
+
+  // in-page links scroll to their section
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest ? e.target.closest('a[href^="#"]') : null;
+    if (!a) return;
+    var target = document.getElementById(a.getAttribute('href').slice(1));
+    if (!target) return;
+    e.preventDefault();
+    setMenu(false);
+    target.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' });
+  });
+
+  // services: every listed example has its own photo; hover, focus or tap an example to see it
+  document.querySelectorAll('.svc').forEach(function (card) {
+    var picks = [].slice.call(card.querySelectorAll('.pick'));
+    var shots = [].slice.call(card.querySelectorAll('.svc__fig img'));
+    var fig = card.querySelector('.svc__fig');
+    var now = 0, wait = 0;
+    function show(i) {
+      if (i === now) return;
+      var from = now;
+      now = i;
+      picks.forEach(function (p, k) { p.setAttribute('aria-pressed', String(k === i)); });
+      shots.forEach(function (im, k) {
+        im.classList.remove('is-in');
+        im.classList.toggle('is-on', k === i);
+        im.classList.toggle('is-prev', k === from);           // stays underneath until the new photo has wiped across
+        if (k === i) im.removeAttribute('aria-hidden'); else im.setAttribute('aria-hidden', 'true');
+      });
+      if (calm || !fig) return;
+      fig.classList.remove('is-wiping');
+      void fig.offsetWidth;                                   // restart the wipe if one is already running
+      shots[i].classList.add('is-in');
+      fig.classList.add('is-wiping');
+    }
+    shots.forEach(function (im) {
+      im.addEventListener('animationend', function () {
+        if (!im.classList.contains('is-on')) return;
+        im.classList.remove('is-in');
+        fig.classList.remove('is-wiping');
+        shots.forEach(function (o) { o.classList.remove('is-prev'); });
+      });
+    });
+    picks.forEach(function (p, i) {
+      p.addEventListener('click', function () { show(i); });
+      p.addEventListener('focus', function () { show(i); });
+      p.addEventListener('pointerenter', function (e) {
+        if (e.pointerType !== 'mouse') return;
+        window.clearTimeout(wait);
+        wait = window.setTimeout(function () { show(i); }, 90);      // ignore a pointer that is only passing through
+      });
+      p.addEventListener('pointerleave', function () { window.clearTimeout(wait); });
+    });
+    if (fig) fig.addEventListener('click', function () { show((now + 1) % picks.length); });   // a tap on the photo shows the next one
+
+    // the technical drawing lies over the photo while a mouse points at it; the corner button pins it (touch, keyboard)
+    var planBtn = card.querySelector('.plan-btn'), pinned = false;
+    if (fig && planBtn) {
+      fig.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') fig.classList.add('is-plan'); });
+      fig.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse') fig.classList.toggle('is-plan', pinned); });
+      planBtn.addEventListener('click', function (e) {
+        e.stopPropagation();                                  // not a tap on the photo
+        pinned = !pinned;
+        planBtn.setAttribute('aria-pressed', String(pinned));
+        fig.classList.toggle('is-plan', pinned);
+      });
+    }
+  });
+
+  // the quote form is not wired to an inbox yet: say so instead of pretending it was sent
+  var form = document.getElementById('quote-form');
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    status.setAttribute('data-i18n', 'form.demo');
+    status.textContent = I18N[lang]['form.demo'];
+    weldForm();
+  });
+
+  // a weld seam runs once around the form when it is submitted, starting under the button. It only acknowledges
+  // the click: what happened to the request is said by the status line.
+  var seamRun = 0;
+  function weldForm() {
+    var svg = form.querySelector('.seam'), torch = form.querySelector('.seam__torch');
+    if (calm || !svg || !torch) return;
+    var W = form.offsetWidth, H = form.offsetHeight, btn = form.querySelector('.btn');
+    var bx = btn ? Math.max(0, Math.min(W, btn.offsetLeft + btn.offsetWidth / 2)) : W / 2;
+    var legs = [[bx, H, 0, H, 90], [0, H, 0, 0, 180], [0, 0, W, 0, -90], [W, 0, W, H, 0], [W, H, bx, H, 90]];   // from, to, where its sparks fly
+    var total = 2 * (W + H), paths = [].slice.call(svg.querySelectorAll('path'));
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+    paths.forEach(function (p) {
+      p.setAttribute('d', 'M' + bx + ' ' + (H - 0.5) + 'H.5V.5H' + (W - 0.5) + 'V' + (H - 0.5) + 'H' + bx);
+      p.style.strokeDasharray = total;
+      p.style.strokeDashoffset = total;
+    });
+    form.classList.remove('is-welded');
+    form.classList.add('is-welding');
+    var run = ++seamRun, t0 = 0, DUR = 1500, lastSpark = 0;
+    function at(d) {
+      for (var i = 0; i < legs.length; i++) {
+        var g = legs[i], len = Math.abs(g[2] - g[0]) + Math.abs(g[3] - g[1]);
+        if (d <= len || i === legs.length - 1) { var k = len ? Math.min(1, d / len) : 0; return [g[0] + (g[2] - g[0]) * k, g[1] + (g[3] - g[1]) * k, g[4]]; }
+        d -= len;
+      }
+    }
+    function frame(now) {
+      if (run !== seamRun) return;                            // submitted again: the newer run takes over
+      if (!t0) t0 = now;
+      var k = Math.min(1, (now - t0) / DUR), e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2, p = at(total * e);
+      paths.forEach(function (q) { q.style.strokeDashoffset = (total * (1 - e)).toFixed(1); });
+      torch.style.transform = 'translate(' + p[0].toFixed(1) + 'px,' + p[1].toFixed(1) + 'px)';
+      if (now - lastSpark > 36 && k < 0.985) { lastSpark = now; throwSparks(form, p[0], p[1], 2, p[2], 72, 46); }
+      if (k < 1) return window.requestAnimationFrame(frame);
+      form.classList.remove('is-welding');
+      form.classList.add('is-welded');
+    }
+    window.requestAnimationFrame(frame);
+  }
+
+  // panels slide in as they scroll into view: [selector, direction, delay between neighbours, neighbours per row]
+  if (!calm && 'IntersectionObserver' in window) {
+    var PLAN = [
+      ['.sec-head', 'up'],
+      ['.about__copy', 'left'], ['.about__fig', 'right'], ['.value', 'up', 0.12, 3],
+      ['.services .sec-top', 'up'], ['.svc', 'alt', 0.12, 2],
+      ['.calc__copy', 'left'], ['.calc__panel', 'right'],
+      ['.proc-top .title', 'left'],
+      ['.projects .sec-top', 'up'], ['.proj', 'alt', 0.12, 2],
+      ['.contact__copy', 'left'], ['.form', 'right']
+    ];
+    var seen = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        seen.unobserve(en.target);
+        en.target.classList.add('rv-in');
+      });
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.06 });
+    var fold = window.innerHeight;
+    PLAN.forEach(function (step) {
+      [].slice.call(document.querySelectorAll(step[0])).forEach(function (el, i) {
+        if (el.getBoundingClientRect().top < fold) return;            // already on screen: leave it alone
+        var dir = step[1] === 'alt' ? (i % 2 ? 'right' : 'left') : step[1];
+        if (dir !== 'up') el.classList.add('rv-' + dir);
+        if (step[2]) el.style.setProperty('--rd', ((i % step[3]) * step[2]).toFixed(2) + 's');
+        el.classList.add('rv');
+        el.addEventListener('transitionend', function done(e) {       // drop the classes once the slide has finished
+          if (e.target !== el || e.propertyName !== 'transform') return;
+          el.removeEventListener('transitionend', done);
+          el.classList.remove('rv', 'rv-in', 'rv-left', 'rv-right');
+          el.style.removeProperty('--rd');
+        });
+        seen.observe(el);
+      });
+    });
+    // at the very end of the page nothing can scroll further up: show whatever is on screen and still waiting
+    window.addEventListener('scroll', function () {
+      if (window.innerHeight + (window.scrollY || 0) < root.scrollHeight - 2) return;
+      [].slice.call(document.querySelectorAll('.rv:not(.rv-in)')).forEach(function (el) {
+        if (el.getBoundingClientRect().top < window.innerHeight) { seen.unobserve(el); el.classList.add('rv-in'); }
+      });
+    }, { passive: true });
+  }
+
+  // ---- sparks thrown as small page elements (the headline torch, the red buttons) ----
+  function rnd(a, b) { return a + Math.random() * (b - a); }
+  function throwSparks(host, x, y, n, angle, spread, reach) {
+    for (var i = 0; i < n; i++) {
+      var a = (angle + rnd(-spread, spread)) * Math.PI / 180, d = rnd(reach * 0.35, reach);
+      var dx = Math.cos(a) * d, dy = Math.sin(a) * d + rnd(4, 16);            // a little weight
+      var s = document.createElement('i');
+      s.className = 'spk';
+      s.setAttribute('aria-hidden', 'true');
+      s.style.cssText = '--x:' + x.toFixed(1) + 'px;--y:' + y.toFixed(1) + 'px;--dx:' + dx.toFixed(1) + 'px;--dy:' + dy.toFixed(1) +
+        'px;--r:' + (Math.atan2(dx, -dy) * 180 / Math.PI).toFixed(1) + 'deg;--l:' + rnd(7, 16).toFixed(1) + 'px;--t:' + rnd(0.38, 0.72).toFixed(2) + 's';
+      s.addEventListener('animationend', function () { if (this.parentNode) this.parentNode.removeChild(this); });
+      host.appendChild(s);
+    }
+  }
+
+  if (!calm) {
+    // the red buttons throw a few sparks from wherever the pointer comes in (or from the top edge for keyboard and touch)
+    [].slice.call(document.querySelectorAll('.btn')).forEach(function (b) {
+      var last = 0;
+      function burst(e) {
+        var now = Date.now();
+        if (now - last < 450) return;
+        last = now;
+        var r = b.getBoundingClientRect(), x = r.width / 2, y = 0, angle = -90;
+        if (e && e.clientX != null && (e.clientX || e.clientY)) {
+          x = Math.max(0, Math.min(r.width, e.clientX - r.left));
+          y = Math.max(0, Math.min(r.height, e.clientY - r.top));
+          var edges = [[y, -90, x, 0], [r.height - y, 90, x, r.height], [x, 180, 0, y], [r.width - x, 0, r.width, y]];   // top, bottom, left, right
+          edges.sort(function (m, n) { return m[0] - n[0]; });
+          angle = edges[0][1]; x = edges[0][2]; y = edges[0][3];
+        }
+        throwSparks(b, x, y, 11, angle, 62, 58);
+      }
+      b.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') burst(e); });
+      b.addEventListener('pointerdown', function (e) { if (e.pointerType !== 'mouse') burst(null); });
+      b.addEventListener('focus', function () { if (b.matches(':focus-visible')) burst(null); });
+    });
+
+    // the bold headline line is welded on: an outline first, then it fills behind a torch point that runs along it
+    (function weld() {
+      var b = document.querySelector('#hero .display b');
+      if (!b) return;
+      var range = document.createRange(), t0 = 0, DUR = 1150, lastSpark = 0;
+      var text = b.firstChild;                               // the words themselves (sparks are added to the line as it is welded)
+      if (!text || text.nodeType !== 3) return;
+      function textWidth() { range.selectNodeContents(text); var r = range.getClientRects(); return r.length === 1 ? r[0].width : 0; }
+      if (!textWidth()) return;                               // wrapped onto two lines: leave it as it is
+      b.style.setProperty('--wx', '-12px');
+      b.classList.add('is-welding');
+      function frame(now) {
+        if (!b.isConnected) return;                           // the language was switched meanwhile
+        if (!t0) t0 = now;
+        var k = Math.min(1, (now - t0) / DUR), e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+        var w = textWidth() || b.offsetWidth, x = -12 + (w + 24) * e;
+        b.style.setProperty('--wx', x.toFixed(1) + 'px');
+        if (now - lastSpark > 34 && k > 0.02 && k < 0.98) {
+          lastSpark = now;
+          throwSparks(b, x, b.offsetHeight * 0.52, 2, -80, 85, b.offsetHeight * 0.6);
+        }
+        if (k < 1) return requestAnimationFrame(frame);
+        b.classList.remove('is-welding');
+        b.style.removeProperty('--wx');
+        b.classList.add('is-welded');
+        window.setTimeout(function () { b.classList.remove('is-welded'); }, 1200);
+      }
+      window.setTimeout(function () { requestAnimationFrame(frame); }, 480 + introMs);
+    })();
+  }
+
+  // ---- process: the dimension line draws across and the hatched mark fills in as the section scrolls into view ----
+  (function () {
+    var chain = document.querySelector('.chain'), wipe = document.getElementById('cmark-wipe'), mark = document.querySelector('.proc-top .cmark');
+    if (!chain || calm) return;                               // without motion everything is simply drawn
+    var steps = [].slice.call(chain.children);
+    var cur = { line: 0, mark: 0 }, tgt = { line: 0, mark: 0 }, raf = 0, idle = 0;
+    chain.classList.add('is-live');
+
+    function paint() {
+      var vertical = steps.length > 1 && steps[1].offsetTop > steps[0].offsetTop + 4;
+      var size = vertical ? chain.offsetHeight : chain.offsetWidth, p = cur.line;
+      chain.style.setProperty('--p', p.toFixed(4));
+      steps.forEach(function (li) {
+        var at = (vertical ? li.offsetTop : li.offsetLeft) / (size || 1);
+        li.classList.toggle('is-on', p >= 1 || p > at + 0.004);
+      });
+      chain.classList.toggle('is-drawing', p > 0.002 && p < 1);
+      chain.classList.toggle('is-done', p >= 1);
+      if (wipe) {                                             // slanted edge sweeping left to right over the mark
+        var x = -250 + 815 * cur.mark;
+        wipe.setAttribute('points', '-300,-56 ' + (x + 185.8).toFixed(1) + ',-56 ' + x.toFixed(1) + ',256 -300,256');
+      }
+    }
+    function tick() {
+      raf = 0;
+      var moving = false;
+      ['line', 'mark'].forEach(function (k) {
+        var d = tgt[k] - cur[k];
+        if (d > 0.0008) { cur[k] = Math.min(tgt[k], cur[k] + Math.min(d * 0.14 + 0.0015, 0.022)); moving = true; }
+        else cur[k] = tgt[k];
+      });
+      paint();
+      if (moving) raf = requestAnimationFrame(tick);
+      else if (cur.line >= 1 && cur.mark >= 1) { window.removeEventListener('scroll', measure); window.removeEventListener('resize', measure); }
+    }
+    function go() { if (!raf) raf = requestAnimationFrame(tick); }
+    function measure() {
+      var vh = window.innerHeight, r = chain.getBoundingClientRect();
+      var vertical = steps.length > 1 && steps[1].offsetTop > steps[0].offsetTop + 4;
+      var p = vertical ? (vh * 0.74 - r.top) / (r.height || 1) : (vh * 0.9 - r.top) / (vh * 0.34);
+      tgt.line = Math.max(tgt.line, Math.max(0, Math.min(1, p)));               // only ever forwards: it is drawn once
+      if (mark) {
+        var m = mark.getBoundingClientRect();
+        tgt.mark = Math.max(tgt.mark, Math.max(0, Math.min(1, (vh * 0.92 - m.top) / (vh * 0.42))));
+      } else tgt.mark = 1;
+      if (r.bottom < 0) { cur.line = tgt.line = 1; cur.mark = tgt.mark = 1; }   // already scrolled past
+      go();
+      window.clearTimeout(idle);
+      idle = window.setTimeout(function () {                  // the page has come to rest with the chain in view: finish the line
+        var q = chain.getBoundingClientRect();
+        if (q.top < window.innerHeight * 0.9 && q.bottom > 0) { tgt.line = 1; tgt.mark = 1; go(); }
+      }, 900);
+    }
+    paint();
+    window.addEventListener('scroll', measure, { passive: true });
+    window.addEventListener('resize', measure);
+    measure();
+  })();
+
+  // ---- steel weight calculator: catalogue mass per metre x length x pieces, with the section drawn to its real proportions ----
+  (function () {
+    var STEEL = {"IPE":[[80,6.0,80,46,3.8,5.2,5],[100,8.1,100,55,4.1,5.7,7],[120,10.4,120,64,4.4,6.3,7],[140,12.9,140,73,4.7,6.9,7],[160,15.8,160,82,5.0,7.4,9],[180,18.8,180,91,5.3,8.0,9],[200,22.4,200,100,5.6,8.5,12],[220,26.2,220,110,5.9,9.2,12],[240,30.7,240,120,6.2,9.8,15],[270,36.1,270,135,6.6,10.2,15],[300,42.2,300,150,7.1,10.7,15],[330,49.1,330,160,7.5,11.5,18],[360,57.1,360,170,8.0,12.7,18],[400,66.3,400,180,8.6,13.5,21],[450,77.6,450,190,9.4,14.6,21],[500,90.7,500,200,10.2,16.0,21],[550,106,550,210,11.1,17.2,24],[600,122,600,220,12.0,19.0,24]],"HEA":[[100,16.7,96,100,5,8,12],[120,19.9,114,120,5,8,12],[140,24.7,133,140,5.5,8.5,12],[160,30.4,152,160,6,9,15],[180,35.5,171,180,6,9.5,15],[200,42.3,190,200,6.5,10,18],[220,50.5,210,220,7,11,18],[240,60.3,230,240,7.5,12,21],[260,68.2,250,260,7.5,12.5,24],[280,76.4,270,280,8,13,24],[300,88.3,290,300,8.5,14,27],[320,97.6,310,300,9,15.5,27],[340,105,330,300,9.5,16.5,27],[360,112,350,300,10,17.5,27],[400,125,390,300,11,19,27],[450,140,440,300,11.5,21,27],[500,155,490,300,12,23,27],[550,166,540,300,12.5,24,27],[600,178,590,300,13,25,27]],"HEB":[[100,20.4,100,100,6,10,12],[120,26.7,120,120,6.5,11,12],[140,33.7,140,140,7,12,12],[160,42.6,160,160,8,13,15],[180,51.2,180,180,8.5,14,15],[200,61.3,200,200,9,15,18],[220,71.5,220,220,9.5,16,18],[240,83.2,240,240,10,17,21],[260,93.0,260,260,10,17.5,24],[280,103,280,280,10.5,18,24],[300,117,300,300,11,19,27],[320,127,320,300,11.5,20.5,27],[340,134,340,300,12,21.5,27],[360,142,360,300,12.5,22.5,27],[400,155,400,300,13.5,24,27],[450,171,450,300,14,26,27],[500,187,500,300,14.5,28,27],[550,199,550,300,15,29,27],[600,212,600,300,15.5,30,27]],"UPN":[[80,8.64,80,45,6,8,8],[100,10.6,100,50,6,8.5,8.5],[120,13.4,120,55,7,9,9],[140,16.0,140,60,7,10,10],[160,18.8,160,65,7.5,10.5,10.5],[180,22.0,180,70,8,11,11],[200,25.3,200,75,8.5,11.5,11.5],[220,29.4,220,80,9,12.5,12.5],[240,33.2,240,85,9.5,13,13],[260,37.9,260,90,10,14,14],[280,41.8,280,95,10,15,15],[300,46.2,300,100,10,16,16]],"SHS":[[20,2,1.05],[25,2,1.36],[30,2,1.68],[30,3,2.36],[40,2,2.31],[40,3,3.3],[40,4,4.2],[50,3,4.25],[50,4,5.45],[60,3,5.19],[60,4,6.71],[60,5,8.13],[80,3,7.07],[80,4,9.22],[80,5,11.3],[100,4,11.7],[100,5,14.4],[100,6,17.0],[120,5,17.5],[120,6,20.7],[150,5,22.3],[150,6,26.4],[150,8,33.9],[200,6,35.8],[200,8,46.5],[200,10,57.0]]};   // IPE, HEA, HEB, UPN: [name, kg/m, h, b, tw, tf, r]; SHS: [b, t, kg/m]  (see work/steel_data.py)
+    var f = document.getElementById('calc-form');
+    if (!f || !STEEL.IPE) return;
+    var size = document.getElementById('c-size'), len = document.getElementById('c-len'), qty = document.getElementById('c-qty');
+    var out = document.getElementById('calc-kg'), sum = document.getElementById('calc-sum'), dims = document.getElementById('calc-dims');
+    var dwg = document.getElementById('calc-dwg'), note = document.getElementById('calc-status');
+    var OPEN = { IPE: 200, HEA: 200, HEB: 200, UPN: 160, SHS: '60×60×3' };       // the size each family opens on
+    var fam = 'IPE', last = null;
+
+    function label(row) { return fam === 'SHS' ? row[0] + '×' + row[0] + '×' + row[1] : fam + ' ' + row[0]; }
+    function fill() {
+      size.textContent = '';
+      STEEL[fam].forEach(function (row, i) {
+        var o = document.createElement('option');
+        o.value = i;
+        o.textContent = label(row);
+        if (label(row) === (fam === 'SHS' ? OPEN.SHS : fam + ' ' + OPEN[fam])) o.selected = true;
+        size.appendChild(o);
+      });
+    }
+    function read(el) { var v = String(el.value).replace(/\s/g, '').replace(',', '.'); return /^\d*\.?\d+$|^\d+\.$/.test(v) ? parseFloat(v) : NaN; }
+    function fmt(v, d) {                                     // Albanian: 1 234,5   English: 1,234.5
+      var parts = v.toFixed(d).split('.'), sq = lang === 'sq';
+      return parts[0].replace(/\B(?=(\d{3})+$)/g, sq ? '\u00a0' : ',') + (parts[1] ? (sq ? ',' : '.') + parts[1] : '');
+    }
+    function plain(v) { return fmt(v, Math.round(v) === v ? 0 : Math.round(v * 10) === v * 10 ? 1 : 2); }   // as typed, in the page's language
+    function n2(v) { return (+v.toFixed(2)).toString(); }
+
+    // the section, scaled to fit, with its two main dimensions in millimetres
+    function draw(row) {
+      var h, b, d, s, x, y, W, H;
+      if (fam === 'SHS') { h = b = row[0]; } else { h = row[2]; b = row[3]; }
+      s = Math.min(128 / b, 138 / h); W = b * s; H = h * s; x = 100 - W / 2; y = 84 - H / 2;
+      if (fam === 'SHS') {
+        var t = row[1], ro = (t <= 6 ? 2 * t : t <= 10 ? 2.5 * t : 3 * t) * s, ri = Math.max(0, ro - t * s), ts = t * s;
+        d = 'M' + n2(x + ro) + ' ' + n2(y) + 'H' + n2(x + W - ro) + 'a' + n2(ro) + ' ' + n2(ro) + ' 0 0 1 ' + n2(ro) + ' ' + n2(ro) + 'V' + n2(y + H - ro) +
+            'a' + n2(ro) + ' ' + n2(ro) + ' 0 0 1 ' + n2(-ro) + ' ' + n2(ro) + 'H' + n2(x + ro) + 'a' + n2(ro) + ' ' + n2(ro) + ' 0 0 1 ' + n2(-ro) + ' ' + n2(-ro) +
+            'V' + n2(y + ro) + 'a' + n2(ro) + ' ' + n2(ro) + ' 0 0 1 ' + n2(ro) + ' ' + n2(-ro) + 'Z' +
+            'M' + n2(x + ts + ri) + ' ' + n2(y + ts) + 'H' + n2(x + W - ts - ri) + 'a' + n2(ri) + ' ' + n2(ri) + ' 0 0 1 ' + n2(ri) + ' ' + n2(ri) + 'V' + n2(y + H - ts - ri) +
+            'a' + n2(ri) + ' ' + n2(ri) + ' 0 0 1 ' + n2(-ri) + ' ' + n2(ri) + 'H' + n2(x + ts + ri) + 'a' + n2(ri) + ' ' + n2(ri) + ' 0 0 1 ' + n2(-ri) + ' ' + n2(-ri) +
+            'V' + n2(y + ts + ri) + 'a' + n2(ri) + ' ' + n2(ri) + ' 0 0 1 ' + n2(ri) + ' ' + n2(-ri) + 'Z';
+      } else if (fam === 'UPN') {
+        // back on the left; flanges taper at 8 %, tf is their thickness half-way along
+        var w = row[4] * s, toe = (row[5] - 0.04 * row[3]) * s, root = (row[5] + 0.08 * (row[3] / 2 - row[4])) * s, R = Math.min(row[6] * s, (H - 2 * root) / 2);
+        var run = W - w, rise = root - toe, hyp = Math.sqrt(run * run + rise * rise) || 1, ux = run / hyp * R, uy = rise / hyp * R;
+        d = 'M' + n2(x) + ' ' + n2(y) + 'H' + n2(x + W) + 'V' + n2(y + toe) + 'L' + n2(x + w + ux) + ' ' + n2(y + root - uy) +
+            'Q' + n2(x + w) + ' ' + n2(y + root) + ' ' + n2(x + w) + ' ' + n2(y + root + R) + 'V' + n2(y + H - root - R) +
+            'Q' + n2(x + w) + ' ' + n2(y + H - root) + ' ' + n2(x + w + ux) + ' ' + n2(y + H - root + uy) + 'L' + n2(x + W) + ' ' + n2(y + H - toe) +
+            'V' + n2(y + H) + 'H' + n2(x) + 'Z';
+      } else {
+        var tw = row[4] * s, tf = row[5] * s, r = Math.min(row[6] * s, (W - tw) / 2, (H - 2 * tf) / 2), c = x + W / 2, A = 'a' + n2(r) + ' ' + n2(r) + ' 0 0 0 ';
+        d = 'M' + n2(x) + ' ' + n2(y) + 'H' + n2(x + W) + 'V' + n2(y + tf) + 'H' + n2(c + tw / 2 + r) + A + n2(-r) + ' ' + n2(r) + 'V' + n2(y + H - tf - r) + A + n2(r) + ' ' + n2(r) +
+            'H' + n2(x + W) + 'V' + n2(y + H) + 'H' + n2(x) + 'V' + n2(y + H - tf) + 'H' + n2(c - tw / 2 - r) + A + n2(r) + ' ' + n2(-r) + 'V' + n2(y + tf + r) + A + n2(-r) + ' ' + n2(-r) +
+            'H' + n2(x) + 'Z';
+      }
+      var R1 = x + W, B1 = y + H, dx = R1 + 20, dy = B1 + 20;           // the two dimension lines
+      function tick(px, py) { return 'M' + n2(px - 3.5) + ' ' + n2(py + 6) + 'L' + n2(px + 3.5) + ' ' + n2(py - 6); }
+      dwg.innerHTML =
+        '<path class="dwg__axis" d="M100 ' + n2(y - 9) + 'V' + n2(B1 + 9) + 'M' + n2(x - 9) + ' 84H' + n2(R1 + 9) + '"/>' +
+        '<path class="dwg__cut" fill-rule="evenodd" d="' + d + '"/>' +
+        '<path class="dwg__dim" d="M' + n2(R1 + 5) + ' ' + n2(y) + 'H' + n2(dx + 6) + 'M' + n2(R1 + 5) + ' ' + n2(B1) + 'H' + n2(dx + 6) + 'M' + n2(dx) + ' ' + n2(y) + 'V' + n2(B1) +
+          'M' + n2(x) + ' ' + n2(B1 + 5) + 'V' + n2(dy + 6) + 'M' + n2(R1) + ' ' + n2(B1 + 5) + 'V' + n2(dy + 6) + 'M' + n2(x) + ' ' + n2(dy) + 'H' + n2(R1) + '"/>' +
+        '<path class="dwg__tick" d="' + tick(dx, y) + tick(dx, B1) + tick(x, dy) + tick(R1, dy) + '"/>' +
+        '<text x="' + n2(dx + 7) + '" y="88">' + plain(h) + '</text><text x="100" y="' + n2(dy + 16) + '" text-anchor="middle">' + plain(b) + '</text>';
+    }
+
+    function render() {
+      var row = STEEL[fam][+size.value], dict = I18N[lang];
+      if (!row) return;
+      var kgm = fam === 'SHS' ? row[2] : row[1], L = read(len), n = read(qty);
+      draw(row);
+      dims.textContent = fam === 'SHS' ? 'b ' + plain(row[0]) + ' · t ' + plain(row[1]) + ' mm'
+        : 'h ' + plain(row[2]) + ' · b ' + plain(row[3]) + ' · tw ' + plain(row[4]) + ' · tf ' + plain(row[5]) + ' mm';
+      if (!(L > 0 && L <= 100000 && n >= 1 && n <= 100000 && Math.floor(n) === n)) {
+        last = null;
+        out.textContent = '–';
+        sum.textContent = dict['calc.bad'];
+        return;
+      }
+      var kg = kgm * L * n, shown = fmt(kg, kg < 100 ? 1 : 0);
+      out.textContent = shown;
+      sum.textContent = label(row) + ' · ' + fmt(kgm, kgm >= 100 ? 0 : Math.round(kgm * 10) === kgm * 10 ? 1 : 2) + ' kg/m × ' + plain(L) + ' m × ' + plain(n) + ' ' + dict['calc.pc'] +
+        (kg >= 1000 ? ' = ' + fmt(kg / 1000, 2) + ' t' : '');
+      last = { p: label(row), l: plain(L), q: plain(n), w: shown + ' kg' };
+    }
+
+    [].slice.call(f.querySelectorAll('input[name="family"]')).forEach(function (radio) {
+      radio.addEventListener('change', function () { if (radio.checked) { fam = radio.value; fill(); render(); } });
+      if (radio.checked) fam = radio.value;                   // a browser may restore the choice on reload
+    });
+    size.addEventListener('change', render);
+    len.addEventListener('input', render);
+    qty.addEventListener('input', render);
+    // Enter in a number field only confirms the number: adding to the request takes the button
+    f.addEventListener('keydown', function (e) { if (e.key === 'Enter' && e.target && e.target.type === 'text') e.preventDefault(); });
+
+    // the result goes into the quote form as one line of the project description; nothing is sent
+    f.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (!last) {
+        note.setAttribute('data-i18n', 'calc.bad');
+        note.textContent = I18N[lang]['calc.bad'];
+        return;
+      }
+      var msg = document.getElementById('f-message'), had = msg.value.replace(/\s+$/, '');
+      msg.value = (had ? had + '\n' : '') + I18N[lang]['calc.line'].replace('{p}', last.p).replace('{l}', last.l).replace('{q}', last.q).replace('{w}', last.w);
+      note.setAttribute('data-i18n', 'calc.added');
+      note.textContent = I18N[lang]['calc.added'];
+      form.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'center' });
+      window.setTimeout(function () { try { msg.focus({ preventScroll: true }); } catch (err) {} }, calm ? 0 : 900);
+    });
+
+    fill();
+    render();
+    onLang.push(render);                                       // decimal marks and the word for pieces follow the language
+  })();
+
+  // let the hero entrance play once, then switch it off so a language change does not replay it
+  window.setTimeout(function () {
+    var hero = document.getElementById('hero');
+    if (hero) hero.classList.remove('intro');
+  }, 2400 + introMs);
+})();
+</script>
+
+<script>
+/* Live sparks over the Metalium photos.
+   One small 2D-canvas particle engine, one emitter per photo. Every photo carries an outline map of its own frozen
+   sparks (MAPS: a 96x64 grid over the image, one bit per cell). Each animated spark is launched from the real weld or
+   contact point and aimed at a random cell of that map, so over time the animation fills the whole area the
+   photographed sparks cover: same reach, same spread. Coordinates are fractions of the image, so they survive any crop.
+   The canvas is laid over the image with a screen blend, so particles add light to the photo the way real sparks do.
+   In the hero the shower also leans toward the mouse pointer while it is over the photo.
+   Runs only while a photo is on screen, stops for prefers-reduced-motion and for the pause button. */
+(function () {
+  'use strict';
+
+  var canvases = [].slice.call(document.querySelectorAll('canvas[data-sparks]'));
+  var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!canvases.length || calm || !window.requestAnimationFrame || !canvases[0].getContext) return;
+
+  var RAD = Math.PI / 180, STEP = 1 / 60, KEY = 'metalium-motion';
+  var quality = 1, slow = 0;
+
+  // where the photographed sparks are, per photo (built from the photos by work/spk/build_maps.py)
+  var MW = 96, MH = 64, MAPS = {"hero":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAABgQAAAAAAAAAAAAABAwAAAAAAAAAAAAAAIgAAAAAAAAAAAAAAQAAAAAAAAAAABAAAQABgAAAAAAAABAAAwQDAAAAAAAAAEAGAAQCAAAAAAAAAGQGAgAAAAAAAAAADCCAAgAAAAAAAAAABDCAAAAAAAAAAAAABBCAHAAAQAAAAAAAARCADAAHxAAAAAAAADgkOAAODAAAAAAAABwmNAD4AAAAAAAAADxkBgz4AAAAAAAAADCaABx4AAAAAAAAABiDIBjwAAAAAAAAABwNQPHgAAAAAAAAABiLzsPgDAAAAAAAABr/74DBzAAAAAAAAB9fnwAHwAAAAAAAAB93hgQcAAAAAAAAAB5/z94cAAAAAAAAAD///H5/4AAAAAAAAH//P/g5gAAAAAAAAH////mYAAAAAAAAE//9///zHAAAAAAAE/3///sDHAAAAAAAH/3//vu8BAAAAAAAH/39/+f8HAAAAAAAH/gH///cBAAAAAAAH/AB//wAAAAAAAAAH/AREAAAAAAAAAAdv/kGAwAeAAAAAAB/8A8YA4AGAAAAAADTDt4cAAAAAAAAAAC3zHgGAAAAAAAAAAAsADAAAAIAAAAAAAD8ABABgAAAAAAAAAD4wAAAgAAAAAAAAADhgCAGAQAAEAAAAAAAABfkfcSMfAAAAAAGAAQAf8XPZAAAAABu8AQAA5n3pAAAAABo4AAAAgn5xAAAAAAAAAIAAAAgAAAAAAAACAIAAwgAAAAAAAAGAEAAA9oAAAAAAAAEAEAAB9IAAAAAAACAAEA8Bs4AAAAAAACAAAAABu4AAAAAAACAAAAAg2YAAAAAAACAAAAAgKhAAAAAAAAAAAAAAkxAAAAAAAAACAAAAQAEAAAAAAAAAAAADMAMAAAAAAAAMAAADAABAAAAAAAAMAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAwAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAAQGAAAAwAAB","fabrication":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAAPgAAAAAAAAAAAAAA8+AGQAAAAAAAAAAAHzwAcAAAAAAAAAAAAfPAAAAAAAAAAAAABP99gAAAAAAAAAAAAAH/gAAAAAAAAAAA04Af+AAAAAAAAAAA/4Dd74AAAAAAAAAA//+R/vuf8AAAAAAA/////w+L0QAAAAAAJ////8//8eAAAAAA//////9/z/gAAAAA/////////35gAAAA/3////////5wAAAA//////////wQAAAA//////////wwAAAA//////////8wAAAA/////f7/v//AAAAA////9/7/3/+AAAAA////7////YAAAAAA//wGf////gAAAAAA3/3+f/n+/gAAAAAA////v4b//nAAAAAA///Hv////kAAAAAA//8v+d///sAAAAAA/sP3/dvH/YAAAAAA/jfh6cD//wAAAAAA/yIz/mf8GAAAAAAACT/fv2/wAAAAAAAAAAAb/2H/AAAAAAAAC9v9MGAeAAAAAAAAGADAAHBAAAAAAAAAEAIhAHAAAAAAAAAAGBRnAHAAAAAAAAAAHD+OADAAAAAAAAAACPH4ADAAAAAAAAAA/wDgADAAAAAAAAAAeAAAADAAAAAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAA","workshop":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHUAAAAAAAAAAAAAAG9AAAAAAAAAAAAAAP9AAAAAAAAAAAAAAP/AAAAAAAAAAAAAAf8AAAAAAAAAAAAAAe8AAAAAAAAAAAAAA//AAAAAAAAAAAAAA/uAAAAAAAAAAAAAB/+AAAAAAAAAAAAAB//AAAAAAAAAAAAAD//AAAAAAAAAAAAAD/9AAAAAAAAAAAAAH/9AAAAAAAAAAAAAH//gAAAAAAAAAAAAH/9gAAAAAAAAAAAAN//gAAAAAAAAAAAAd//gAAAAAAAAAAAAf//gAAAAAAAAAAAAf//gAAAAAAAAAAAA///AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAF//f+AAAAAAAAAAAH///+AAAAAAAAAAAH///vAAAAAAAAAAAH////AAAAAAAAAAAG//n7AAAAAAAAAAAH3/3wgAAAAAAAAAAH3fSwwAAAAAAAAAAH3fyggAAAAAAAAAAEf/wzAAAAAAAAAAAEf/z6AAAAAAAAAAAGXfQJAAAAAAAAAAAAf/AQIAAAAAAAAAAE7/ZwIAAAAAAAAAAAbv5BAAAAAAAAAAAG/f5gAAAAAAAAAAAEP/4XAAAAAAAAAAAAP/oMAAAAAAAAAAABZ/4JoAAAAAAAAAABb/8lAAAAAAAAAAAFa4c8AAAAAAAAAAAEY/8YAAAAAAAAAAAAe+cIAAAAAAAAAAAAWWMAYAAAAAAAAAAAEXMAQAAAAAAAAAAAU/OUEAAAAAAAAAAAd+mUEAAAAAAAAAAAMOmAAAAAAAAAAAAAGLqAAAAAAAAAAAAGPr6AAgAAAAAAAAAGPP/IAgAAAAAAAAAGf/4DgAAAAAAAAAAH7HgBAAAAAAAAAAAD8HQBAAAAAAAAAAAAIHwAAAAAAAAAAAACADoAAAAAAAAAAAAAASAAAAAA","glass":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAAAAAAAAAAAGgAAAAAAAAAAAAAAFgCAAAAAAAAAAAAANAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAUQMAAAAAAAAAAAAA4YYAwAAAAAAAAAAAY+QHAAAAAAAAAAAAb/0cQAAAAAAAAAABf/zxwAAAAAAAAAAA/9//+AAAAAAAAAAA//8fwAAAAAAAAAAB//3/AGAAAAAAAAAB///wADAAAAAAAAAB///OAAAAAAAAAABB////gAAAAAAAAAAB///gAAAAAAAAAAAAf///AAAAAAAAAAAAP//30AAAAAAAAAA4//9//AAAAAAAAAAWP//gAAAAAAAAAAAP///wAAAAAAAAAAAAHQ/AYAAAAAAAAAAAAYHAYAAAAAAAAAAAAYDgAAAAAAAAAAAAAYDAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"};
+
+  // Lengths and speeds below are in "reference pixels": pixels on an image drawn 1000px wide.
+  //   at       the weld or contact point, as a fraction of the image
+  //   speed    average speed of a spark flying sideways or up; fall: of one going straight down (slowest, fastest)
+  //   t0       head start added to every flight time; reach: share of its life in which a spark gets to its target
+  //   exposure seconds of motion blur drawn as one straight streak; trail: points of a curved streak instead
+  var PRESETS = {
+    hero: {                                   // welder at height: short hot dashes thrown in every direction
+      at: [0.590, 0.527], rate: 300, max: 380, palette: 'warm',
+      speed: [700, 1500], fall: [320, 620], t0: 0.06, reach: 0.8,
+      width: [1.1, 2.5], exposure: [0.028, 0.05], gravity: 900, drag: 1.6, cool: 0.6,
+      glow: { tint: 'warm', core: 44, amb: 250, coreA: 0.5, ambA: 0.16 },
+      base: 0.5, burstRate: 5, burstTau: 0.22,
+      smoke: { tint: 'warm', rate: 2.2, angle: -82, spread: 20, speed: [22, 55], size: [50, 190], life: [2.6, 4.6], alpha: 0.03, off: [0.006, -0.02] }
+    },
+    fabrication: {                            // grinding: a fast golden stream to the left, fanning out over the table
+      at: [0.676, 0.580], rate: 330, max: 400, palette: 'gold',
+      speed: [1300, 2600], fall: [900, 1500], t0: 0.04, reach: 0.85,
+      width: [0.9, 2.0], exposure: [0.06, 0.12], gravity: 500, drag: 0.9, bloom: 2.5, cool: 0.7, fork: 0.06,
+      glow: { tint: 'warm', core: 30, amb: 150, coreA: 0.6, ambA: 0.14 },
+      base: 0.75, burstRate: 2.2, burstTau: 0.3
+    },
+    workshop: {                               // arc welding behind the frame: a spray above the beam, a curtain falling below it
+      at: [0.462, 0.378], rate: 85, max: 300, palette: 'cool',
+      speed: [420, 800], fall: [190, 360], t0: 0.25, reach: 0.9,
+      width: [0.5, 1.0], trail: 8, wiggle: 800, gravity: 520, drag: 2.4, cool: 0.7,
+      drop: 0.452,                            // lower edge of the beam: sparks aimed below it come out from behind the beam
+      glow: { tint: 'cool', core: 56, amb: 320, coreA: 0.65, ambA: 0.18 },
+      base: 0.3, burstRate: 7, burstTau: 0.16,
+      smoke: { tint: 'cool', rate: 5, angle: -76, spread: 18, speed: [28, 70], size: [50, 220], life: [3, 5.5], alpha: 0.05, off: [0.02, -0.02] },
+      // the steel in front of the weld: sparks pass behind it
+      masks: [[[0, 0.380], [1, 0.388], [1, 0.452], [0, 0.444]], [[0.395, 0.385], [0.455, 0.385], [0.640, 0], [0.585, 0]]]
+    },
+    glass: {                                  // site welding: long arcs fanning up and right, drooping at the end
+      at: [0.544, 0.807], rate: 170, max: 300, palette: 'warm',
+      speed: [420, 760], fall: [300, 520], t0: 0.08, reach: 0.85,
+      width: [0.7, 1.5], trail: 9, gravity: 1050, drag: 1.5, cool: 0.65,
+      glow: { tint: 'cool', core: 46, amb: 280, coreA: 0.6, ambA: 0.18 },
+      base: 0.4, burstRate: 6, burstTau: 0.18,
+      smoke: { tint: 'cool', rate: 3.5, angle: -100, spread: 22, speed: [25, 60], size: [50, 200], life: [2.8, 5], alpha: 0.045, off: [-0.012, -0.03] }
+    }
+  };
+
+  // spark colour as it cools, coolest first: [r, g, b, alpha]
+  var PALETTES = {
+    warm: [[230, 80, 25, 0.22], [255, 125, 45, 0.45], [255, 170, 80, 0.66], [255, 210, 130, 0.8], [255, 236, 190, 0.9], [255, 250, 235, 0.96]],
+    gold: [[235, 105, 30, 0.2], [255, 150, 60, 0.4], [255, 186, 105, 0.6], [255, 214, 150, 0.74], [255, 236, 190, 0.86], [255, 250, 230, 0.94]],
+    cool: [[230, 90, 30, 0.2], [255, 150, 70, 0.4], [255, 200, 140, 0.5], [190, 220, 255, 0.6], [215, 235, 255, 0.8], [245, 250, 255, 0.92]]
+  };
+
+  function rnd(a, b) { return a + Math.random() * (b - a); }
+
+  // the set cells of an outline map, as [u, v] image fractions (cell centres)
+  function cells(b64) {
+    var out = [], bin, i;
+    try { bin = atob(b64 || ''); } catch (e) { bin = ''; }
+    for (i = 0; i < MW * MH && (i >> 3) < bin.length; i++) {
+      if (bin.charCodeAt(i >> 3) & (128 >> (i & 7))) out.push(((i % MW) + 0.5) / MW, (Math.floor(i / MW) + 0.5) / MH);
+    }
+    return out;
+  }
+
+  function sprite(stops) {
+    var c = document.createElement('canvas'), g, grd;
+    c.width = c.height = 128;
+    g = c.getContext('2d');
+    grd = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+    stops.forEach(function (s) { grd.addColorStop(s[0], s[1]); });
+    g.fillStyle = grd;
+    g.fillRect(0, 0, 128, 128);
+    return c;
+  }
+  var GLOW = {
+    warm: sprite([[0, 'rgba(255,255,255,1)'], [0.12, 'rgba(255,244,214,.85)'], [0.36, 'rgba(255,170,70,.28)'], [1, 'rgba(255,110,30,0)']]),
+    cool: sprite([[0, 'rgba(255,255,255,1)'], [0.12, 'rgba(214,236,255,.85)'], [0.36, 'rgba(96,168,255,.26)'], [1, 'rgba(40,110,255,0)']])
+  };
+  var PUFF = {
+    warm: sprite([[0, 'rgba(255,226,200,.9)'], [0.5, 'rgba(255,214,180,.32)'], [1, 'rgba(255,200,160,0)']]),
+    cool: sprite([[0, 'rgba(200,224,255,.9)'], [0.5, 'rgba(170,205,255,.32)'], [1, 'rgba(140,190,255,0)']])
+  };
+
+  function Field(canvas) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    this.cfg = PRESETS[canvas.getAttribute('data-sparks')];
+    this.map = cells(MAPS[canvas.getAttribute('data-sparks')]);
+    this.img = canvas.parentNode.querySelector('img');
+    this.p = [];            // sparks
+    this.s = [];            // smoke puffs
+    this.emit = 0; this.semit = 0;
+    this.t = Math.random() * 100;
+    this.burst = 0; this.flick = 0.5; this.amb = 0.5; this.level = 0.5;
+    this.boost = 1; this.boostTo = 1;
+    this.aim = null; this.lx = 0; this.ly = 0;               // pointer over the photo, and how far the shower leans to it
+    this.seen = false; this.loaded = false; this.warm = false; this.w = 0;
+  }
+
+  // where the photo actually sits inside its box (object-fit: cover + object-position), and how big it is drawn
+  Field.prototype.fit = function () {
+    var c = this.canvas, bw = c.clientWidth, bh = c.clientHeight;
+    if (!bw || !bh) { this.w = 0; return; }
+    var iw = +this.img.getAttribute('width') || this.img.naturalWidth || 3;
+    var ih = +this.img.getAttribute('height') || this.img.naturalHeight || 2;
+    var pos = (getComputedStyle(this.img).objectPosition || '50% 50%').split(' ');
+    var px = parseFloat(pos[0]) / 100, py = parseFloat(pos[1]) / 100;
+    if (isNaN(px)) px = 0.5;
+    if (isNaN(py)) py = 0.5;
+    var k = Math.max(bw / iw, bh / ih);
+    this.rw = iw * k; this.rh = ih * k;
+    this.ox = (bw - this.rw) * px; this.oy = (bh - this.rh) * py;
+    this.S = this.rw / 1000;
+    this.dpr = Math.max(0.75, Math.min(window.devicePixelRatio || 1, 2, Math.sqrt(2200000 / (bw * bh))));
+    c.width = Math.round(bw * this.dpr); c.height = Math.round(bh * this.dpr);
+    this.w = bw; this.h = bh;
+    this.sx = this.ox + this.cfg.at[0] * this.rw;
+    this.sy = this.oy + this.cfg.at[1] * this.rh;
+
+    // targets: the map cells that are on screen (the photo may be cropped by its box, or the box by its parent)
+    var host = c.parentNode.getBoundingClientRect(), box = c.getBoundingClientRect(), pad = 0.05 * this.rw;
+    var x0 = Math.max(0, host.left - box.left) - pad, y0 = Math.max(0, host.top - box.top) - pad;
+    var x1 = Math.min(bw, host.right - box.left) + pad, y1 = Math.min(bh, host.bottom - box.top) + pad;
+    var m = this.map, tx = [], ty = [], td = [], far = 1, i, x, y, d;
+    for (i = 0; i < m.length; i += 2) {
+      x = this.ox + m[i] * this.rw; y = this.oy + m[i + 1] * this.rh;
+      if (x < x0 || x > x1 || y < y0 || y > y1) continue;
+      d = Math.sqrt((x - this.sx) * (x - this.sx) + (y - this.sy) * (y - this.sy));
+      tx.push(x); ty.push(y); td.push(d);
+      if (d > far) far = d;
+    }
+    this.tx = tx; this.ty = ty;
+    this.tw = [];                                            // running total of weights: far cells are aimed at more often,
+    for (i = 0, d = 0; i < td.length; i++) {                 // since every spark also crosses the cells near the weld
+      d += 0.35 + td[i] / far;
+      this.tw.push(d);
+    }
+  };
+
+  // a target cell picked by weight: binary search in the running totals
+  Field.prototype.pick = function () {
+    var n = this.tw.length, r = Math.random() * this.tw[n - 1], lo = 0, hi = n - 1, mid;
+    while (lo < hi) { mid = (lo + hi) >> 1; if (this.tw[mid] < r) lo = mid + 1; else hi = mid; }
+    return lo;
+  };
+
+  Field.prototype.spark = function () {
+    var c = this.cfg, S = this.S;
+    if (!this.tw.length) return;
+    var lo = this.pick(), lean = Math.sqrt(this.lx * this.lx + this.ly * this.ly), alt;
+    if (lean > 0.03 && Math.random() < lean * 0.85) {       // leaning: of two cells, take the one more toward the pointer
+      alt = this.pick();
+      if ((this.tx[alt] - this.tx[lo]) * this.lx + (this.ty[alt] - this.ty[lo]) * this.ly > 0) lo = alt;
+    }
+    var tx = this.tx[lo] + rnd(-0.6, 0.6) * this.rw / MW, ty = this.ty[lo] + rnd(-0.6, 0.6) * this.rh / MH;   // anywhere inside that cell
+    if (lean > 0.03) {                                      // and the whole fan shears that way: far targets move the most
+      var far = Math.sqrt((tx - this.sx) * (tx - this.sx) + (ty - this.sy) * (ty - this.sy));
+      tx += this.lx * far * 0.5;
+      ty += this.ly * far * 0.5;
+    }
+    var x = this.sx + rnd(-3, 3) * S, y = this.sy + rnd(-3, 3) * S;
+    var edge = c.drop ? this.oy + c.drop * this.rh : 0;
+    if (c.drop && ty > edge) {                              // falls from behind the beam, straight above its target
+      x = tx + rnd(-28, 28) * S;
+      y = edge - rnd(4, 16) * S;
+    }
+    // time to get there: sideways and upward sparks are fast, falling ones slower
+    var dx = tx - x, dy = ty - y, d = Math.sqrt(dx * dx + dy * dy) || 1;
+    var down = Math.max(0, dy / d);
+    var v = (1 - down) * rnd(c.speed[0], c.speed[1]) + down * rnd(c.fall[0], c.fall[1]);
+    var T = c.t0 + d / S / v;
+    // launch velocity that lands on the target after T seconds of drag and gravity
+    var k = c.drag, e = (1 - Math.exp(-k * T)) / k;
+    this.p.push({
+      x: x, y: y,
+      vx: dx / e, vy: (dy - c.gravity * S * (T - e) / k) / e,
+      age: 0, life: T / c.reach,
+      w: Math.random(),                                   // 0..1 within the width range
+      ex: c.exposure ? rnd(c.exposure[0], c.exposure[1]) : 0,
+      h: c.trail ? [] : null,
+      fork: c.fork && Math.random() < c.fork
+    });
+  };
+
+  Field.prototype.puff = function () {
+    var m = this.cfg.smoke, S = this.S, a = (m.angle + rnd(-m.spread, m.spread)) * RAD, v = rnd(m.speed[0], m.speed[1]) * S;
+    this.s.push({
+      x: this.sx + m.off[0] * this.rw + rnd(-10, 10) * S, y: this.sy + m.off[1] * this.rw + rnd(-8, 8) * S,
+      vx: Math.cos(a) * v, vy: Math.sin(a) * v, age: 0, life: rnd(m.life[0], m.life[1]), drift: rnd(-1, 1)
+    });
+  };
+
+  Field.prototype.step = function () {
+    var c = this.cfg, S = this.S, dt = STEP, p = this.p, s = this.s, i, q, k, n;
+    this.t += dt;
+    this.boost += (this.boostTo - this.boost) * 0.08;
+
+    // lean: a vector toward the pointer, longer the further the pointer is from the weld (full at 0.3 image widths), eased in and out
+    var ax = 0, ay = 0;
+    if (this.aim) {
+      var mx = this.aim[0] - this.sx, my = this.aim[1] - this.sy, md = Math.sqrt(mx * mx + my * my) || 1, mm = Math.min(1, md / (0.3 * this.rw));
+      ax = mx / md * mm; ay = my / md * mm;
+    }
+    this.lx += (ax - this.lx) * 0.05;
+    this.ly += (ay - this.ly) * 0.05;
+
+    // the arc: a slow swell with sudden bursts on top, which also drives the flicker of the light
+    if (Math.random() < c.burstRate * dt) this.burst = Math.min(1.3, this.burst + rnd(0.45, 1));
+    this.burst *= Math.exp(-dt / c.burstTau);
+    var swell = 0.8 + 0.2 * Math.sin(this.t * 1.3) * Math.sin(this.t * 0.47 + 1.3);
+    this.level = Math.min(1.5, c.base + (1 - c.base) * this.burst) * swell;
+    this.flick += (Math.min(1.2, this.level * rnd(0.75, 1.15)) - this.flick) * 0.3;   // the small hot core may flicker
+    this.amb += (Math.min(1.2, this.level) - this.amb) * 0.05;                        // the wide spill only breathes
+
+    this.emit += c.rate * this.level * this.boost * quality * dt;
+    n = c.max * Math.min(1.5, this.boost) * quality;
+    while (this.emit >= 1) { this.emit -= 1; if (p.length < n) this.spark(); }
+    if (c.smoke) {
+      this.semit += c.smoke.rate * (0.4 + 0.6 * this.level) * dt;
+      while (this.semit >= 1) { this.semit -= 1; if (s.length < 40) this.puff(); }
+    }
+
+    var drag = Math.exp(-c.drag * dt), g = c.gravity * S * dt, wig = (c.wiggle || 0) * S * dt, pad = 90 * S;
+    for (i = p.length - 1; i >= 0; i--) {
+      q = p[i];
+      q.age += dt;
+      if (q.age >= q.life || q.x < -pad || q.x > this.w + pad || q.y > this.h + pad || q.y < -pad * 3) {
+        if (q.fork && q.age >= q.life) {                  // a grinding spark bursts into a small star as it dies
+          for (k = 0; k < 3; k++) {
+            var fa = Math.atan2(q.vy, q.vx) + rnd(-0.9, 0.9), fv = Math.sqrt(q.vx * q.vx + q.vy * q.vy) * rnd(0.3, 0.6);
+            p.push({ x: q.x, y: q.y, vx: Math.cos(fa) * fv, vy: Math.sin(fa) * fv, age: 0, life: rnd(0.07, 0.18), w: q.w * 0.6, ex: q.ex * 0.6, h: null, fork: false });
+          }
+        }
+        p[i] = p[p.length - 1]; p.pop();
+        continue;
+      }
+      q.vx *= drag;
+      q.vy = q.vy * drag + g;
+      if (wig) { q.vx += rnd(-1, 1) * wig; q.vy += rnd(-1, 1) * wig * 0.5; }
+      if (q.h) { q.h.push(q.x, q.y); if (q.h.length > c.trail * 2) q.h.splice(0, 2); }
+      q.x += q.vx * dt;
+      q.y += q.vy * dt;
+    }
+    for (i = s.length - 1; i >= 0; i--) {
+      q = s[i];
+      q.age += dt;
+      if (q.age >= q.life) { s[i] = s[s.length - 1]; s.pop(); continue; }
+      q.vx += q.drift * 6 * S * dt;
+      q.x += q.vx * dt;
+      q.y += q.vy * dt;
+    }
+  };
+
+  Field.prototype.draw = function () {
+    var g = this.ctx, c = this.cfg, S = this.S, p = this.p, s = this.s, pal = PALETTES[c.palette], L = pal.length;
+    var i, j, q, lv, wc, col, any, t, r, a;
+    g.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    g.globalCompositeOperation = 'source-over';
+    g.globalAlpha = 1;
+    g.clearRect(0, 0, this.w, this.h);
+    g.globalCompositeOperation = 'lighter';
+
+    if (c.smoke) {
+      for (i = 0; i < s.length; i++) {
+        q = s[i]; t = q.age / q.life;
+        r = (c.smoke.size[0] + (c.smoke.size[1] - c.smoke.size[0]) * t) * S;
+        g.globalAlpha = c.smoke.alpha * Math.sin(Math.PI * Math.min(1, t * 1.05)) * (0.7 + 0.3 * this.amb);
+        g.drawImage(PUFF[c.smoke.tint], q.x - r, q.y - r, r * 2, r * 2);
+      }
+      g.globalAlpha = 1;
+    }
+
+    // sparks, batched by temperature and by width so each batch is one stroke
+    g.lineCap = 'round';
+    g.lineJoin = 'round';
+    for (i = 0; i < p.length; i++) {
+      q = p[i];
+      q.lv = Math.min(L - 1, Math.floor(Math.pow(1 - q.age / q.life, c.cool || 0.8) * L));
+      q.wc = q.w < 0.55 ? 0 : 1;
+    }
+    for (lv = 0; lv < L; lv++) {
+      for (wc = 0; wc < 2; wc++) {
+        any = false;
+        g.beginPath();
+        for (i = 0; i < p.length; i++) {
+          q = p[i];
+          if (q.lv !== lv || q.wc !== wc) continue;
+          any = true;
+          if (q.h && q.h.length > 2) {
+            g.moveTo(q.h[0], q.h[1]);
+            for (j = 2; j < q.h.length; j += 2) g.lineTo(q.h[j], q.h[j + 1]);
+            g.lineTo(q.x, q.y);
+          } else {
+            t = Math.min(q.ex, q.age);
+            g.moveTo(q.x - q.vx * t - 0.5, q.y - q.vy * t);
+            g.lineTo(q.x, q.y);
+          }
+        }
+        if (!any) continue;
+        col = pal[lv];
+        r = Math.max(0.7, (c.width[0] + (c.width[1] - c.width[0]) * (wc ? 0.8 : 0.25)) * S);
+        if (c.bloom) r *= 1 + c.bloom * (1 - lv / (L - 1));             // out-of-focus widening as the stream travels
+        a = c.bloom ? col[3] * (0.5 + 0.5 * lv / (L - 1)) : col[3];
+        if (lv > 1) {
+          g.strokeStyle = 'rgba(' + col[0] + ',' + col[1] + ',' + col[2] + ',' + (a * 0.11).toFixed(3) + ')';
+          g.lineWidth = r * 3.4;
+          g.stroke();
+        }
+        g.strokeStyle = 'rgba(' + col[0] + ',' + col[1] + ',' + col[2] + ',' + a.toFixed(3) + ')';
+        g.lineWidth = r;
+        g.stroke();
+      }
+    }
+
+    if (c.masks) {                                         // steel in the foreground hides what flies behind it
+      g.globalCompositeOperation = 'destination-out';
+      g.fillStyle = '#000';
+      for (i = 0; i < c.masks.length; i++) {
+        g.beginPath();
+        for (j = 0; j < c.masks[i].length; j++) {
+          g[j ? 'lineTo' : 'moveTo'](this.ox + c.masks[i][j][0] * this.rw, this.oy + c.masks[i][j][1] * this.rh);
+        }
+        g.closePath();
+        g.fill();
+      }
+      g.globalCompositeOperation = 'lighter';
+    }
+
+    // the light itself: a wide soft spill and a hot core, both breathing with the arc
+    var f = this.flick, gl = c.glow, tex = GLOW[gl.tint];
+    r = gl.amb * S;
+    g.globalAlpha = Math.min(1, gl.ambA * this.amb);
+    g.drawImage(tex, this.sx - r, this.sy - r, r * 2, r * 2);
+    r = gl.core * S * (0.8 + 0.4 * f);
+    g.globalAlpha = Math.min(1, gl.coreA * (0.35 + 0.65 * f));
+    g.drawImage(tex, this.sx - r, this.sy - r, r * 2, r * 2);
+    g.globalAlpha = 1;
+  };
+
+  Field.prototype.clear = function () {
+    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  };
+
+  Field.prototype.kick = function () { this.burst = 1.3; };
+
+  // ---------- one loop for every photo on screen ----------
+  var fields = canvases.filter(function (c) { return PRESETS[c.getAttribute('data-sparks')]; }).map(function (c) { return new Field(c); });
+  var running = false, paused = false, last = 0, acc = 0;
+  try { paused = localStorage.getItem(KEY) === 'off'; } catch (e) {}
+
+  function live(f) { return f.seen && f.loaded && f.w > 0; }
+
+  function frame(now) {
+    if (!running || paused) { running = false; return; }      // paused: leave the photo clean
+    var dt = Math.min(0.05, (now - last) / 1000), steps = 0, any = false, i, f, n;
+    if (now - last > 30) { if (++slow > 20) { quality = Math.max(0.35, quality - 0.15); slow = 0; } } else if (slow > 0) slow -= 0.25;
+    last = now;
+    acc += dt;
+    while (acc >= STEP && steps < 3) { acc -= STEP; steps++; }
+    if (acc > STEP) acc = 0;
+    for (i = 0; i < fields.length; i++) {
+      f = fields[i];
+      if (!live(f)) continue;
+      any = true;
+      if (!f.warm) { f.warm = true; for (n = 0; n < 50; n++) f.step(); }   // arrive mid-weld, not from an empty frame
+      for (n = 0; n < steps; n++) f.step();
+      if (steps) f.draw();
+    }
+    if (any && !paused && !document.hidden) requestAnimationFrame(frame);
+    else running = false;
+  }
+
+  function wake() {
+    if (running || paused || document.hidden) return;
+    if (!fields.some(live)) return;
+    running = true;
+    last = performance.now();
+    acc = 0;
+    requestAnimationFrame(frame);
+  }
+
+  fields.forEach(function (f) {
+    function ready() { f.loaded = true; f.fit(); wake(); }
+    if (f.img.complete && f.img.naturalWidth) ready();
+    else f.img.addEventListener('load', ready);
+
+    // hovering a project card (or the hero's quote button) feeds the arc; a click or tap strikes it
+    var host = f.canvas.closest('.proj') || f.canvas.closest('.hero');
+    if (host && host.classList.contains('proj')) {
+      host.addEventListener('pointerenter', function () { f.boostTo = 2.3; });
+      host.addEventListener('pointerleave', function () { f.boostTo = 1; });
+      host.addEventListener('pointerdown', function () { f.kick(); });
+    } else if (host) {
+      var cta = host.querySelector('.btn');
+      if (cta) {
+        ['pointerenter', 'focus'].forEach(function (ev) { cta.addEventListener(ev, function () { f.boostTo = 2.1; f.kick(); }); });
+        ['pointerleave', 'blur'].forEach(function (ev) { cta.addEventListener(ev, function () { f.boostTo = 1; }); });
+      }
+      host.addEventListener('pointerdown', function (e) { if (!e.target.closest('a,button')) f.kick(); });
+      // the shower leans toward a mouse or pen over the hero (a finger scrolls the page instead)
+      host.addEventListener('pointermove', function (e) {
+        if (e.pointerType === 'touch') return;
+        var b = f.canvas.getBoundingClientRect();
+        f.aim = [e.clientX - b.left, e.clientY - b.top];
+      });
+      host.addEventListener('pointerleave', function () { f.aim = null; });
+    }
+  });
+
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        fields.forEach(function (f) { if (f.canvas === en.target) f.seen = en.isIntersecting; });
+      });
+      wake();
+    }, { rootMargin: '80px 0px' });
+    fields.forEach(function (f) { io.observe(f.canvas); });
+  } else {
+    fields.forEach(function (f) { f.seen = true; });
+  }
+
+  var refit = 0;
+  function onResize() {
+    cancelAnimationFrame(refit);
+    refit = requestAnimationFrame(function () { fields.forEach(function (f) { if (f.loaded) f.fit(); }); wake(); });
+  }
+  if ('ResizeObserver' in window) {
+    var ro = new ResizeObserver(onResize);
+    fields.forEach(function (f) { ro.observe(f.canvas); });
+  } else {
+    window.addEventListener('resize', onResize);
+  }
+  document.addEventListener('visibilitychange', wake);
+
+  // pause button (shown only when there is something to pause)
+  var btn = document.getElementById('motion');
+  function setPaused(off, remember) {
+    paused = off;
+    if (btn) btn.setAttribute('aria-pressed', String(off));
+    document.documentElement.classList.toggle('is-paused', off);      // also holds the moving type band
+    if (off) fields.forEach(function (f) { f.clear(); });
+    else wake();
+    if (remember) { try { localStorage.setItem(KEY, off ? 'off' : 'on'); } catch (e) {} }
+  }
+  if (btn) {
+    btn.hidden = false;
+    btn.addEventListener('click', function () { setPaused(!paused, true); });
+  }
+  setPaused(paused, false);
+})();
+</script>
+<a class="njord-back" href="../" aria-label="Back to NJORD">&larr; NJORD</a><style>.njord-back{position:fixed;left:16px;bottom:16px;z-index:9999;padding:9px 16px;border:1px solid rgba(255,255,255,.35);border-radius:999px;background:rgba(10,8,8,.72);backdrop-filter:blur(8px);color:#fff;font:500 12px/1 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.12em;text-decoration:none;text-transform:uppercase}.njord-back:hover{border-color:#fff}</style></body>
+</html>

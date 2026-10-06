@@ -57,6 +57,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
 if __name__ == "__main__":
     os.chdir(ROOT)
-    with socketserver.TCPServer(("", PORT), Handler) as httpd:
+    socketserver.ThreadingTCPServer.daemon_threads = True
+socketserver.ThreadingTCPServer.allow_reuse_address = True
+with socketserver.ThreadingTCPServer(("", PORT), Handler) as httpd:
         print(f"Serving {ROOT} (wrapped) on http://localhost:{PORT}")
         httpd.serve_forever()

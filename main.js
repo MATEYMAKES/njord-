@@ -112,18 +112,21 @@ if(organismCanvas){
     { name: 'diamond', el: document.querySelector('.work-row[data-project="aurelia"], .work-preview-row[data-project="aurelia"]') },
     { name: 'wave', el: document.querySelector('.work-row[data-project="pulse"], .work-preview-row[data-project="pulse"]') },
     { name: 'network', el: document.querySelector('.work-row[data-project="meridian"], .work-preview-row[data-project="meridian"]') },
+    { name: 'sparks', el: document.querySelector('.work-row[data-project="metalium"], .work-preview-row[data-project="metalium"]') },
+    { name: 'vee', el: document.querySelector('.work-row[data-project="vyron"], .work-preview-row[data-project="vyron"]') },
     // 'roadmap'/#services and 'constellation'/#studio are currently
     // hidden (see index.html) — their zones are deliberately not
     // registered while that's true, since a hidden element's layout
     // rect isn't meaningful as a scroll anchor.
-    { name: 'mascot', el: document.getElementById('mascot-anchor') },
+    { name: 'chaos', el: document.getElementById('cloud-anchor') },
+  { name: 'mascot', el: document.getElementById('mascot-anchor') },
   ].filter((z) => z.el));
 
   // work.html: the artwork follows the pointer, not the scroll position
   // (see AsciiOrganism.setFocus). Touch devices keep scroll mode — the
   // stacked mobile layout is tall enough to scroll each row through.
   if(isFinePointer && document.body.classList.contains('work-page')){
-    const FORMATION = { aurelia: 'diamond', pulse: 'wave', meridian: 'network' };
+    const FORMATION = { aurelia: 'diamond', pulse: 'wave', meridian: 'network', metalium: 'sparks', vyron: 'vee' };
     const rows = Array.from(document.querySelectorAll('.work-row'));
     rows.forEach((row) => {
       const name = FORMATION[row.dataset.project];
@@ -133,6 +136,27 @@ if(organismCanvas){
       row.addEventListener('focus', focus);
     });
     if(rows[0]) organism.setFocus(FORMATION[rows[0].dataset.project], rows[0]);
+
+    // Scroll trigger: whichever row sits closest to the middle of the
+    // viewport becomes the focused artwork, so scrolling always lands on
+    // exactly one fully-formed project (the 0.7s eased blend in
+    // setFocus keeps the hand-over smooth). Hover still works the same;
+    // the next scroll simply re-picks by position.
+    let scrollTick = false;
+    const pickByScroll = () => {
+      scrollTick = false;
+      const mid = window.innerHeight / 2;
+      let best = null, bestD = Infinity;
+      rows.forEach((row) => {
+        const r = row.getBoundingClientRect();
+        const d = Math.abs(r.top + r.height / 2 - mid);
+        if(d < bestD){ bestD = d; best = row; }
+      });
+      if(best && FORMATION[best.dataset.project]) organism.setFocus(FORMATION[best.dataset.project], best);
+    };
+    window.addEventListener('scroll', () => {
+      if(!scrollTick){ scrollTick = true; requestAnimationFrame(pickByScroll); }
+    }, { passive: true });
   }
 
   if(isFinePointer){
@@ -358,9 +382,11 @@ if(roadmapNodesEl && organism && servicesSection && !servicesSection.hidden){
    so the modal — including one already open — can be re-rendered on
    a language switch without needing its own duplicated data here. */
 const PROJECTS = {
-  aurelia: { title: 'Aurelia', year: '2025', burstColor: '#D4AF37', modalClass: 'project-modal--aurelia' },
+  aurelia: { title: 'Aurelia', year: '2025', burstColor: '#C8102E', modalClass: 'project-modal--aurelia' },
   pulse: { title: 'Pulse', year: '2024', burstColor: '#7A1B33', modalClass: 'project-modal--pulse' },
   meridian: { title: 'Meridian', year: '2025', burstColor: '#1F4C78', modalClass: 'project-modal--meridian' },
+  metalium: { title: 'METALIUM', year: '2026', burstColor: '#FF0013', modalClass: 'project-modal--metalium' },
+  vyron: { title: 'VYRON', year: '2026', burstColor: '#8B5A2B', modalClass: 'project-modal--vyron' },
 };
 function projectCopy(key){
   return {
@@ -679,10 +705,30 @@ if(ctaButton){
   });
 }
 
+// "View our process" — on work.html it's a plain link to index.html#process.
+// On index.html the process section is on the same page, so close the
+// project page first (same portal-out as the back button), then scroll.
+const processLink = modal ? modal.querySelector('.project-modal__process') : null;
+if(processLink && !document.body.classList.contains('work-page')){
+  processLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    const r = processLink.getBoundingClientRect();
+    closeProject(r.left + r.width / 2, r.top + r.height / 2);
+    setTimeout(() => {
+      const target = document.getElementById('process');
+      if(target) target.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+    }, PORTAL_MS + 80);
+  });
+}
+
+/* Projects with a hosted showcase copy; the rest keep the coming-soon note. */
+const SHOWCASE_URL = { aurelia: 'aurelia-showcase/', meridian: 'meridian-showcase/', pulse: 'pulse-showcase/', metalium: 'metalium-showcase/', vyron: 'vyron-showcase/' };
 const siteLink = modal ? modal.querySelector('.project-modal__sitelink') : null;
 if(siteLink){
   siteLink.addEventListener('click', (e) => {
     e.preventDefault();
+    const showcaseUrl = SHOWCASE_URL[currentKey];
+    if(showcaseUrl){ window.location.href = showcaseUrl; return; }
     const note = modal.querySelector('.project-modal__sitelink-note');
     if(!note) return;
     note.textContent = t('modal.sitelinkNote');
@@ -716,12 +762,13 @@ onLangChange(() => {
    of that project's own formation (diamond/wave/network), drawn faint
    and behind the text in the page's own ink color, so it reads as a
    watermark texture rather than a separate, unrelated decorative graphic. */
-const PORTRAIT_FORMATION = { aurelia: 'diamond', pulse: 'wave', meridian: 'network' };
+const PORTRAIT_FORMATION = { aurelia: 'diamond', pulse: 'wave', meridian: 'network', metalium: 'sparks', vyron: 'vee' };
 const portraits = {};
 Object.keys(PORTRAIT_FORMATION).forEach((key) => {
   const canvas = document.getElementById(`${key}-visual`);
   if(!canvas) return;
-  const ink = getComputedStyle(document.documentElement).getPropertyValue(`--${key}-ink`).trim();
+  const cs = getComputedStyle(document.documentElement);
+  const ink = cs.getPropertyValue(`--${key}-art`).trim() || cs.getPropertyValue(`--${key}-ink`).trim();
   // same reasoning as the main organism (ascii-engine.js): iOS throttles
   // sustained fillText-heavy canvas work, so mobile gets meaningfully fewer
   // particles here too, not just on the home page
