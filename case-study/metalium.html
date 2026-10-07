@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="sq">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>METALIUM case study — NJORD</title>
+<meta name="description" content="How NJORD moved part of a steel fabricator's sales process online: a weight calculator that turns vague inquiries into quotable requests.">
+<link rel="canonical" href="https://njord.live/case-study/metalium.html">
+<meta name="theme-color" content="#0E0A0B">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="NJORD">
+<meta property="og:url" content="https://njord.live/case-study/metalium.html">
+<meta property="og:title" content="METALIUM case study — NJORD">
+<meta property="og:description" content="Quotes that start with the numbers.">
+<meta property="og:image" content="https://njord.live/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23CBFF3D'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="cs.css">
+</head>
+<body class="cs cs--metalium">
+
+<a class="skip-link" href="#main" data-i18n="skip.link">Kalo te përmbajtja</a>
+
+<div class="reg-marks" aria-hidden="true"><span class="tl"></span><span class="tr"></span><span class="bl"></span><span class="br"></span></div>
+
+<button id="lang-toggle" class="lang-toggle" type="button" aria-label="Toggle language / Ndrysho gjuhën">
+  <span class="lang-toggle__opt" data-lang="en">EN</span>
+  <span class="lang-toggle__sep" aria-hidden="true">/</span>
+  <span class="lang-toggle__opt" data-lang="sq">SHQP</span>
+</button>
+
+<header class="site-header">
+  <a href="../index.html" class="logo-mark" data-i18n-aria="logo.ariaLabel">NJORD</a>
+  <button id="nav-toggle" class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-nav" data-i18n-aria="nav.toggleAria">
+    <span class="nav-toggle__bar"></span><span class="nav-toggle__bar"></span><span class="nav-toggle__bar"></span>
+  </button>
+  <nav id="main-nav" class="main-nav" aria-label="Primary">
+    <ul>
+      <li><a class="magnetic" href="../index.html#identity"><span data-i18n="nav.services">Shërbimet</span><span class="fill"></span></a></li>
+      <li><a class="magnetic" href="../work.html"><span data-i18n="nav.work">Punët</span><span class="fill"></span></a></li>
+      <li><a class="magnetic" href="../index.html#studio"><span data-i18n="nav.studio">Studio</span><span class="fill"></span></a></li>
+      <li><a class="magnetic" href="../index.html#contact"><span data-i18n="nav.contact">Kontakt</span><span class="fill"></span></a></li>
+      <li class="main-nav__cta-item"><a class="nav-cta" href="../index.html#start-project"><span data-i18n="nav.start">Nis një projekt</span> <span aria-hidden="true">&rarr;</span></a></li>
+    </ul>
+  </nav>
+  <div class="nav-scrim" aria-hidden="true"></div>
+</header>
+
+<main id="main">
+
+<!-- HERO: lead with what we did -->
+<section class="cs-hero" aria-labelledby="t">
+  <div class="cs-hero__art" aria-hidden="true">
+    <div data-svg="svg/profile-ipe.svg" data-reveal style="--ar:336/384;width:min(40vw,460px)"></div>
+  </div>
+  <div class="cs-w">
+    <a class="cs-hero__back cs-mono" href="../work.html"><span aria-hidden="true">&larr;</span><span data-i18n="cs.back">Kthehu te punët</span></a>
+    <span class="cs-hero__no cs-mono"><span data-i18n="cs.case">Studim rasti</span> / METALIUM</span>
+    <h1 class="cs-hero__t cs-hero__t--pitch" id="t" data-i18n="mt.hero.h"></h1>
+    <p class="cs-hero__sub" data-i18n="mt.hero.sub"></p>
+    <dl class="cs-meta">
+      <div><dt class="cs-mono" data-i18n="cs.meta.client">Klienti</dt><dd>METALIUM</dd></div>
+      <div><dt class="cs-mono" data-i18n="cs.meta.did">Çfarë bëmë</dt><dd data-i18n="mt.did"></dd></div>
+      <div><dt class="cs-mono" data-i18n="cs.meta.for">Ndërtuar për</dt><dd data-i18n="mt.for"></dd></div>
+    </dl>
+  </div>
+  <span class="cs-hero__scroll cs-mono" aria-hidden="true" data-i18n="cs.scroll">Zbrit</span>
+</section>
+
+<!-- 01 PROBLEM -->
+<section class="cs-ch" id="c1" data-ch="1">
+  <div class="cs-w">
+    <header class="cs-ch__h"><span class="cs-ch__n">01</span><span class="cs-ch__t cs-mono" data-i18n="cs.ch1">Problemi</span></header>
+    <div class="cs-ch__grid">
+      <h2 class="cs-h cs-r" data-i18n="mt.c1.h"></h2>
+      <div class="cs-msg cs-r">
+        <p class="cs-msg__t" data-i18n="mt.c1.msg"></p>
+        <ul class="cs-miss">
+          <li><span data-i18n="mt.mi.profile"></span><span data-i18n="mt.mi.missing"></span></li>
+          <li><span data-i18n="mt.mi.dimensions"></span><span data-i18n="mt.mi.missing"></span></li>
+          <li><span data-i18n="mt.mi.length"></span><span data-i18n="mt.mi.missing"></span></li>
+          <li><span data-i18n="mt.mi.qty"></span><span data-i18n="mt.mi.missing"></span></li>
+          <li><span data-i18n="mt.mi.weight"></span><span data-i18n="mt.mi.missing"></span></li>
+          <li><span data-i18n="mt.mi.application"></span><span data-i18n="mt.mi.missing"></span></li>
+        </ul>
+      </div>
+      <ol class="cs-st cs-st--half">
+        <li class="cs-r" data-n="A" data-i18n="mt.c1.1"></li>
+        <li class="cs-r" data-n="B" data-i18n="mt.c1.2"></li>
+        <li class="cs-r" data-n="C" data-i18n="mt.c1.3"></li>
+      </ol>
+      <p class="cs-note cs-mono cs-r" data-i18n="mt.c1.ctx"></p>
+    </div>
+  </div>
+</section>
+
+<!-- 02 FINDING -->
+<section class="cs-ch" id="c2" data-ch="2" style="padding-bottom:0">
+  <div class="cs-w">
+    <header class="cs-ch__h"><span class="cs-ch__n">02</span><span class="cs-ch__t cs-mono" data-i18n="cs.ch2">Çfarë gjetëm</span></header>
+    <div class="cs-ch__grid">
+      <ol class="cs-st">
+        <li class="cs-r" data-n="—" data-i18n="mt.c2.1"></li>
+        <li class="cs-r" data-n="—" data-i18n="mt.c2.2"></li>
+      </ol>
+    </div>
+  </div>
+  <div class="cs-moment">
+    <div class="cs-w"><h2 class="cs-moment__t" data-moment="mt.c2.m1,mt.c2.m2"></h2></div>
+  </div>
+</section>
+
+<!-- 03 WHAT WE BUILT -->
+<section class="cs-ch" id="c3" data-ch="3" style="padding-bottom:0">
+  <div class="cs-w">
+    <header class="cs-ch__h"><span class="cs-ch__n">03</span><span class="cs-ch__t cs-mono" data-i18n="cs.ch3">Çfarë ndërtuam</span></header>
+    <div class="cs-ch__grid">
+      <h2 class="cs-h cs-r" data-i18n="mt.c3.h"></h2>
+      <p class="cs-p cs-r" style="--d:1" data-i18n="mt.c3.p"></p>
+    </div>
+  </div>
+
+  <div class="cs-scene" style="--len:2.2;margin-top:clamp(30px,6vh,70px)">
+    <div class="cs-stick"><div class="cs-w">
+      <p class="cs-scene__tag cs-mono"><span>Fig. 01</span><span data-i18n="mt.q.cap"></span></p>
+      <div class="cs-inq">
+        <div class="cs-inq__raw"><span data-i18n="mt.q.raw"></span></div>
+        <div class="cs-inq__arrow" aria-hidden="true">&rarr;</div>
+        <dl class="cs-inq__form">
+          <div style="--i:0"><dt class="cs-mono" data-i18n="mt.q.structure"></dt><dd>10 × 20 M</dd></div>
+          <div style="--i:1"><dt class="cs-mono" data-i18n="mt.q.profile"></dt><dd>IPE / HEB</dd></div>
+          <div style="--i:2"><dt class="cs-mono" data-i18n="mt.q.length"></dt><dd>6 M / 10 M</dd></div>
+          <div style="--i:3"><dt class="cs-mono" data-i18n="mt.q.qty"></dt><dd>12 / 6</dd></div>
+          <div style="--i:4"><dt class="cs-mono" data-i18n="mt.q.weight"></dt><dd><span id="inq-weight">&nbsp;</span><small data-i18n="mt.q.fromcalc"></small></dd></div>
+          <div style="--i:5"><dt class="cs-mono" data-i18n="mt.q.type"></dt><dd data-i18n="mt.q.hall"></dd></div>
+        </dl>
+      </div>
+      <div class="cs-scene__bar" aria-hidden="true"></div>
+    </div></div>
+  </div>
+
+  <div class="cs-w" style="margin-top:clamp(30px,6vh,70px)">
+    <div class="cs-ch__grid">
+      <ol class="cs-flow cs-flow--steel" data-progress style="--n:6">
+        <li style="--i:0" data-i18n="mt.f.1"></li>
+        <li style="--i:1" data-i18n="mt.f.2"></li>
+        <li style="--i:2" data-i18n="mt.f.3"></li>
+        <li style="--i:3" data-i18n="mt.f.4"></li>
+        <li style="--i:4" data-i18n="mt.f.5"></li>
+        <li style="--i:5" data-i18n="mt.f.6"></li>
+      </ol>
+    </div>
+    <div id="calc" class="cs-calc cs-r" style="margin-top:clamp(40px,8vh,90px)">
+      <div>
+        <h3 data-i18n="mt.k.title"></h3>
+        <label><span class="cs-mono" data-i18n="mt.k.family"></span>
+          <select id="k-fam"><option>IPE</option><option>HEA</option><option>HEB</option><option>UPN</option><option value="SHS">TUBE (SHS)</option></select></label>
+        <label><span class="cs-mono" data-i18n="mt.k.size"></span><select id="k-size"></select></label>
+        <div class="cs-calc__row">
+          <label><span class="cs-mono" data-i18n="mt.k.length"></span><input id="k-len" type="number" inputmode="decimal" min="0.1" step="0.1" value="6"></label>
+          <label><span class="cs-mono" data-i18n="mt.k.qty"></span><input id="k-qty" type="number" inputmode="numeric" min="1" step="1" value="4"></label>
+        </div>
+        <div class="cs-calc__out" aria-live="polite"><span class="cs-mono" data-i18n="mt.k.weight"></span><strong id="k-out"></strong></div>
+        <button id="k-add" class="cs-btn" type="button"><span data-i18n="mt.k.add"></span><span aria-hidden="true">+</span></button>
+        <p id="k-msg" class="cs-calc__msg" role="status"></p>
+      </div>
+      <div>
+        <h3 data-i18n="mt.k.list"></h3>
+        <ul id="k-list" class="cs-calc__list"></ul>
+        <div id="k-total" class="cs-calc__total"><span data-i18n="mt.k.total"></span><b>0 kg</b></div>
+        <p class="cs-calc__note" data-i18n="mt.k.note"></p>
+        <a class="cs-btn cs-btn--ghost" href="../metalium-showcase/index.html"><span data-i18n="mt.k.open"></span><span aria-hidden="true">&#8599;</span></a>
+      </div>
+    </div>
+
+    <div class="cs-ch__grid" style="margin-top:clamp(50px,10vh,110px)">
+      <h3 class="cs-h cs-r" style="font-size:clamp(1.5rem,2.8vw,2.4rem)" data-i18n="mt.p.h"></h3>
+      <div class="cs-tabs" role="group" aria-label="Profiles"></div>
+      <div class="cs-prof" data-reveal>
+        <figure class="cs-prof__i" data-name="IPE"><div data-svg="svg/profile-ipe.svg" data-alt="mt.a.ipe" style="--ar:336/384"></div></figure>
+        <figure class="cs-prof__i" data-name="HEA"><div data-svg="svg/profile-hea.svg" data-alt="mt.a.hea" style="--ar:336/384"></div></figure>
+        <figure class="cs-prof__i" data-name="HEB"><div data-svg="svg/profile-heb.svg" data-alt="mt.a.heb" style="--ar:336/384"></div></figure>
+        <figure class="cs-prof__i" data-name="UPN"><div data-svg="svg/profile-upn.svg" data-alt="mt.a.upn" style="--ar:336/384"></div></figure>
+        <figure class="cs-prof__i" data-name="TUBE"><div data-svg="svg/profile-tube.svg" data-alt="mt.a.tube" style="--ar:336/384"></div></figure>
+      </div>
+      <p class="cs-note cs-mono cs-r"><span class="cs-a">Fig. 02</span> / <span data-i18n="mt.p.cap"></span></p>
+    </div>
+  </div>
+</section>
+
+<!-- 04 FOR YOUR BUSINESS -->
+<section class="cs-ch" id="c4" data-ch="4" style="margin-top:clamp(40px,8vh,90px)">
+  <div class="cs-w">
+    <header class="cs-ch__h"><span class="cs-ch__n">04</span><span class="cs-ch__t cs-mono" data-i18n="cs.ch4">Për biznesin tuaj</span></header>
+    <div class="cs-ch__grid">
+      <h2 class="cs-h cs-res cs-r" data-i18n="cs.you.h"></h2>
+      <ol class="cs-st">
+        <li class="cs-r" data-n="01" data-i18n="mt.y.1"></li>
+        <li class="cs-r" data-n="02" data-i18n="mt.y.2"></li>
+        <li class="cs-r" data-n="03" data-i18n="mt.y.3"></li>
+      </ol>
+      <p class="cs-p cs-r" style="grid-column:1 / -1;max-width:52ch" data-i18n="cs.you.p"></p>
+      <div class="cs-end cs-r">
+        <a class="cs-btn" href="../index.html#start-project"><span data-i18n="cs.start">Nis një projekt</span><span aria-hidden="true">&rarr;</span></a>
+        <a class="cs-btn cs-btn--ghost" href="../metalium-showcase/index.html"><span data-i18n="cs.live">Shiko faqen live</span><span aria-hidden="true">&#8599;</span></a>
+      </div>
+      <p class="cs-note cs-mono cs-r" data-i18n="cs.nometrics"></p>
+    </div>
+  </div>
+</section>
+
+<a class="cs-next" href="vyron.html">
+  <div class="cs-w"><span class="cs-mono" data-i18n="cs.next">Studimi tjetër</span><span class="cs-next__t">VYRON</span></div>
+</a>
+
+</main>
+
+<script type="module" src="cs.js"></script>
+</body>
+</html>

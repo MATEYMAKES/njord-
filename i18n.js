@@ -15,6 +15,7 @@ const DEFAULT_LANG = 'sq';
 const translations = {
   'nav.identity': { en: 'Identity', sq: 'Identiteti' },
   'nav.work': { en: 'Work', sq: 'Punët' },
+  'modal.casestudy': { en: 'See the case study', sq: 'Shiko studimin e rastit' },
   'nav.studio': { en: 'Studio', sq: 'Studio' },
   'nav.services': { en: 'Services', sq: 'Shërbimet' },
   'nav.contact': { en: 'Contact', sq: 'Kontakt' },

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 336 384" class="cs-svg" role="img" focusable="false">
+<title>Section drawing, IPE 200: h 200 mm, b 100 mm</title>
+<style>.cs-svg{color:#1d1b16;--cs-acc:#a2754f;--cs-ground:#f4f2ea;font-family:'JetBrains Mono','IBM Plex Mono',ui-monospace,monospace}
+.cs-svg .d{fill:none;stroke:currentColor;stroke-width:1.3;stroke-linejoin:round}
+.cs-svg .df{fill:none;stroke:currentColor;stroke-width:.8;opacity:.45}
+.cs-svg .dm{fill:none;stroke:var(--cs-acc);stroke-width:1}
+.cs-svg .dc{fill:none;stroke:currentColor;stroke-width:.8;stroke-dasharray:9 3 2 3;opacity:.5}
+.cs-svg .lbl{font-size:17px;fill:currentColor;letter-spacing:.06em}
+.cs-svg .lbl-s{font-size:13px;fill:currentColor;opacity:.62;letter-spacing:.04em}
+.cs-svg .lbl-a{font-size:17px;fill:var(--cs-acc);letter-spacing:.06em}</style>
+<defs><pattern id="hx-ipe" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0V5" stroke="currentColor" stroke-width=".7" opacity=".4"/></pattern></defs>
+<text class="lbl" x="14" y="28">IPE 200</text>
+<text class="lbl-s" x="14" y="47">22.4 kg/m</text>
+<path class="dc" d="M170 94V298 M113 196H227"/>
+<path class="d cut draw" pathLength="1" fill-rule="evenodd" style="fill:url(#hx-ipe)" d="M125 106H215V113.65H183.32a10.8 10.8 0 0 0 -10.8 10.8V267.55a10.8 10.8 0 0 0 10.8 10.8H215V286H125V278.35H156.68a10.8 10.8 0 0 0 10.8 -10.8V124.45a10.8 10.8 0 0 0 -10.8 -10.8H125Z"/>
+<path class="dm draw" pathLength="1" d="M121 106H97 M121 286H97 M103 106V286M99.4 112L106.6 100M99.4 292L106.6 280M125 290V316 M215 290V316 M125 310H215M121.4 316L128.6 304M211.4 316L218.6 304"/>
+<text class="lbl" x="85" y="196" text-anchor="middle" transform="rotate(-90 85 196)">h</text>
+<text class="lbl-s minor" x="67" y="196" text-anchor="middle" transform="rotate(-90 67 196)">200</text>
+<text class="lbl" x="170" y="334" text-anchor="middle">b</text>
+<text class="lbl-s minor" x="170" y="352" text-anchor="middle">100</text>
+<path class="dm" d="M172.52 196H225"/>
+<text class="lbl" x="229" y="190">tw</text><text class="lbl-s minor" x="229" y="210">5.6</text>
+<path class="dm" d="M143 109.83L133 84"/>
+<text class="lbl" x="129" y="86" text-anchor="end">tf</text><text class="lbl-s minor" x="129" y="68" text-anchor="end">8.5</text>
+</svg>

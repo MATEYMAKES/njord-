@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 336 384" class="cs-svg" role="img" focusable="false">
+<title>Section drawing, HEA 200: h 190 mm, b 200 mm</title>
+<style>.cs-svg{color:#1d1b16;--cs-acc:#a2754f;--cs-ground:#f4f2ea;font-family:'JetBrains Mono','IBM Plex Mono',ui-monospace,monospace}
+.cs-svg .d{fill:none;stroke:currentColor;stroke-width:1.3;stroke-linejoin:round}
+.cs-svg .df{fill:none;stroke:currentColor;stroke-width:.8;opacity:.45}
+.cs-svg .dm{fill:none;stroke:var(--cs-acc);stroke-width:1}
+.cs-svg .dc{fill:none;stroke:currentColor;stroke-width:.8;stroke-dasharray:9 3 2 3;opacity:.5}
+.cs-svg .lbl{font-size:17px;fill:currentColor;letter-spacing:.06em}
+.cs-svg .lbl-s{font-size:13px;fill:currentColor;opacity:.62;letter-spacing:.04em}
+.cs-svg .lbl-a{font-size:17px;fill:var(--cs-acc);letter-spacing:.06em}</style>
+<defs><pattern id="hx-hea" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0V5" stroke="currentColor" stroke-width=".7" opacity=".4"/></pattern></defs>
+<text class="lbl" x="14" y="28">HEA 200</text>
+<text class="lbl-s" x="14" y="47">42.3 kg/m</text>
+<path class="dc" d="M170 98.5V293.5 M68 196H272"/>
+<path class="d cut draw" pathLength="1" fill-rule="evenodd" style="fill:url(#hx-hea)" d="M80 110.5H260V119.5H189.12a16.2 16.2 0 0 0 -16.2 16.2V256.3a16.2 16.2 0 0 0 16.2 16.2H260V281.5H80V272.5H150.88a16.2 16.2 0 0 0 16.2 -16.2V135.7a16.2 16.2 0 0 0 -16.2 -16.2H80Z"/>
+<path class="dm draw" pathLength="1" d="M76 110.5H52 M76 281.5H52 M58 110.5V281.5M54.4 116.5L61.6 104.5M54.4 287.5L61.6 275.5M80 285.5V311.5 M260 285.5V311.5 M80 305.5H260M76.4 311.5L83.6 299.5M256.4 311.5L263.6 299.5"/>
+<text class="lbl" x="40" y="196" text-anchor="middle" transform="rotate(-90 40 196)">h</text>
+<text class="lbl-s minor" x="22" y="196" text-anchor="middle" transform="rotate(-90 22 196)">190</text>
+<text class="lbl" x="170" y="329.5" text-anchor="middle">b</text>
+<text class="lbl-s minor" x="170" y="347.5" text-anchor="middle">200</text>
+<path class="dm" d="M172.93 196H270"/>
+<text class="lbl" x="274" y="190">tw</text><text class="lbl-s minor" x="274" y="210">6.5</text>
+<path class="dm" d="M116 115L106 88.5"/>
+<text class="lbl" x="102" y="90.5" text-anchor="end">tf</text><text class="lbl-s minor" x="102" y="72.5" text-anchor="end">10</text>
+</svg>

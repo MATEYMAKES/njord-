@@ -617,6 +617,8 @@ function showModal(key, project, cx, cy){
   });
   const ctaNote = modal.querySelector('.project-modal__cta-note');
   if(ctaNote) ctaNote.classList.remove('is-visible');
+  const caseLink = modal.querySelector('.project-modal__caselink');
+  if(caseLink){ const cu = CASE_URL[key]; caseLink.hidden = !cu; if(cu) caseLink.href = cu; }
   const siteNote = modal.querySelector('.project-modal__sitelink-note');
   if(siteNote) siteNote.classList.remove('is-visible');
 
@@ -732,6 +734,9 @@ if(processLink && !document.body.classList.contains('work-page')){
     }, PORTAL_MS + 80);
   });
 }
+
+/* Projects with a case study page (case-study/). The button in the project splash is shown only for these. */
+const CASE_URL = { vyron: 'case-study/vyron.html', metalium: 'case-study/metalium.html' };
 
 /* Projects with a hosted showcase copy; the rest keep the coming-soon note. */
 const SHOWCASE_URL = Object.fromEntries(PROJECTS_DATA.filter((p) => p.liveUrl).map((p) => [p.slug, p.liveUrl]));

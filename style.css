@@ -1473,6 +1473,11 @@ body.is-past-hero .logo-mark{ opacity: 1; transform: none; }
   opacity: 0; transition: opacity .3s;
 }
 .project-modal__sitelink-note.is-visible{ opacity: .65; }
+.project-modal__caselink[hidden]{ display: none; }
+.project-modal--metalium .project-modal__caselink{ background: var(--metalium-accent); color: var(--metalium-ink); }
+.project-modal--vyron .project-modal__caselink{ background: var(--vyron-accent); color: var(--vyron-bg); }
+.project-modal--metalium .project-modal__caselink:hover,
+.project-modal--vyron .project-modal__caselink:hover{ background: transparent; color: inherit; }
 
 .project-modal--aurelia{ background: var(--aurelia-bg); color: var(--aurelia-ink); font-family: 'Fraunces', serif; }
 .project-modal--aurelia .project-modal__title{ font-style: italic; font-weight: 500; }

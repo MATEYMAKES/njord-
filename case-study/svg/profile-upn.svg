@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 336 384" class="cs-svg" role="img" focusable="false">
+<title>Section drawing, UPN 200: h 200 mm, b 75 mm</title>
+<style>.cs-svg{color:#1d1b16;--cs-acc:#a2754f;--cs-ground:#f4f2ea;font-family:'JetBrains Mono','IBM Plex Mono',ui-monospace,monospace}
+.cs-svg .d{fill:none;stroke:currentColor;stroke-width:1.3;stroke-linejoin:round}
+.cs-svg .df{fill:none;stroke:currentColor;stroke-width:.8;opacity:.45}
+.cs-svg .dm{fill:none;stroke:var(--cs-acc);stroke-width:1}
+.cs-svg .dc{fill:none;stroke:currentColor;stroke-width:.8;stroke-dasharray:9 3 2 3;opacity:.5}
+.cs-svg .lbl{font-size:17px;fill:currentColor;letter-spacing:.06em}
+.cs-svg .lbl-s{font-size:13px;fill:currentColor;opacity:.62;letter-spacing:.04em}
+.cs-svg .lbl-a{font-size:17px;fill:var(--cs-acc);letter-spacing:.06em}</style>
+<defs><pattern id="hx-upn" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0V5" stroke="currentColor" stroke-width=".7" opacity=".4"/></pattern></defs>
+<text class="lbl" x="14" y="28">UPN 200</text>
+<text class="lbl-s" x="14" y="47">25.3 kg/m</text>
+<path class="dc" d="M170 94V298 M124.25 196H215.75"/>
+<path class="d cut draw" pathLength="1" fill-rule="evenodd" style="fill:url(#hx-upn)" d="M136.25 106H203.75V113.65L154.22 117.61Q143.9 118.44 143.9 128.79V263.21Q143.9 273.56 154.22 274.39L203.75 278.35V286H136.25Z"/>
+<path class="dm draw" pathLength="1" d="M132.25 106H108.25 M132.25 286H108.25 M114.25 106V286M110.65 112L117.85 100M110.65 292L117.85 280M136.25 290V316 M203.75 290V316 M136.25 310H203.75M132.65 316L139.85 304M200.15 316L207.35 304"/>
+<text class="lbl" x="96.25" y="196" text-anchor="middle" transform="rotate(-90 96.25 196)">h</text>
+<text class="lbl-s minor" x="78.25" y="196" text-anchor="middle" transform="rotate(-90 78.25 196)">200</text>
+<text class="lbl" x="170" y="334" text-anchor="middle">b</text>
+<text class="lbl-s minor" x="170" y="352" text-anchor="middle">75</text>
+<path class="dm" d="M143.9 196H213.75"/>
+<text class="lbl" x="217.75" y="190">tw</text><text class="lbl-s minor" x="217.75" y="210">8.5</text>
+<path class="dm" d="M149.75 111.17L139.75 84"/>
+<text class="lbl" x="135.75" y="86" text-anchor="end">tf</text><text class="lbl-s minor" x="135.75" y="68" text-anchor="end">11.5</text>
+</svg>
