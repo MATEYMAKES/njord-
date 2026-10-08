@@ -130,7 +130,7 @@ if(organismCanvas){
     // registered while that's true, since a hidden element's layout
     // rect isn't meaningful as a scroll anchor.
     { name: 'roadmap', el: document.getElementById('process'), ranged: true },
-    { name: 'chaos', el: document.getElementById('cloud-anchor') },
+    { name: 'cloud', el: document.getElementById('cloud-anchor') },
   { name: 'mascot', el: document.getElementById('mascot-anchor') },
   ].filter((z) => z.el));
 

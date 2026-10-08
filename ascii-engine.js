@@ -880,7 +880,15 @@ export class AsciiOrganism{
         // always fully formed and the transition still eases.
         const PROJ_FORMS = this._projForms || (this._projForms = new Set(['diamond', 'wave', 'network', 'sparks', 'vee']));
         const dwell = PROJ_FORMS.has(A.name) && PROJ_FORMS.has(B.name) && A.name !== B.name;
-        const t = dwell ? smoothstep(0, 1, Math.max(0, Math.min(1, (raw - 0.38) / 0.24))) : smoothstep(0, 1, raw);
+        // The hand-over to/from the mascot uses an ease-in-out cubic and is
+        // normalised to the lock point (0.75) so it finishes exactly where
+        // the lock takes over, instead of stopping at ~84% and snapping.
+        const toMascot = A.name === 'mascot' || B.name === 'mascot';
+        const rawT = (B === last && B.name === 'mascot') ? Math.min(1, raw / 0.75) : raw;
+        const easeInOutCubic = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+        const t = dwell ? smoothstep(0, 1, Math.max(0, Math.min(1, (raw - 0.38) / 0.24)))
+          : toMascot ? easeInOutCubic(Math.max(0, Math.min(1, rawT)))
+          : smoothstep(0, 1, raw);
         const seg = { a: A.name, b: B.name, t, anchorX: lerp(A.anchorX, B.anchorX, t), anchorY: lerp(A.anchorY, B.anchorY, t) };
         if(A.name === B.name && rangedNames.has(A.name)){
           seg.localT = Math.max(0, Math.min(1, raw)); // linear, not smoothstepped — exact scroll correspondence for typing
@@ -907,6 +915,10 @@ export class AsciiOrganism{
           i: (this.earthLand[i] ? 0.22 + light * 0.78 : (0.08 + light * 0.42) * 0.75) * (0.15 + 0.85 * vis),
           c: 0,
         };
+      }
+      case 'cloud': { // the loose cloud above the contact section: chaos, but much lighter
+        const c = this._formationTarget('chaos', i, t);
+        return { x: c.x * 0.8, y: c.y * 0.8, i: c.i * 0.4, c: 0 };
       }
       case 'chaos': {
         const seed = this.jitterSeed[i];
@@ -1596,7 +1608,9 @@ export class AsciiOrganism{
     // register the particles quickly once the mascot's final state is
     // reached. At the old 0.045 rate he remained a cloud-shaped clump
     // for several seconds before his limb gaps became readable.
-    const posEase = this.reduced ? 1 : (mascotBlend === 1 ? 0.22 : 0.045);
+    // Approaching/leaving the mascot is 30% slower than the other morphs
+    // (0.045 * 0.7), so the cloud has time to gather into him.
+    const posEase = this.reduced ? 1 : (mascotBlend === 1 ? 0.22 : mascotBlend > 0 ? 0.0315 : 0.045);
 
     for(let i = 0; i < n; i++){
       const fA = this._formationTarget(seg.a, i, t);
