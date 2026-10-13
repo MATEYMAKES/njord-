@@ -2,11 +2,7 @@
    NJORD — page logic: cursor, magnetism, hero choreography, work
    portals, project modal, contact.
    ================================================================ */
-import {
-  prefersReducedMotion, whenVisible, ticker,
-  AsciiOrganism, StaticGlyphField, FormationPortrait,
-} from './ascii-engine.js';
-import { GenerativeAudio } from './audio-engine-a2.js'; // A2 (lighter) — A1 kept intact in audio-engine.js
+import { prefersReducedMotion, whenVisible, ticker } from './core.js';
 import { t, getLang, setLang, applyStaticTranslations, onLangChange, hasKey } from './i18n.js';
 import { initMascotConvo } from './mascot-convo.js';
 import { initIdentity } from './identity.js';
@@ -14,6 +10,37 @@ import {
   PROJECTS_DATA, publishedProjects, renderWorkLists, renderClientProof,
   fillCaseStudy, applyProjectMeta, restoreProjectMeta,
 } from './projects.js';
+
+/* ---------------------------------------------------------------
+   Phone vs. desktop. index.html / work.html set html.is-phone before
+   first paint (small screen or landscape phone). Phones get a
+   deliberately light site: NO ASCII artwork, NO generative audio, no
+   per-frame scroll maths — and they never even download the artwork
+   engine (ascii-engine.js, ~110 KB) or the audio engine. Desktop loads
+   both on demand here.
+   --------------------------------------------------------------- */
+const IS_PHONE = document.documentElement.classList.contains('is-phone');
+const { AsciiOrganism, StaticGlyphField, FormationPortrait } = IS_PHONE ? {} : await import('./ascii-engine.js');
+const audio = IS_PHONE
+  ? { enabled: false, toggle(){ return false; }, destroy(){}, playKeyTick(){}, attachOrganism(){} }
+  : new (await import('./audio-engine-a2.js')).GenerativeAudio();
+// Phones get pre-rendered stills and a looping globe video instead of the
+// live artwork (phone-art.js). Not awaited: it must never delay the page.
+const phoneArt = IS_PHONE ? import('./phone-art.js').catch(() => null) : null;
+
+/* Project-page fonts (Fraunces, Bebas Neue, Archivo, IBM Plex) are only
+   used inside the project pages, so they load on first intent to open
+   one instead of blocking every visit. */
+const MODAL_FONTS_URL = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,450&family=Bebas+Neue&family=Archivo:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap';
+let modalFontsRequested = false;
+function loadModalFonts(){
+  if(modalFontsRequested) return;
+  modalFontsRequested = true;
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = MODAL_FONTS_URL;
+  document.head.appendChild(link);
+}
 
 /* Project rows are built from projects.js (the single source of truth)
    before translations run and before anything below queries them. */
@@ -111,7 +138,7 @@ const WORK_ZONES = publishedProjects().filter((p) => p.formation).map((p) => ({
   el: document.querySelector(`.work-row[data-project="${p.slug}"], .work-preview-row[data-project="${p.slug}"]`),
 }));
 
-if(organismCanvas){
+if(organismCanvas && AsciiOrganism){
   organism = new AsciiOrganism(organismCanvas, { getInkColor: inkColor });
   organism.setZones([
     { name: 'globe', el: hero },
@@ -194,7 +221,6 @@ if(organismCanvas){
    policy — attaching the organism here only wires up the *reference*
    the audio engine will later poll, it does not start anything.
    --------------------------------------------------------------- */
-const audio = new GenerativeAudio();
 if(organism){
   audio.attachOrganism(organism);
   organism.setWaveformSource(() => audio.getPulseWaveform());
@@ -267,8 +293,18 @@ if(hero){
     if(heroWord) heroWord.style.opacity = String(Math.max(0, 1 - progress * 1.6));
     document.body.classList.toggle('is-past-hero', progress > 0.5);
   };
-  window.addEventListener('scroll', onHeroScroll, { passive: true });
-  onHeroScroll();
+  if(IS_PHONE && 'IntersectionObserver' in window){
+    // phones: one observer instead of a scroll listener doing layout reads
+    const steps = Array.from({ length: 21 }, (_, i) => i / 20);
+    new IntersectionObserver(([entry]) => {
+      const progress = Math.min(1, (1 - entry.intersectionRatio) / 0.85);
+      if(heroWord) heroWord.style.opacity = String(Math.max(0, 1 - progress * 1.6));
+      document.body.classList.toggle('is-past-hero', progress > 0.5);
+    }, { threshold: steps }).observe(hero);
+  } else {
+    window.addEventListener('scroll', onHeroScroll, { passive: true });
+    onHeroScroll();
+  }
 } else {
   // Pages with no #hero (currently just work.html) can never satisfy the
   // scroll-progress check above, so `is-past-hero` — which is what makes
@@ -387,6 +423,23 @@ if(roadmapNodesEl && organism && servicesSection && !servicesSection.hidden){
   }
 }
 
+/* Phones: "how we work" is a plain, fully written list — no scroll typing,
+   no path drawn behind it. */
+if(IS_PHONE && roadmapNodesEl){
+  const fillPhoneRoadmap = () => {
+    roadmapNodesEl.querySelectorAll('.roadmap-node').forEach((el, i) => {
+      const copy = serviceRoadmapCopy(SERVICE_KEYS[i]);
+      const h = el.querySelector('.roadmap-node__heading');
+      const s = el.querySelector('.roadmap-node__support');
+      if(h) h.textContent = copy.heading;
+      if(s) s.textContent = copy.support;
+      el.classList.add('is-visible');
+    });
+  };
+  fillPhoneRoadmap();
+  onLangChange(fillPhoneRoadmap);
+}
+
 /* ---------------------------------------------------------------
    Work — index glyphs + per-project ASCII texture washes + portals
    --------------------------------------------------------------- */
@@ -412,7 +465,7 @@ function projectCopy(key){
 // — the animated glyph read as noisy clutter at the smaller mobile size,
 // so mobile skips building/animating it at all rather than just calming
 // it down
-const isMobileGlyph = window.innerWidth < 720;
+const isMobileGlyph = IS_PHONE || window.innerWidth < 720;
 document.querySelectorAll('.work-row').forEach((row) => {
   const key = row.dataset.project;
   const idxCanvas = row.querySelector('.work-row__index canvas');
@@ -494,7 +547,7 @@ if(!document.body.classList.contains('work-page')){
    align-items:center, not stretch, so no ambiguity there either: body
    becomes the tallest item, the row's auto height simply matches it). */
 const workRowBodies = document.querySelectorAll('.work-row__body');
-if(workRowBodies.length > 1){
+if(workRowBodies.length > 1 && !IS_PHONE){
   const equalizeWorkRows = () => {
     workRowBodies.forEach((b) => { b.style.minHeight = ''; });
     let max = 0;
@@ -518,6 +571,12 @@ if(workRowBodies.length > 1){
 
 initIdentity();
 
+// start fetching the project-page fonts the moment someone shows intent
+document.querySelectorAll('.work-row, .work-preview-row').forEach((row) => {
+  row.addEventListener('pointerdown', loadModalFonts, { once: true, passive: true });
+  row.addEventListener('pointerenter', loadModalFonts, { once: true, passive: true });
+});
+
 /* ---------------------------------------------------------------
    Project portal — the page loads in as a circle expanding from the
    exact point clicked, out to the edges (never a fade), while the
@@ -531,9 +590,10 @@ const main = document.getElementById('main');
 let lastTrigger = null;
 let currentProject = null;
 let currentKey = null;
-const PORTAL_MS = 600;
+const PORTAL_MS = IS_PHONE ? 260 : 600;
 
 function openProject(key, triggerEl, clickX, clickY){
+  loadModalFonts();
   const project = PROJECTS[key];
   if(!project) return;
   lastTrigger = triggerEl;
@@ -549,6 +609,26 @@ function openProject(key, triggerEl, clickX, clickY){
 // modal element it's animating, so the service pages get an identical
 // open/close feel without duplicating this math.
 function animatePageReveal(modalEl, cx, cy, mode){
+  if(IS_PHONE){
+    // phones: a cheap opacity fade — the expanding-circle clip-path
+    // repaints the whole screen on every frame
+    modalEl.style.clipPath = 'none';
+    if(mode === 'open'){
+      modalEl.style.transition = 'none';
+      modalEl.style.opacity = '0';
+      modalEl.style.transform = 'none';
+      modalEl.classList.add('is-open');
+      void modalEl.offsetWidth;
+      requestAnimationFrame(() => {
+        modalEl.style.transition = `opacity ${PORTAL_MS}ms ease`;
+        modalEl.style.opacity = '1';
+      });
+    } else {
+      modalEl.style.transition = `opacity ${PORTAL_MS}ms ease`;
+      modalEl.style.opacity = '0';
+    }
+    return;
+  }
   const vw = window.innerWidth, vh = window.innerHeight;
   const maxDist = Math.max(
     Math.hypot(cx, cy), Math.hypot(vw - cx, cy),
@@ -626,6 +706,7 @@ function showModal(key, project, cx, cy){
     c.hidden = c.dataset.panel !== key;
   });
   showPortrait(key);
+  if(phoneArt) phoneArt.then((m) => { if(m && currentKey === key) m.showProjectStill(key); });
 
   modal.hidden = false;
   document.body.classList.add('modal-open');
@@ -783,7 +864,7 @@ onLangChange(() => {
    watermark texture rather than a separate, unrelated decorative graphic. */
 const PORTRAIT_FORMATION = Object.fromEntries(PROJECTS_DATA.filter((p) => p.formation).map((p) => [p.slug, p.formation]));
 const portraits = {};
-Object.keys(PORTRAIT_FORMATION).forEach((key) => {
+if(!IS_PHONE) Object.keys(PORTRAIT_FORMATION).forEach((key) => {
   const canvas = document.getElementById(`${key}-visual`);
   if(!canvas) return;
   const cs = getComputedStyle(document.documentElement);
@@ -976,6 +1057,58 @@ if(mascotHit && organism){
     if(editing || e.ctrlKey || e.metaKey || e.altKey) return;
     if(e.key >= '1' && e.key <= '3') organism.triggerMascotIdleRoutine(Number(e.key));
   });
+}
+
+/* ---------------------------------------------------------------
+   Phones — contact without the mascot. The mascot lives in the ASCII
+   artwork, which phones no longer load, so "Start a project" opens the
+   same conversation as a full-screen sheet pinned to the *visual*
+   viewport (so the on-screen keyboard never covers the field).
+   --------------------------------------------------------------- */
+if(IS_PHONE){
+  const convoEl = document.getElementById('mascot-convo');
+  // The sheet has to sit above everything, but its parent section is its own
+  // stacking context, so it lives directly under <body> on phones.
+  if(convoEl) document.body.appendChild(convoEl);
+  const vv = window.visualViewport;
+  const syncViewport = () => {
+    const root = document.documentElement.style;
+    root.setProperty('--vv-h', `${Math.round(vv ? vv.height : window.innerHeight)}px`);
+    root.setProperty('--vv-top', `${Math.round(vv ? vv.offsetTop : 0)}px`);
+  };
+  const phoneConvo = convoEl ? initMascotConvo(convoEl, {
+    accessKey: WEB3FORMS_ACCESS_KEY,
+    onKeystroke: () => {},
+    onResume: () => {},
+    onAwayChange: () => {},
+    onOpenChange: (open) => {
+      document.body.classList.toggle('convo-open', open);
+      document.body.classList.toggle('sheet-open', open);
+      if(!vv) return;
+      if(open){
+        syncViewport();
+        vv.addEventListener('resize', syncViewport);
+        vv.addEventListener('scroll', syncViewport);
+      } else {
+        vv.removeEventListener('resize', syncViewport);
+        vv.removeEventListener('scroll', syncViewport);
+      }
+    },
+  }) : null;
+  // work.html has no contact section: there the "start a project" links
+  // stay ordinary links to index.html#start-project
+  if(phoneConvo){
+    document.querySelectorAll('[data-start-project]').forEach((el) => {
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        phoneConvo.open();
+      });
+    });
+    if(location.hash === '#start-project'){
+      history.replaceState(null, '', location.pathname + location.search + '#contact');
+      window.addEventListener('load', () => setTimeout(() => phoneConvo.open(), 300), { once: true });
+    }
+  }
 }
 
 /* "One studio" chain: the five stages ease in one after another the first

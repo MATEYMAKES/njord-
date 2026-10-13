@@ -44,8 +44,35 @@
 }
 </script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23CBFF3D'/%3E%3C/svg%3E">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=JetBrains+Mono:wght@400;500;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,450&family=Bebas+Neue&family=Archivo:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<script>
+/* Phone detection runs before first paint: small screens and landscape phones
+   get the light site (no ASCII artwork / audio, see main.js + phone.css);
+   everything else preloads the artwork engines so they arrive in parallel. */
+(function(){
+  var mm = window.matchMedia;
+  var isPhone = function () {
+    return !!(mm && (mm('(max-width: 719px)').matches || mm('(pointer: coarse) and (max-height: 500px)').matches));
+  };
+  var phone = isPhone();
+  // The page is built differently for phones, so if the window crosses the
+  // breakpoint after load (resizing a browser window, rotating a tablet,
+  // DevTools device mode) reload into the right version.
+  if (mm) {
+    var narrow = mm('(max-width: 719px)');
+    var recheck = function () { if (isPhone() !== phone) location.reload(); };
+    if (narrow.addEventListener) narrow.addEventListener('change', recheck); else if (narrow.addListener) narrow.addListener(recheck);
+  }
+  if (phone) { document.documentElement.classList.add('is-phone'); return; }
+  ['ascii-engine.js', 'audio-engine-a2.js'].forEach(function (f) {
+    var l = document.createElement('link'); l.rel = 'modulepreload'; l.href = f; document.head.appendChild(l);
+  });
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=JetBrains+Mono:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="phone.css">
 </head>
 <body>
 
@@ -91,6 +118,8 @@
 <main id="main">
 
   <section id="hero" class="hero">
+    <!-- phones only: the looping globe (phone-art.js); hidden everywhere else -->
+    <div id="hero-globe" class="hero-globe" aria-hidden="true"></div>
     <div class="hero-inner">
       <p class="hero-eyebrow" data-i18n="hero.eyebrow">Studio Web &amp; Brendi</p>
       <h1 class="hero-word">NJORD</h1>
@@ -293,6 +322,7 @@
           <span class="mascot-hint__label" data-i18n="mascot.hint">nis një projekt</span>
           <span class="mascot-hint__arrow">&#8599;</span>
         </div>
+        <button id="contact-start" class="contact-start" type="button" data-start-project><span data-i18n="hero.cta">Nis një projekt</span> <span aria-hidden="true">&rarr;</span></button>
         <a id="contact-email" class="contact-email" href="mailto:contact@njord.live" data-address="contact@njord.live">
           contact@njord.live
           <span class="status" data-i18n="contact.copied">U kopjua</span>

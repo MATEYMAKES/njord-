@@ -10,7 +10,7 @@
    before it resolves into 'infinity' under the second word (see
    main.js setZones and ascii-engine.js's 'chaos'/'infinity' cases).
    ================================================================ */
-import { ticker, whenVisible, prefersReducedMotion } from './ascii-engine.js';
+import { ticker, whenVisible, prefersReducedMotion } from './core.js';
 
 export function initIdentity() {
   const section = document.getElementById('identity');
@@ -23,6 +23,24 @@ export function initIdentity() {
 
   if (prefersReducedMotion()) {
     reveals.forEach((el) => el.classList.add('is-visible'));
+    return;
+  }
+
+  // Phones: no per-frame scroll maths. Each word/paragraph reveals once,
+  // via a single IntersectionObserver, and stays revealed.
+  if (document.documentElement.classList.contains('is-phone')) {
+    if (!('IntersectionObserver' in window)) {
+      reveals.forEach((el) => el.classList.add('is-visible'));
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        io.unobserve(entry.target);
+      });
+    }, { rootMargin: '0px 0px -12% 0px' });
+    reveals.forEach((el) => io.observe(el));
     return;
   }
 

@@ -11,7 +11,7 @@
    restrained per-line type-in, and a plain structured data object at
    the end instead of a raw chat transcript.
    ================================================================ */
-import { prefersReducedMotion } from './ascii-engine.js';
+import { prefersReducedMotion } from './core.js';
 import { t, getLang, onLangChange } from './i18n.js';
 import { PRICES, ALWAYS_WITH_WEBSITE, sumItems, visitorRange, formatEuro } from './pricing.js';
 

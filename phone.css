@@ -1,0 +1,250 @@
+/* =====================================================================
+   NJORD — phone stylesheet.
+
+   Loaded after style.css on every page, but everything here is scoped to
+   html.is-phone, which index.html / work.html set before first paint on
+   small screens and landscape phones (see the inline script in <head>).
+
+   Phones get a deliberately light site:
+   - no ASCII artwork (the animated canvas was the cause of the lag)
+   - no generative audio
+   - no backdrop blur, no per-frame effects
+   - the "how we work" roadmap is a plain written list
+   - contact is a full-screen sheet instead of the mascot's speech panel
+   ===================================================================== */
+
+/* The phone-only contact button doesn't exist anywhere else */
+.contact-start{ display: none; }
+
+/* ---------------------------------------------------------------
+   1. Things that only exist for the artwork
+   --------------------------------------------------------------- */
+html.is-phone #ascii-organism,
+html.is-phone .reg-marks,
+html.is-phone .sound-toggle,
+html.is-phone .project-modal__bg canvas,
+html.is-phone .work-row__index canvas,
+html.is-phone .mascot-hit,
+html.is-phone .mascot-hint,
+html.is-phone .identity-anchor,
+html.is-phone .webdev-anchor,
+html.is-phone .hosting-anchor,
+html.is-phone .maintenance-anchor,
+html.is-phone .cloud-anchor,
+html.is-phone .mascot-anchor{
+  display: none !important;
+}
+html.is-phone .scroll-cue .track::after{ animation: none; top: 0; }
+html.is-phone .roadmap-node__cursor{ display: none; }
+
+/* ---------------------------------------------------------------
+   2. Cheaper paint: no blur behind fixed controls, no tap delay
+   --------------------------------------------------------------- */
+html.is-phone .lang-toggle,
+html.is-phone .sound-toggle{
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background: var(--paper);
+}
+html.is-phone a,
+html.is-phone button,
+html.is-phone summary{ touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+
+/* ---------------------------------------------------------------
+   3. Layout — sections were tall on purpose, to give the artwork
+      scroll distance to change shape in. Without it they just flow.
+   --------------------------------------------------------------- */
+html.is-phone .section,
+html.is-phone .identity,
+html.is-phone .webdev,
+html.is-phone .hosting,
+html.is-phone .maintenance,
+html.is-phone .webdev-inner,
+html.is-phone .hosting-inner,
+html.is-phone .maintenance-inner{
+  min-height: 0 !important;
+}
+html.is-phone .identity-word-row--2{ margin-top: .1em; }
+html.is-phone .identity-copy{ margin-top: 1.5rem; }
+
+/* "How we work": a plain numbered list */
+html.is-phone .roadmap-nodes{
+  min-height: 0;
+  margin-top: 1.5rem;
+  display: grid;
+  gap: 0;
+}
+html.is-phone .roadmap-node{
+  position: static;
+  transform: none;
+  opacity: 1;
+  max-width: none;
+  pointer-events: auto;
+  transition: none;
+  padding-block: 1.25rem;
+  border-top: 1px solid var(--line);
+}
+html.is-phone .roadmap-node:last-child{ border-bottom: 1px solid var(--line); }
+
+/* ---------------------------------------------------------------
+   4. Contact — a real button instead of the mascot
+   --------------------------------------------------------------- */
+html.is-phone .contact-row{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.25rem;
+}
+html.is-phone .contact-start{
+  display: inline-flex;
+  align-items: center;
+  gap: .6em;
+  min-height: 52px;
+  padding: .9em 1.4em;
+  border: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--f-mono);
+  font-size: .95rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+html.is-phone .contact-start:active{ background: var(--signal); color: var(--signal-ink, #15150F); }
+
+/* The conversation: a full-screen sheet pinned to the visual viewport
+   (main.js keeps --vv-h / --vv-top in sync, so the keyboard never covers it) */
+html.is-phone .mascot-convo{
+  position: fixed;
+  left: 0; right: 0;
+  top: var(--vv-top, 0px);
+  bottom: auto;
+  width: auto;
+  height: var(--vv-h, 100dvh);
+  transform: none !important;
+  z-index: 800;
+  background: var(--paper);
+  padding: max(14px, env(safe-area-inset-top)) var(--gutter) max(14px, env(safe-area-inset-bottom));
+  overflow: hidden;
+}
+html.is-phone .mascot-convo__panel{
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+html.is-phone .mascot-convo__top{ flex: none; }
+html.is-phone .mascot-convo__stage{
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none !important;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  align-content: start;
+  padding-bottom: 1rem;
+}
+html.is-phone .mascot-convo__prompt p{ font-size: clamp(1.35rem, 6vw, 1.8rem); }
+html.is-phone body.sheet-open{ overflow: hidden; }
+html.is-phone body.sheet-open .sticky-quote,
+html.is-phone body.sheet-open .lang-toggle,
+html.is-phone body.sheet-open .site-header{ visibility: hidden; }
+
+/* ---------------------------------------------------------------
+   5. Project pages: no animated background
+   --------------------------------------------------------------- */
+html.is-phone .project-modal{ will-change: auto; }
+
+/* Sheet controls: back on the left, progress in the middle, a proper
+   44px close target on the right */
+html.is-phone .mascot-convo__top{
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  min-height: 44px;
+}
+html.is-phone .mascot-convo__back{ order: 1; width: 44px; height: 44px; font-size: 1.4rem; color: var(--ink); }
+html.is-phone .mascot-convo__progress{ order: 2; flex: 1 1 auto; }
+html.is-phone .mascot-convo__close{
+  order: 3;
+  margin-left: auto;
+  width: 44px; height: 44px;
+  font-size: 2rem; line-height: 1;
+  color: var(--ink);
+  display: grid; place-items: center;
+}
+
+/* ---------------------------------------------------------------
+   6. Pre-rendered artwork that stands in for the live ASCII canvas
+      (made offline with the real engine; see assets/phone/ and
+      phone-art.js)
+   --------------------------------------------------------------- */
+.hero-globe{ display: none; }
+
+/* Hero globe. The video has a solid black (dark) / white (light) backdrop
+   that is blended away (screen on dark, multiply on light). Blending only
+   sees what is painted inside the same stacking context — and <main> is
+   one — so the wrapper carries the page's own paper colour for the video
+   to blend against. It must not use transform / opacity / z-index itself
+   (that would isolate the blend again); only the video does. */
+html.is-phone .hero-globe{
+  --s: min(108vw, 72svh);
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--s);
+  height: var(--s);
+  margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2);
+  pointer-events: none;
+  background-color: var(--paper);
+}
+/* the still frame shown until the video is moving (and for reduced motion) */
+html.is-phone .hero-globe::before{
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: .6;
+  background: center / contain no-repeat url(assets/phone/globe-still-light.webp);
+}
+@media (prefers-color-scheme: dark){
+  html.is-phone:not([data-theme="light"]) .hero-globe::before{ background-image: url(assets/phone/globe-still-dark.webp); }
+}
+html.is-phone[data-theme="dark"] .hero-globe::before{ background-image: url(assets/phone/globe-still-dark.webp); }
+html.is-phone .hero-globe.is-playing::before{ display: none; }
+html.is-phone .hero-globe video{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity .6s ease;
+}
+html.is-phone .hero-globe.is-playing video{ opacity: .6; }
+html.is-phone .hero-globe video[data-scheme="dark"]{ mix-blend-mode: screen; }
+html.is-phone .hero-globe video[data-scheme="light"]{ mix-blend-mode: multiply; }
+
+/* Project pages: one still frame of the project's own artwork, faint and
+   fixed behind the text like the live texture is on desktop */
+html.is-phone .project-modal__bg{
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+html.is-phone .project-modal__still{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  opacity: 0;
+  transition: opacity .5s ease;
+}
+html.is-phone .project-modal__still.is-ready{ opacity: .32; }
+
+/* Contact: no mascot on phones. The heading's big bottom padding only
+   existed to leave room for him to stand in. */
+html.is-phone .contact-head{ padding-bottom: 1.75rem; }

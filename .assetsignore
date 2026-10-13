@@ -10,3 +10,4 @@ aurelia
 .claude
 node_modules
 .git
+_render
